@@ -30,6 +30,7 @@ while ($row = $result->fetch_assoc()) {
 <head>
   <meta charset="UTF-8" />
   <title>Gestión de Clientes</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
