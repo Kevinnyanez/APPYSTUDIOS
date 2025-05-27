@@ -125,8 +125,8 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
     background-color: #5a6268;
 }
 
-.Stock-esti{
-  text-align: center;
+
+.Stock-esti {
   font-size: 2rem;
   margin-bottom: 2rem;
   color: #007acc;
@@ -136,15 +136,18 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
   border-bottom: 2px solid #007acc;
   padding-bottom: 0.5rem;
   display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 
 
 </style>
 </head>
 <body>
-<div class="container-stock">
+
 <h1 class="Stock-esti">Stock de Materiales y Muebles</h1>
-</div>
+
 <form method="GET" action="stock.php" class="form-busqueda">
     <div class="form-group">
         <input type="text" name="search" placeholder="Buscar por nombre" value="<?=htmlspecialchars($search)?>" class="input-text" />
