@@ -68,23 +68,85 @@ h1 { text-align: center; margin-top: 20px; }
 .btn-volver, .btn-agregar { display: inline-block; padding: 8px 12px; background: #222; color: white; text-decoration: none; border-radius: 4px; margin: 10px; }
 form { width: 90%; margin: 10px auto; text-align: center; }
 input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
+
+.form-busqueda {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 16px;
+    background-color: #222;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.input-text,
+.input-select {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 250px;
+}
+
+.btn {
+    padding: 10px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-buscar {
+    background-color: #007BFF;
+    color: white;
+}
+
+.btn-buscar:hover {
+    background-color: #0056b3;
+}
+
+.btn-limpiar {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-limpiar:hover {
+    background-color: #5a6268;
+}
+
 </style>
 </head>
 <body>
 
 <h1>Stock de Materiales y Muebles</h1>
 
-<form method="GET" action="stock.php">
-    <input type="text" name="search" placeholder="Buscar por nombre" value="<?=htmlspecialchars($search)?>" />
-    <select name="tipo">
-        <option value="">-- Filtrar por tipo --</option>
-        <?php foreach($tipos as $t): ?>
-            <option value="<?=htmlspecialchars($t)?>" <?= $filter_tipo === $t ? 'selected' : '' ?>><?=htmlspecialchars($t)?></option>
-        <?php endforeach; ?>
-    </select>
-    <button type="submit">Buscar</button>
-    <a href="stock.php" class="btn-volver">Limpiar</a>
+<form method="GET" action="stock.php" class="form-busqueda">
+    <div class="form-group">
+        <input type="text" name="search" placeholder="Buscar por nombre" value="<?=htmlspecialchars($search)?>" class="input-text" />
+        
+        <select name="tipo" class="input-select">
+            <option value="">-- Filtrar por tipo --</option>
+            <?php foreach($tipos as $t): ?>
+                <option value="<?=htmlspecialchars($t)?>" <?= $filter_tipo === $t ? 'selected' : '' ?>><?=htmlspecialchars($t)?></option>
+            <?php endforeach; ?>
+        </select>
+
+        <button type="submit" class="btn btn-buscar">Buscar</button>
+        <a href="stock.php" class="btn btn-limpiar">Limpiar</a>
+    </div>
 </form>
+
 
 <a href="stock_form.php" class="btn-agregar">Agregar nuevo</a>
 
