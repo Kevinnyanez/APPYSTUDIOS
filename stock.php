@@ -133,7 +133,7 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
   font-family: 'Segoe UI', sans-serif;
   font-weight: 700;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #38bdf8;
+  border-bottom: 2px solid #007acc;
   padding-bottom: 0.5rem;
   display: inline-block;
   margin-left: auto;
