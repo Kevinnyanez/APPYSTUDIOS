@@ -38,8 +38,11 @@ while ($row = $result->fetch_assoc()) {
 
 <form action="cliente_action.php" method="post">
   <input type="hidden" name="id_cliente" value="<?= $edit_cliente['id_cliente'] ?? '' ?>">
+
   
-  <label>Nombre:</label><br>
+  <label class="claseLabel"> Nombre:</label><br>
+
+
   <input type="text" name="nombre" required value="<?= htmlspecialchars($edit_cliente['nombre'] ?? '') ?>"><br><br>
   
   <label>Email:</label><br>
@@ -57,10 +60,16 @@ while ($row = $result->fetch_assoc()) {
   <?php endif; ?>
 </form>
 
+<style>
+
+.claseLabel{
+            color: blue;
+  }
+</style>
+
 <hr>
 
 <h2> Listado de Clientes </h2>
-<p style="color: green; font-size: 18px;">Este párrafo es verde.</p>
 
 <table border="1" cellpadding="5" cellspacing="0">
   <thead>
