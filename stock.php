@@ -125,7 +125,7 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
     background-color: #5a6268;
 }
 
-h1 {
+.Stock-esti{
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
@@ -143,7 +143,7 @@ h1 {
 </head>
 <body>
 
-<h1>Stock de Materiales y Muebles</h1>
+<h1 class="Stock-esti">Stock de Materiales y Muebles</h1>
 
 <form method="GET" action="stock.php" class="form-busqueda">
     <div class="form-group">
