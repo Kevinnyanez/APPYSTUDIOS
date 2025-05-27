@@ -125,6 +125,20 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
     background-color: #5a6268;
 }
 
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #007acc;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #007acc;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+
 </style>
 </head>
 <body>
