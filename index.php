@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <form method="POST" action="">
-        <h2>Iniciar Sesión</h2>
+        <h2>Iniciar Sesión xdxd</h2>
         <?php if ($error): ?>
             <div class="error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
