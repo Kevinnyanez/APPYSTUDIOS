@@ -59,7 +59,9 @@ while ($row = $result->fetch_assoc()) {
 
 <hr>
 
-<h2>Listado de Clientes</h2>
+<h2> Listado de Clientes </h2>
+<p style="color: green; font-size: 18px;">Este párrafo es verde.</p>
+
 <table border="1" cellpadding="5" cellspacing="0">
   <thead>
     <tr>
