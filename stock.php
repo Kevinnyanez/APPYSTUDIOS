@@ -142,9 +142,9 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
 </style>
 </head>
 <body>
-
+<div class="container-stock">
 <h1 class="Stock-esti">Stock de Materiales y Muebles</h1>
-
+</div>
 <form method="GET" action="stock.php" class="form-busqueda">
     <div class="form-group">
         <input type="text" name="search" placeholder="Buscar por nombre" value="<?=htmlspecialchars($search)?>" class="input-text" />
