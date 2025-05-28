@@ -268,83 +268,109 @@ body {
     <span class="cerrar-modal" id="cerrarModalPresupuesto">&times;</span>
     <h2>Nuevo Presupuesto</h2>
     <form id="formPresupuestoModal">
-      <label>Cliente:</label>
-      <select name="id_cliente" id="selectCliente" required>
-        <option value="">Seleccione un cliente</option>
-        <option value="nuevo">+ Nuevo cliente</option>
-        <?php foreach ($clientes as $cliente): ?>
-          <option value="<?= $cliente['id_cliente'] ?>"
-            data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
-            data-email="<?= htmlspecialchars($cliente['email']) ?>"
-            data-direccion="<?= htmlspecialchars($cliente['direccion']) ?>">
-            <?= htmlspecialchars($cliente['nombre']) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-      <div class="cliente-info" id="clienteInfo" style="display:none;">
-        <p><strong>Teléfono:</strong> <span id="cliTelefono"></span></p>
-        <p><strong>Email:</strong> <span id="cliEmail"></span></p>
-        <p><strong>Dirección:</strong> <span id="cliDireccion"></span></p>
+      <!-- Paso 1: Cliente -->
+      <div id="paso1" class="paso activo">
+        <h3>Paso 1: Seleccionar Cliente</h3>
+        <label>Cliente:</label>
+        <select name="id_cliente" id="selectCliente" required>
+          <option value="">Seleccione un cliente</option>
+          <option value="nuevo">+ Nuevo cliente</option>
+          <?php foreach ($clientes as $cliente): ?>
+            <option value="<?= $cliente['id_cliente'] ?>"
+              data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
+              data-email="<?= htmlspecialchars($cliente['email']) ?>"
+              data-direccion="<?= htmlspecialchars($cliente['direccion']) ?>">
+              <?= htmlspecialchars($cliente['nombre']) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        <div class="cliente-info" id="clienteInfo" style="display:none;">
+          <p><strong>Teléfono:</strong> <span id="cliTelefono"></span></p>
+          <p><strong>Email:</strong> <span id="cliEmail"></span></p>
+          <p><strong>Dirección:</strong> <span id="cliDireccion"></span></p>
+        </div>
+        <div id="nuevoClienteFields" style="display:none; margin-bottom:10px;">
+          <label>Nombre:</label>
+          <input type="text" id="nuevoNombre" name="nuevo_nombre" placeholder="Nombre del cliente">
+          <label>Email:</label>
+          <input type="email" id="nuevoEmail" name="nuevo_email" placeholder="Email">
+          <label>Teléfono:</label>
+          <input type="text" id="nuevoTelefono" name="nuevo_telefono" placeholder="Teléfono">
+          <label>Dirección:</label>
+          <input type="text" id="nuevoDireccion" name="nuevo_direccion" placeholder="Dirección">
+        </div>
+        <div class="navegacion">
+          <button type="button" id="cancelarModalPresupuesto">Cancelar</button>
+          <button type="button" id="siguientePaso1">Siguiente</button>
+        </div>
       </div>
-      <div id="nuevoClienteFields" style="display:none; margin-bottom:10px;">
-        <label>Nombre:</label>
-        <input type="text" id="nuevoNombre" name="nuevo_nombre" placeholder="Nombre del cliente">
-        <label>Email:</label>
-        <input type="email" id="nuevoEmail" name="nuevo_email" placeholder="Email">
-        <label>Teléfono:</label>
-        <input type="text" id="nuevoTelefono" name="nuevo_telefono" placeholder="Teléfono">
-        <label>Dirección:</label>
-        <input type="text" id="nuevoDireccion" name="nuevo_direccion" placeholder="Dirección">
+
+      <!-- Paso 2: Productos -->
+      <div id="paso2" class="paso">
+        <h3>Paso 2: Agregar Productos</h3>
+        <label>Fecha:</label>
+        <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>">
+        <label>Producto:</label>
+        <div style="margin-bottom:10px; position:relative;">
+          <input type="text" id="inputBuscarProducto" placeholder="Buscar producto..." autocomplete="off">
+          <input type="hidden" id="idProductoSeleccionado">
+          <input type="hidden" id="precioProductoSeleccionado">
+          <ul id="sugerenciasProductos" style="position:absolute;z-index:10;left:0;right:0;max-height:180px;overflow-y:auto;background:#222;border:1px solid #444;border-radius:0 0 6px 6px;display:none;margin:0;padding:0;list-style:none;"></ul>
+        </div>
+        <button type="button" id="btnAgregarItem">Agregar</button>
+        <div style="margin: 10px 0;">
+          <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
+        </div>
+        <table id="tablaItems">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Subtotal</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+              <td id="totalPresupuesto">$0.00</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align:right"><strong>Recargo al total (%):</strong></td>
+              <td colspan="2"><input type="number" id="recargoTotal" value="10" min="0" step="0.1" style="width:70px;"></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
+              <td id="totalConRecargo">$0.00</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="navegacion">
+          <button type="button" id="anteriorPaso2">Anterior</button>
+          <button type="button" id="siguientePaso2">Siguiente</button>
+        </div>
       </div>
-      <label>Fecha:</label>
-      <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>"><br><br>
-      <hr>
-      <h3>Agregar ítems al presupuesto</h3>
-      <label>Producto:</label>
-      <select id="selectStock">
-        <option value="">Seleccione un producto</option>
-        <?php foreach ($stock_items as $item): ?>
-          <option value="<?= $item['id_stock'] ?>" data-precio="<?= $item['precio_unitario'] ?>">
-            <?= htmlspecialchars(strip_tags($item['nombre']), ENT_QUOTES) ?> – $<?= number_format($item['precio_unitario'], 2) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-      <button type="button" id="btnAgregarItem">Agregar</button>
-      <!-- Inputs de recargo -->
-      <div style="margin: 10px 0;">
-        <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
+
+      <!-- Paso 3: Resumen -->
+      <div id="paso3" class="paso">
+        <h3>Paso 3: Resumen del Presupuesto</h3>
+        <div class="resumen-presupuesto">
+          <h4>Datos del Cliente</h4>
+          <div id="resumenCliente"></div>
+          <h4>Productos</h4>
+          <div id="resumenProductos"></div>
+          <h4>Totales</h4>
+          <div id="resumenTotales"></div>
+        </div>
+        <div class="navegacion">
+          <button type="button" id="anteriorPaso3">Anterior</button>
+          <button type="submit">Confirmar Presupuesto</button>
+        </div>
       </div>
-      <table id="tablaItems" style="margin-top: 20px;">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
-            <td id="totalPresupuesto">$0.00</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align:right"><strong>Recargo al total (%):</strong></td>
-            <td colspan="2"><input type="number" id="recargoTotal" value="10" min="0" step="0.1" style="width:70px;"></td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
-            <td id="totalConRecargo">$0.00</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-      <br>
-      <button type="submit">Crear</button>
-      <button type="button" id="cancelarModalPresupuesto">Cancelar</button>
     </form>
   </div>
 </div>
@@ -387,39 +413,227 @@ body {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Modal abrir/cerrar
-  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
-    e.preventDefault();
-    limpiarModalPresupuesto();
-    document.getElementById('modalPresupuesto').style.display = 'block';
-  };
-  document.getElementById('cerrarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  document.getElementById('cancelarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  window.onclick = function(event) {
-    const modal = document.getElementById('modalPresupuesto');
-    if (event.target == modal) {
-      modal.style.display = 'none';
+  // --- PASOS DEL MODAL ---
+  function mostrarPaso(n) {
+    document.querySelectorAll('.paso').forEach(p => p.classList.remove('activo'));
+    document.getElementById('paso' + n).classList.add('activo');
+  }
+  // Navegación pasos
+  document.getElementById('siguientePaso1').onclick = function() {
+    const selectCliente = document.getElementById('selectCliente');
+    if (selectCliente.value === 'nuevo') {
+      if (!document.getElementById('nuevoNombre').value.trim()) {
+        alert('Ingrese el nombre del nuevo cliente');
+        return;
+      }
+    } else if (!selectCliente.value) {
+      alert('Seleccione un cliente o cree uno nuevo');
+      return;
     }
+    mostrarPaso(2);
+  };
+  document.getElementById('anteriorPaso2').onclick = function() { mostrarPaso(1); };
+  document.getElementById('siguientePaso2').onclick = function() {
+    if (document.querySelectorAll('#tablaItems tbody tr').length === 0) {
+      alert('Agregue al menos un producto');
+      return;
+    }
+    // Resumen
+    const cliente = document.getElementById('selectCliente').selectedOptions[0];
+    let clienteInfo = '';
+    if (cliente.value === 'nuevo') {
+      clienteInfo = `
+        <p><strong>Nombre:</strong> ${document.getElementById('nuevoNombre').value}</p>
+        <p><strong>Email:</strong> ${document.getElementById('nuevoEmail').value}</p>
+        <p><strong>Teléfono:</strong> ${document.getElementById('nuevoTelefono').value}</p>
+        <p><strong>Dirección:</strong> ${document.getElementById('nuevoDireccion').value}</p>
+      `;
+    } else {
+      clienteInfo = `
+        <p><strong>Nombre:</strong> ${cliente.text}</p>
+        <p><strong>Teléfono:</strong> ${cliente.getAttribute('data-telefono') || ''}</p>
+        <p><strong>Email:</strong> ${cliente.getAttribute('data-email') || ''}</p>
+        <p><strong>Dirección:</strong> ${cliente.getAttribute('data-direccion') || ''}</p>
+      `;
+    }
+    document.getElementById('resumenCliente').innerHTML = clienteInfo;
+    let productosInfo = '<ul>';
+    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
+      productosInfo += `
+        <li>${row.cells[0].textContent.trim()} - Cantidad: ${row.querySelector('input[name="cantidad[]"]').value} - 
+        Precio: $${row.querySelector('input[name="precio_unitario[]"]').value} - 
+        Subtotal: $${row.querySelector('.subtotal-text').textContent}</li>
+      `;
+    });
+    productosInfo += '</ul>';
+    document.getElementById('resumenProductos').innerHTML = productosInfo;
+    document.getElementById('resumenTotales').innerHTML = `
+      <p><strong>Subtotal:</strong> ${document.getElementById('totalPresupuesto').textContent}</p>
+      <p><strong>Recargo total:</strong> ${document.getElementById('recargoTotal').value}%</p>
+      <p><strong>Total final:</strong> ${document.getElementById('totalConRecargo').textContent}</p>
+    `;
+    mostrarPaso(3);
+  };
+  document.getElementById('anteriorPaso3').onclick = function() { mostrarPaso(2); };
+
+  // Mostrar/ocultar campos de nuevo cliente
+  const selectCliente = document.getElementById('selectCliente');
+  const clienteInfo = document.getElementById('clienteInfo');
+  const nuevoClienteFields = document.getElementById('nuevoClienteFields');
+  const cliTelefono = document.getElementById('cliTelefono');
+  const cliEmail = document.getElementById('cliEmail');
+  const cliDireccion = document.getElementById('cliDireccion');
+  selectCliente.addEventListener('change', function() {
+    if (this.value === 'nuevo') {
+      clienteInfo.style.display = 'none';
+      nuevoClienteFields.style.display = 'block';
+    } else if (this.value) {
+      const opt = this.selectedOptions[0];
+      cliTelefono.textContent = opt.getAttribute('data-telefono') || '';
+      cliEmail.textContent = opt.getAttribute('data-email') || '';
+      cliDireccion.textContent = opt.getAttribute('data-direccion') || '';
+      clienteInfo.style.display = 'block';
+      nuevoClienteFields.style.display = 'none';
+    } else {
+      clienteInfo.style.display = 'none';
+      nuevoClienteFields.style.display = 'none';
+    }
+  });
+
+  // --- Autocompletado de productos ---
+  const productos = [
+    <?php foreach ($stock_items as $item): ?>
+      { id: "<?= $item['id_stock'] ?>", nombre: "<?= htmlspecialchars(strip_tags($item['nombre']), ENT_QUOTES) ?>", precio: "<?= $item['precio_unitario'] ?>" },
+    <?php endforeach; ?>
+  ];
+  const inputBuscar = document.getElementById('inputBuscarProducto');
+  const sugerencias = document.getElementById('sugerenciasProductos');
+  const idProductoSel = document.getElementById('idProductoSeleccionado');
+  const precioProductoSel = document.getElementById('precioProductoSeleccionado');
+  inputBuscar.addEventListener('input', function() {
+    const val = this.value.toLowerCase();
+    sugerencias.innerHTML = '';
+    if (!val) { sugerencias.style.display = 'none'; return; }
+    const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(val));
+    if (filtrados.length === 0) { sugerencias.style.display = 'none'; return; }
+    filtrados.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = `${p.nombre} – $${parseFloat(p.precio).toFixed(2)}`;
+      li.style.padding = '8px 12px';
+      li.style.cursor = 'pointer';
+      li.onmouseover = () => li.style.background = '#333';
+      li.onmouseout = () => li.style.background = '';
+      li.onclick = () => {
+        inputBuscar.value = p.nombre;
+        idProductoSel.value = p.id;
+        precioProductoSel.value = p.precio;
+        sugerencias.style.display = 'none';
+      };
+      sugerencias.appendChild(li);
+    });
+    sugerencias.style.display = 'block';
+  });
+  document.addEventListener('click', function(e) {
+    if (!sugerencias.contains(e.target) && e.target !== inputBuscar) {
+      sugerencias.style.display = 'none';
+    }
+  });
+  // Modifico el botón agregar para usar el autocompletado
+  document.getElementById('btnAgregarItem').onclick = function() {
+    const idStock = idProductoSel.value;
+    const nombre = inputBuscar.value;
+    const precioBase = parseFloat(precioProductoSel.value) || 0;
+    if (!idStock || !nombre) return alert('Seleccione un producto');
+    if ([...document.querySelector('#tablaItems tbody').children].some(r => r.dataset.idStock === idStock)) {
+      return alert('Ya agregaste este producto');
+    }
+    const recargo = parseFloat(document.getElementById('recargoProducto').value) || 0;
+    const precio = precioBase * (1 + recargo / 100);
+    const row = document.createElement('tr');
+    row.dataset.idStock = idStock;
+    row.dataset.precioBase = precioBase;
+    row.innerHTML = `
+      <td>
+        ${nombre}
+        <input type="hidden" name="id_stock[]" value="${idStock}">
+      </td>
+      <td><input type="number" name="cantidad[]" value="1" min="1" class="input-cantidad"></td>
+      <td><input type="number" name="precio_unitario[]" value="${precio.toFixed(2)}" readonly></td>
+      <td class="td-subtotal">
+        <span class="subtotal-text">${precio.toFixed(2)}</span>
+        <input type="hidden" name="subtotal[]" value="${precio.toFixed(2)}">
+      </td>
+      <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
+    `;
+    document.querySelector('#tablaItems tbody').appendChild(row);
+    const qtyInput = row.querySelector('.input-cantidad');
+    const precioInput = row.querySelector('input[name="precio_unitario[]"]');
+    const textSub = row.querySelector('.subtotal-text');
+    const hiddenSub = row.querySelector('input[name="subtotal[]"]');
+    function recalc() {
+      const qty = parseFloat(qtyInput.value) || 0;
+      const pr  = parseFloat(precioInput.value) || 0;
+      const st  = qty * pr;
+      textSub.textContent = st.toFixed(2);
+      hiddenSub.value = st.toFixed(2);
+      calcularTotal();
+    }
+    qtyInput.addEventListener('input', recalc);
+    row.querySelector('.btn-eliminar-item')
+      .addEventListener('click', () => { row.remove(); calcularTotal(); });
+    calcularTotal();
+    // Limpiar selección
+    inputBuscar.value = '';
+    idProductoSel.value = '';
+    precioProductoSel.value = '';
   };
 
-  // Limpiar modal (para crear nuevo)
+  // --- Cálculo de totales ---
+  function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
+      const sub = parseFloat(row.querySelector('input[name="subtotal[]"]').value) || 0;
+      total += sub;
+    });
+    document.getElementById('totalPresupuesto').textContent = '$' + total.toFixed(2);
+    // Calcular recargo al total
+    const recargoTotal = parseFloat(document.getElementById('recargoTotal').value) || 0;
+    const totalFinal = total * (1 + recargoTotal / 100);
+    document.getElementById('totalConRecargo').textContent = '$' + totalFinal.toFixed(2);
+  }
+  document.getElementById('recargoProducto').addEventListener('input', () => {
+    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
+      const precioBase = parseFloat(row.dataset.precioBase);
+      const recargo = parseFloat(document.getElementById('recargoProducto').value) || 0;
+      const precioConRecargo = precioBase * (1 + recargo / 100);
+      row.querySelector('input[name="precio_unitario[]"]').value = precioConRecargo.toFixed(2);
+      // Recalcular subtotal
+      const qty = parseFloat(row.querySelector('input[name="cantidad[]"]').value) || 0;
+      const subtotal = qty * precioConRecargo;
+      row.querySelector('.subtotal-text').textContent = subtotal.toFixed(2);
+      row.querySelector('input[name="subtotal[]"]').value = subtotal.toFixed(2);
+    });
+    calcularTotal();
+  });
+  document.getElementById('recargoTotal').addEventListener('input', calcularTotal);
+
+  // --- Limpiar modal ---
   function limpiarModalPresupuesto() {
     document.getElementById('formPresupuestoModal').reset();
     document.querySelector('#formPresupuestoModal input[name="id_presupuesto"]')?.remove();
     document.querySelector('#tablaItems tbody').innerHTML = '';
     document.getElementById('totalPresupuesto').textContent = '$0.00';
+    document.getElementById('totalConRecargo').textContent = '$0.00';
+    mostrarPaso(1);
   }
 
-  // Cargar presupuesto en el modal para editar
+  // --- Cargar presupuesto en el modal para editar ---
   function cargarPresupuestoEnModal(id) {
     fetch('presupuesto_action.php?get_presupuesto=' + id)
       .then(res => res.json())
       .then(data => {
         limpiarModalPresupuesto();
+        mostrarPaso(2);
         const f = document.getElementById('formPresupuestoModal');
         // id_presupuesto hidden
         let idInput = document.createElement('input');
@@ -437,6 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data.items.forEach(item => {
           const row = document.createElement('tr');
           row.dataset.idStock = item.id_stock;
+          row.dataset.precioBase = item.precio_unitario;
           row.innerHTML = `
             <td>
               ${item.nombre_stock}
@@ -472,7 +687,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalPresupuesto').style.display = 'block';
       });
   }
-
   // Botones de editar
   document.querySelectorAll('.btn-link.editar').forEach(btn => {
     btn.onclick = function(e) {
@@ -481,166 +695,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cargarPresupuestoEnModal(id);
     };
   });
-
-  // Botones de eliminar
-  document.querySelectorAll('.btn-link.eliminar').forEach(btn => {
-    btn.onclick = function(e) {
-      e.preventDefault();
-      if (!confirm('¿Eliminar presupuesto?')) return;
-      const id = this.href.split('delete=')[1];
-      fetch('presupuesto_action.php?delete=' + id)
-        .then(res => res.text())
-        .then(resp => { location.reload(); });
-    };
-  });
-
-  // Botones de cerrarr
-  document.querySelectorAll('.btn-link.cerrar').forEach(btn => {
-    btn.onclick = function(e) {
-      e.preventDefault();
-      if (!confirm('¿Cerrar presupuesto?')) return;
-      const id = this.href.split('cerrar=')[1];
-      fetch('presupuesto_action.php?cerrar=' + id)
-        .then(res => res.text())
-        .then(resp => { location.reload(); });
-    };
-  });
-
-  // JS para agregar ítems y calcular totales
-  const selectStock     = document.getElementById('selectStock');
-  const btnAgregarItem  = document.getElementById('btnAgregarItem');
-  const tablaItemsBody  = document.querySelector('#tablaItems tbody');
-  const totalPresupuesto= document.getElementById('totalPresupuesto');
-  const recargoProductoInput = document.getElementById('recargoProducto');
-  const recargoTotalInput = document.getElementById('recargoTotal');
-  const totalConRecargo = document.getElementById('totalConRecargo');
-
-  if (!selectStock || !btnAgregarItem || !tablaItemsBody || !totalPresupuesto || !recargoProductoInput || !recargoTotalInput || !totalConRecargo) return;
-
-  function calcularTotal() {
-    let total = 0;
-    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
-      const sub = parseFloat(row.querySelector('input[name="subtotal[]"]').value) || 0;
-      total += sub;
-    });
-    document.getElementById('totalPresupuesto').textContent = '$' + total.toFixed(2);
-    // Calcular recargo al total
-    const recargoTotal = parseFloat(recargoTotalInput.value) || 0;
-    const totalFinal = total * (1 + recargoTotal / 100);
-    totalConRecargo.textContent = '$' + totalFinal.toFixed(2);
-  }
-
-  // Recalcular precios de productos al cambiar el recargo por producto
-  recargoProductoInput.addEventListener('input', () => {
-    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
-      const precioBase = parseFloat(row.dataset.precioBase);
-      const recargo = parseFloat(recargoProductoInput.value) || 0;
-      const precioConRecargo = precioBase * (1 + recargo / 100);
-      row.querySelector('input[name="precio_unitario[]"]').value = precioConRecargo.toFixed(2);
-      // Recalcular subtotal
-      const qty = parseFloat(row.querySelector('input[name="cantidad[]"]').value) || 0;
-      const subtotal = qty * precioConRecargo;
-      row.querySelector('.subtotal-text').textContent = subtotal.toFixed(2);
-      row.querySelector('input[name="subtotal[]"]').value = subtotal.toFixed(2);
-    });
-    calcularTotal();
-  });
-
-  // Recalcular total con recargo al total
-  recargoTotalInput.addEventListener('input', calcularTotal);
-
-  // Modifica la función de agregar ítems para guardar el precio base y aplicar recargo
-  btnAgregarItem.addEventListener('click', () => {
-    const opt = selectStock.selectedOptions[0];
-    if (!opt || !opt.value) return alert('Seleccione un producto');
-    const idStock = opt.value;
-    const nombre  = opt.text;
-    const precioBase  = parseFloat(opt.dataset.precio) || 0;
-    const recargo = parseFloat(recargoProductoInput.value) || 0;
-    const precio = precioBase * (1 + recargo / 100);
-    if ([...tablaItemsBody.children].some(r => r.dataset.idStock === idStock)) {
-      return alert('Ya agregaste este producto');
-    }
-    const row = document.createElement('tr');
-    row.dataset.idStock = idStock;
-    row.dataset.precioBase = precioBase;
-    row.innerHTML = `
-      <td>
-        ${nombre}
-        <input type="hidden" name="id_stock[]" value="${idStock}">
-      </td>
-      <td><input type="number" name="cantidad[]" value="1" min="1" class="input-cantidad"></td>
-      <td><input type="number" name="precio_unitario[]" value="${precio.toFixed(2)}" readonly></td>
-      <td class="td-subtotal">
-        <span class="subtotal-text">${precio.toFixed(2)}</span>
-        <input type="hidden" name="subtotal[]" value="${precio.toFixed(2)}">
-      </td>
-      <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
-    `;
-    tablaItemsBody.appendChild(row);
-    const qtyInput = row.querySelector('.input-cantidad');
-    const precioInput = row.querySelector('input[name="precio_unitario[]"]');
-    const textSub = row.querySelector('.subtotal-text');
-    const hiddenSub = row.querySelector('input[name="subtotal[]"]');
-    function recalc() {
-      const qty = parseFloat(qtyInput.value) || 0;
-      const pr  = parseFloat(precioInput.value) || 0;
-      const st  = qty * pr;
-      textSub.textContent = st.toFixed(2);
-      hiddenSub.value = st.toFixed(2);
-      calcularTotal();
-    }
-    qtyInput.addEventListener('input', recalc);
-    row.querySelector('.btn-eliminar-item')
-      .addEventListener('click', () => { row.remove(); calcularTotal(); });
-    calcularTotal();
-  });
-
-  // AJAX para enviar el formulario
-  document.getElementById('formPresupuestoModal').onsubmit = function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const datos = new FormData(form);
-    // Si es nuevo cliente, crear primero el cliente
-    if (selectCliente.value === 'nuevo') {
-      const nombre = document.getElementById('nuevoNombre').value.trim();
-      if (!nombre) return alert('Ingrese el nombre del nuevo cliente');
-      datos.append('crear_cliente', '1');
-      fetch('presupuesto_action.php', {
-        method: 'POST',
-        body: datos
-      })
-      .then(res => res.text())
-      .then(resp => {
-        if (resp.startsWith('cliente_id:')) {
-          // Setear el id_cliente y volver a enviar el presupuesto
-          datos.set('id_cliente', resp.split(':')[1]);
-          datos.delete('crear_cliente');
-          fetch('presupuesto_action.php', {
-            method: 'POST',
-            body: datos
-          })
-          .then(res2 => res2.text())
-          .then(() => {
-            document.getElementById('modalPresupuesto').style.display = 'none';
-            location.reload();
-          });
-        } else {
-          alert('Error al crear cliente: ' + resp);
-        }
-      });
-    } else {
-      fetch('presupuesto_action.php', {
-        method: 'POST',
-        body: datos
-      })
-      .then(res => res.text())
-      .then(() => {
-        document.getElementById('modalPresupuesto').style.display = 'none';
-        location.reload();
-      });
-    }
-  };
 
   // --- RESUMEN DE ÍTEMS EN LA TABLA DE PRESUPUESTOS ---
   document.querySelectorAll('.btn-ver-items').forEach(btn => {
@@ -671,29 +725,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  const selectCliente = document.getElementById('selectCliente');
-  const clienteInfo = document.getElementById('clienteInfo');
-  const nuevoClienteFields = document.getElementById('nuevoClienteFields');
-  const cliTelefono = document.getElementById('cliTelefono');
-  const cliEmail = document.getElementById('cliEmail');
-  const cliDireccion = document.getElementById('cliDireccion');
-
-  selectCliente.addEventListener('change', function() {
-    if (this.value === 'nuevo') {
-      clienteInfo.style.display = 'none';
-      nuevoClienteFields.style.display = 'block';
-    } else if (this.value) {
-      const opt = this.selectedOptions[0];
-      cliTelefono.textContent = opt.getAttribute('data-telefono') || '';
-      cliEmail.textContent = opt.getAttribute('data-email') || '';
-      cliDireccion.textContent = opt.getAttribute('data-direccion') || '';
-      clienteInfo.style.display = 'block';
-      nuevoClienteFields.style.display = 'none';
-    } else {
-      clienteInfo.style.display = 'none';
-      nuevoClienteFields.style.display = 'none';
+  // --- Modal abrir/cerrar ---
+  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
+    e.preventDefault();
+    limpiarModalPresupuesto();
+    document.getElementById('modalPresupuesto').style.display = 'block';
+  };
+  document.getElementById('cerrarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  document.getElementById('cancelarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  window.onclick = function(event) {
+    const modal = document.getElementById('modalPresupuesto');
+    if (event.target == modal) {
+      modal.style.display = 'none';
     }
-  });
+  };
 });
 </script>
 
