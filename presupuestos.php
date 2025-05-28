@@ -271,6 +271,7 @@ body {
       <label>Cliente:</label>
       <select name="id_cliente" id="selectCliente" required>
         <option value="">Seleccione un cliente</option>
+        <option value="nuevo">+ Nuevo cliente</option>
         <?php foreach ($clientes as $cliente): ?>
           <option value="<?= $cliente['id_cliente'] ?>"
             data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
@@ -280,10 +281,20 @@ body {
           </option>
         <?php endforeach; ?>
       </select>
-      <div class="cliente-info" id="clienteInfo">
+      <div class="cliente-info" id="clienteInfo" style="display:none;">
         <p><strong>Teléfono:</strong> <span id="cliTelefono"></span></p>
         <p><strong>Email:</strong> <span id="cliEmail"></span></p>
         <p><strong>Dirección:</strong> <span id="cliDireccion"></span></p>
+      </div>
+      <div id="nuevoClienteFields" style="display:none; margin-bottom:10px;">
+        <label>Nombre:</label>
+        <input type="text" id="nuevoNombre" name="nuevo_nombre" placeholder="Nombre del cliente">
+        <label>Email:</label>
+        <input type="email" id="nuevoEmail" name="nuevo_email" placeholder="Email">
+        <label>Teléfono:</label>
+        <input type="text" id="nuevoTelefono" name="nuevo_telefono" placeholder="Teléfono">
+        <label>Dirección:</label>
+        <input type="text" id="nuevoDireccion" name="nuevo_direccion" placeholder="Dirección">
       </div>
       <label>Fecha:</label>
       <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>"><br><br>
@@ -362,6 +373,7 @@ body {
           <td><?= ucfirst($p['estado']) ?></td>
           <td>
             <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
+            <a href="#" class="btn-link btn-ver-items" data-id="<?= $p['id_presupuesto'] ?>">Ver ítems</a>
             <?php if ($p['estado'] === 'abierto'): ?>
               | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
             <?php endif; ?>
@@ -589,19 +601,99 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const form = e.target;
     const datos = new FormData(form);
-    fetch('presupuesto_action.php', {
-      method: 'POST',
-      body: datos
-    })
-    .then(res => res.text())
-    .then(resp => {
-      document.getElementById('modalPresupuesto').style.display = 'none';
-      location.reload();
-    })
-    .catch(err => {
-      alert('Error al crear presupuesto');
-    });
+    // Si es nuevo cliente, crear primero el cliente
+    if (selectCliente.value === 'nuevo') {
+      const nombre = document.getElementById('nuevoNombre').value.trim();
+      if (!nombre) return alert('Ingrese el nombre del nuevo cliente');
+      datos.append('crear_cliente', '1');
+      fetch('presupuesto_action.php', {
+        method: 'POST',
+        body: datos
+      })
+      .then(res => res.text())
+      .then(resp => {
+        if (resp.startsWith('cliente_id:')) {
+          // Setear el id_cliente y volver a enviar el presupuesto
+          datos.set('id_cliente', resp.split(':')[1]);
+          datos.delete('crear_cliente');
+          fetch('presupuesto_action.php', {
+            method: 'POST',
+            body: datos
+          })
+          .then(res2 => res2.text())
+          .then(() => {
+            document.getElementById('modalPresupuesto').style.display = 'none';
+            location.reload();
+          });
+        } else {
+          alert('Error al crear cliente: ' + resp);
+        }
+      });
+    } else {
+      fetch('presupuesto_action.php', {
+        method: 'POST',
+        body: datos
+      })
+      .then(res => res.text())
+      .then(() => {
+        document.getElementById('modalPresupuesto').style.display = 'none';
+        location.reload();
+      });
+    }
   };
+
+  // --- RESUMEN DE ÍTEMS EN LA TABLA DE PRESUPUESTOS ---
+  document.querySelectorAll('.btn-ver-items').forEach(btn => {
+    btn.onclick = function(e) {
+      e.preventDefault();
+      const id = this.dataset.id;
+      let row = this.closest('tr');
+      // Si ya está abierto, cerrar
+      if (row.nextElementSibling && row.nextElementSibling.classList.contains('resumen-items')) {
+        row.nextElementSibling.remove();
+        return;
+      }
+      // Cerrar otros abiertos
+      document.querySelectorAll('.resumen-items').forEach(el => el.remove());
+      fetch('presupuesto_action.php?get_presupuesto=' + id)
+        .then(res => res.json())
+        .then(data => {
+          const tr = document.createElement('tr');
+          tr.className = 'resumen-items';
+          tr.innerHTML = `<td colspan="6">
+            <strong>Ítems del presupuesto:</strong>
+            <ul style="margin:8px 0 0 0; padding:0 0 0 18px;">
+              ${data.items.map(it => `<li>${it.nombre_stock} - Cantidad: ${it.cantidad} - Precio: $${parseFloat(it.precio_unitario).toFixed(2)} - Subtotal: $${parseFloat(it.subtotal).toFixed(2)}</li>`).join('')}
+            </ul>
+          </td>`;
+          row.parentNode.insertBefore(tr, row.nextSibling);
+        });
+    };
+  });
+
+  const selectCliente = document.getElementById('selectCliente');
+  const clienteInfo = document.getElementById('clienteInfo');
+  const nuevoClienteFields = document.getElementById('nuevoClienteFields');
+  const cliTelefono = document.getElementById('cliTelefono');
+  const cliEmail = document.getElementById('cliEmail');
+  const cliDireccion = document.getElementById('cliDireccion');
+
+  selectCliente.addEventListener('change', function() {
+    if (this.value === 'nuevo') {
+      clienteInfo.style.display = 'none';
+      nuevoClienteFields.style.display = 'block';
+    } else if (this.value) {
+      const opt = this.selectedOptions[0];
+      cliTelefono.textContent = opt.getAttribute('data-telefono') || '';
+      cliEmail.textContent = opt.getAttribute('data-email') || '';
+      cliDireccion.textContent = opt.getAttribute('data-direccion') || '';
+      clienteInfo.style.display = 'block';
+      nuevoClienteFields.style.display = 'none';
+    } else {
+      clienteInfo.style.display = 'none';
+      nuevoClienteFields.style.display = 'none';
+    }
+  });
 });
 </script>
 

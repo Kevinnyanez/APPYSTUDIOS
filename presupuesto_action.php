@@ -82,6 +82,39 @@ if (isset($_GET['get_presupuesto'])) {
     exit;
 }
 
+// Endpoint para obtener los ítems de un presupuesto (para el resumen desplegable)
+if (isset($_GET['get_presupuesto'])) {
+    $id = (int)$_GET['get_presupuesto'];
+    $items = [];
+    $sql = "SELECT pi.*, s.nombre AS nombre_stock FROM presupuesto_items pi JOIN stock s ON pi.id_stock = s.id_stock WHERE pi.id_presupuesto = $id";
+    $res = $conn->query($sql);
+    while ($row = $res->fetch_assoc()) {
+        $items[] = $row;
+    }
+    header('Content-Type: application/json');
+    echo json_encode(['items' => $items]);
+    exit;
+}
+
+// Crear cliente si se solicita
+if (isset($_POST['crear_cliente'])) {
+    $nombre = trim($_POST['nuevo_nombre'] ?? '');
+    $email = trim($_POST['nuevo_email'] ?? '');
+    $telefono = trim($_POST['nuevo_telefono'] ?? '');
+    $direccion = trim($_POST['nuevo_direccion'] ?? '');
+    if (!$nombre) {
+        echo 'error:Nombre requerido';
+        exit;
+    }
+    $stmt = $conn->prepare("INSERT INTO clientes (nombre, email, telefono, direccion, fecha_registro) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->bind_param("ssss", $nombre, $email, $telefono, $direccion);
+    $stmt->execute();
+    $id_cliente = $stmt->insert_id;
+    $stmt->close();
+    echo 'cliente_id:' . $id_cliente;
+    exit;
+}
+
 // Validar datos mínimos
 if (!isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
     header('Location: presupuestos.php?error=datos');
