@@ -31,58 +31,8 @@ while ($row = $result->fetch_assoc()) {
   <meta charset="UTF-8" />
   <title>Gestión de Clientes</title>
   <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<nav>
-        <a href="stock.php">Ver Stock</a>
-        <a href="presupuestos.php">Presupuestos</a>
-        <a href="ventas.php">Ventas</a>
-        <a href="clientes.php">Clientes</a>
-        <a href="recomendaciones.php">Recomendaciones</a>
-        <a href="logout.php" class="logout">Cerrar Sesión</a>
-    </nav>
-
-<h1 class="form-titulo">
-  <?= $edit_cliente ? "Editar Cliente" : "Nuevo Cliente" ?>
-</h1>
-
-<form action="cliente_action.php" method="post" class="form-cliente">
-  <input type="hidden" name="id_cliente" value="<?= $edit_cliente['id_cliente'] ?? '' ?>">
-
-  <div class="form-group">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required value="<?= htmlspecialchars($edit_cliente['nombre'] ?? '') ?>">
-  </div>
-
-  <div class="form-group">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="<?= htmlspecialchars($edit_cliente['email'] ?? '') ?>">
-  </div>
-
-  <div class="form-group">
-    <label for="telefono">Teléfono:</label>
-    <input type="text" id="telefono" name="telefono" value="<?= htmlspecialchars($edit_cliente['telefono'] ?? '') ?>">
-  </div>
-
-  <div class="form-group">
-    <label for="direccion">Dirección:</label>
-    <textarea id="direccion" name="direccion"><?= htmlspecialchars($edit_cliente['direccion'] ?? '') ?></textarea>
-  </div>
-
-  <div class="form-actions">
-    <button type="submit" class="btn-guardar"><?= $edit_cliente ? "Actualizar" : "Crear" ?></button>
-    <?php if ($edit_cliente): ?>
-      <a href="clientes.php" class="btn-cancelar">Cancelar</a>
-    <?php endif; ?>
-  </div>
-</form>
-
-<style>
-  body {
-    
-    font-family: 'Segoe UI', sans-serif;
-  }
+  <style>
+ 
 
   nav {
             display: flex;
@@ -245,14 +195,163 @@ while ($row = $result->fetch_assoc()) {
       margin-left: 0;
     }
   }
-</style>
 
+  body {
+  background-color: #222;
+  color: #eee;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo-clientes {
+  text-align: center;
+  margin-top: 20px;
+  color: #00bcd4;
+  font-size: 24px;
+}
+
+.tabla-clientes {
+  width: 95%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background-color: #2b2b2b;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabla-clientes th,
+.tabla-clientes td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.tabla-clientes th {
+  background-color: #333;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tabla-clientes tr:nth-child(even) {
+  background-color: #262626;
+}
+
+.tabla-clientes tr:hover {
+  background-color: #383838;
+}
+
+.sin-clientes {
+  text-align: center;
+  padding: 20px;
+  color: #bbb;
+  font-style: italic;
+}
+
+.btn-link {
+  color: #00bcd4;
+  text-decoration: none;
+  margin-right: 8px;
+  transition: color 0.2s ease;
+}
+
+.btn-link:hover {
+  color: #03a9f4;
+  text-decoration: underline;
+}
+
+.eliminar {
+  color: #e57373;
+}
+
+.eliminar:hover {
+  color: #ef5350;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+  .tabla-clientes thead {
+    display: none;
+  }
+
+  .tabla-clientes tr {
+    display: block;
+    margin-bottom: 20px;
+    background-color: #2b2b2b;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+
+  .tabla-clientes td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #333;
+  }
+
+  .tabla-clientes td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #aaa;
+  }
+
+  .tabla-clientes td:last-child {
+    border-bottom: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+        <a href="stock.php">Ver Stock</a>
+        <a href="presupuestos.php">Presupuestos</a>
+        <a href="ventas.php">Ventas</a>
+        <a href="clientes.php">Clientes</a>
+        <a href="recomendaciones.php">Recomendaciones</a>
+        <a href="logout.php" class="logout">Cerrar Sesión</a>
+    </nav>
+
+<h1 class="form-titulo">
+  <?= $edit_cliente ? "Editar Cliente" : "Nuevo Cliente" ?>
+</h1>
+
+<form action="cliente_action.php" method="post" class="form-cliente">
+  <input type="hidden" name="id_cliente" value="<?= $edit_cliente['id_cliente'] ?? '' ?>">
+
+  <div class="form-group">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required value="<?= htmlspecialchars($edit_cliente['nombre'] ?? '') ?>">
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="<?= htmlspecialchars($edit_cliente['email'] ?? '') ?>">
+  </div>
+
+  <div class="form-group">
+    <label for="telefono">Teléfono:</label>
+    <input type="text" id="telefono" name="telefono" value="<?= htmlspecialchars($edit_cliente['telefono'] ?? '') ?>">
+  </div>
+
+  <div class="form-group">
+    <label for="direccion">Dirección:</label>
+    <textarea id="direccion" name="direccion"><?= htmlspecialchars($edit_cliente['direccion'] ?? '') ?></textarea>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-guardar"><?= $edit_cliente ? "Actualizar" : "Crear" ?></button>
+    <?php if ($edit_cliente): ?>
+      <a href="clientes.php" class="btn-cancelar">Cancelar</a>
+    <?php endif; ?>
+  </div>
+</form>
 
 <hr>
 
-<h2> Listado de Clientes </h2>
+<h2 class="titulo-clientes">Listado de Clientes</h2>
 
-<table border="1" cellpadding="5" cellspacing="0">
+<table class="tabla-clientes">
   <thead>
     <tr>
       <th>ID</th>
@@ -265,26 +364,25 @@ while ($row = $result->fetch_assoc()) {
     </tr>
   </thead>
   <tbody>
-<?php if (empty($clientes)): ?>
-  <tr><td colspan="7" style="text-align:center;">No hay clientes registrados.</td></tr>
-<?php else: ?>
-  <?php foreach ($clientes as $c): ?>
-    <tr>
-      <td><?= $c['id_cliente'] ?></td>
-      <td><?= htmlspecialchars($c['nombre']) ?></td>
-      <td><?= htmlspecialchars($c['email']) ?></td>
-      <td><?= htmlspecialchars($c['telefono']) ?></td>
-      <td><?= htmlspecialchars($c['direccion']) ?></td>
-      <td><?= $c['fecha_registro'] ?></td>
-      <td>
-        <a href="clientes.php?id_cliente=<?= $c['id_cliente'] ?>">Editar</a> |
-        <a href="cliente_action.php?delete=<?= $c['id_cliente'] ?>" onclick="return confirm('¿Eliminar cliente?')">Eliminar</a>
-      </td>
-    </tr>
-  <?php endforeach; ?>
-<?php endif; ?>
-</tbody>
-
+    <?php if (empty($clientes)): ?>
+      <tr><td colspan="7" class="sin-clientes">No hay clientes registrados.</td></tr>
+    <?php else: ?>
+      <?php foreach ($clientes as $c): ?>
+        <tr>
+          <td><?= $c['id_cliente'] ?></td>
+          <td><?= htmlspecialchars($c['nombre']) ?></td>
+          <td><?= htmlspecialchars($c['email']) ?></td>
+          <td><?= htmlspecialchars($c['telefono']) ?></td>
+          <td><?= htmlspecialchars($c['direccion']) ?></td>
+          <td><?= $c['fecha_registro'] ?></td>
+          <td>
+            <a href="clientes.php?id_cliente=<?= $c['id_cliente'] ?>" class="btn-link editar">Editar</a>
+            <a href="cliente_action.php?delete=<?= $c['id_cliente'] ?>" onclick="return confirm('¿Eliminar cliente?')" class="btn-link eliminar">Eliminar</a>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </tbody>
 </table>
 
 </body>
