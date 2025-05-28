@@ -307,7 +307,7 @@ while ($row = $result->fetch_assoc()) {
         <a href="stock.php">Ver Stock</a>
         <a href="presupuestos.php">Presupuestos</a>
         <a href="ventas.php">Ventas</a>
-        <a href="clientes.php">Clientes</a>
+        <a href="dashboard.php">Dashboard</a>
         <a href="recomendaciones.php">Recomendaciones</a>
         <a href="logout.php" class="logout">Cerrar Sesión</a>
     </nav>
