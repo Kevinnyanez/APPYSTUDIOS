@@ -126,12 +126,14 @@ $result_clientes = $conn ->query($sql_clientes);
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95em;
+            border-radius: 8px;
         }
 
         th, td {
             border: 1px solid #ccc;
             padding: 8px 12px;
             text-align: left;
+            
         }
 
         th, td {
