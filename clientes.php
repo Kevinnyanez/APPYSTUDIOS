@@ -34,6 +34,15 @@ while ($row = $result->fetch_assoc()) {
 </head>
 <body>
 
+<nav>
+        <a href="stock.php">Ver Stock</a>
+        <a href="presupuestos.php">Presupuestos</a>
+        <a href="ventas.php">Ventas</a>
+        <a href="clientes.php">Clientes</a>
+        <a href="recomendaciones.php">Recomendaciones</a>
+        <a href="logout.php" class="logout">Cerrar Sesión</a>
+    </nav>
+
 <h1 class="form-titulo">
   <?= $edit_cliente ? "Editar Cliente" : "Nuevo Cliente" ?>
 </h1>
@@ -71,10 +80,67 @@ while ($row = $result->fetch_assoc()) {
 
 <style>
   body {
-    background-color: #222;
-    color: #f0f0f0;
+    
     font-family: 'Segoe UI', sans-serif;
   }
+
+  nav {
+            display: flex;
+            align-items: center;
+            background: #1f2937;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+            margin-bottom: 30px;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            padding: 6px 8px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        nav a.logout {
+            margin-left: auto;
+            background: #ef4444;
+            color: white !important;
+            padding: 8px 15px;
+            font-weight: 700;
+            transition: background 0.3s ease;
+        }
+
+        nav a.logout:hover {
+            background: #b91c1c;
+        }
+
+        /* Responsive básico */
+        @media (max-width: 768px) {
+            
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav a {
+                margin: 8px 10px;
+            }
+
+            nav a.logout {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
 
   .form-titulo {
     text-align: center;
