@@ -141,7 +141,7 @@ td {
 }
 
 tr:hover {
-  background-color: #f0f8ff;
+  background-color: #2b2b2b;
   transition: background-color 0.3s ease;
 }
 
