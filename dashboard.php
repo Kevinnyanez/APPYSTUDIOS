@@ -117,7 +117,7 @@ $result_clientes = $conn ->query($sql_clientes);
   border-collapse: collapse;
   margin-top: 20px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  background-color: #fff;
+  background-color: #222;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -129,7 +129,7 @@ th, td {
 }
 
 th {
-  background-color: #f5f5f5;
+  background-color: #222;
   color: #333;
   font-weight: bold;
   font-size: 14px;
@@ -137,7 +137,7 @@ th {
 
 td {
   font-size: 14px;
-  color: #444;
+  color: #222;
 }
 
 tr:hover {
