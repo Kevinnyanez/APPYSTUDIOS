@@ -132,11 +132,13 @@ $result_clientes = $conn ->query($sql_clientes);
             border: 1px solid #ccc;
             padding: 8px 12px;
             text-align: left;
+            
         }
 
         th, td {
             background-color: #222;
             color: white;
+            border-radius: 10px;
         }
 
         tr:nth-child(even) {
