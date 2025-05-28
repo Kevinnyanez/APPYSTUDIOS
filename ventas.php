@@ -127,6 +127,10 @@ $result_presupuestos_cerrados = $conn->query($sql_presupuestos_cerrados);
       <?php endif; ?>
     </tbody>
   </table>
+  <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
+    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuesto'] ?>">
+    <button type="submit">Confirmar Venta</button>
+</form>
 
   <h2>✅ Presupuestos Cerrados</h2>
   <table>
@@ -157,10 +161,7 @@ $result_presupuestos_cerrados = $conn->query($sql_presupuestos_cerrados);
       <?php endif; ?>
     </tbody>
   </table>
-  <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
-    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuesto'] ?>">
-    <button type="submit">Confirmar Venta</button>
-</form>
+  
 
 </body>
 <script>
