@@ -416,24 +416,56 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- PASOS DEL MODAL ---
   function mostrarPaso(n) {
     document.querySelectorAll('.paso').forEach(p => p.classList.remove('activo'));
-    document.getElementById('paso' + n).classList.add('activo');
+    const paso = document.getElementById('paso' + n);
+    if (paso) paso.classList.add('activo');
+    else console.warn('No se encontró el paso', n);
   }
-  // Navegación pasos
-  document.getElementById('siguientePaso1').onclick = function() {
-    const selectCliente = document.getElementById('selectCliente');
-    if (selectCliente.value === 'nuevo') {
-      if (!document.getElementById('nuevoNombre').value.trim()) {
-        alert('Ingrese el nombre del nuevo cliente');
+
+  // --- Modal abrir/cerrar ---
+  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
+    e.preventDefault();
+    limpiarModalPresupuesto();
+    mostrarPaso(1); // Siempre mostrar paso 1 al abrir
+    document.getElementById('modalPresupuesto').style.display = 'block';
+  };
+  document.getElementById('cerrarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  document.getElementById('cancelarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  window.onclick = function(event) {
+    const modal = document.getElementById('modalPresupuesto');
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+
+  // --- Botón Siguiente Paso 1 ---
+  const btnSiguiente1 = document.getElementById('siguientePaso1');
+  if (btnSiguiente1) {
+    btnSiguiente1.onclick = function() {
+      const selectCliente = document.getElementById('selectCliente');
+      if (selectCliente.value === 'nuevo') {
+        if (!document.getElementById('nuevoNombre').value.trim()) {
+          alert('Ingrese el nombre del nuevo cliente');
+          return;
+        }
+      } else if (!selectCliente.value) {
+        alert('Seleccione un cliente o cree uno nuevo');
         return;
       }
-    } else if (!selectCliente.value) {
-      alert('Seleccione un cliente o cree uno nuevo');
-      return;
-    }
-    mostrarPaso(2);
-  };
-  document.getElementById('anteriorPaso2').onclick = function() { mostrarPaso(1); };
-  document.getElementById('siguientePaso2').onclick = function() {
+      mostrarPaso(2);
+    };
+  } else {
+    console.error('No se encontró el botón siguientePaso1');
+  }
+
+  // --- Botón Anterior/Siguiente Paso 2 y Paso 3 ---
+  const btnAnterior2 = document.getElementById('anteriorPaso2');
+  if (btnAnterior2) btnAnterior2.onclick = function() { mostrarPaso(1); };
+  const btnSiguiente2 = document.getElementById('siguientePaso2');
+  if (btnSiguiente2) btnSiguiente2.onclick = function() {
     if (document.querySelectorAll('#tablaItems tbody tr').length === 0) {
       alert('Agregue al menos un producto');
       return;
@@ -474,7 +506,8 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     mostrarPaso(3);
   };
-  document.getElementById('anteriorPaso3').onclick = function() { mostrarPaso(2); };
+  const btnAnterior3 = document.getElementById('anteriorPaso3');
+  if (btnAnterior3) btnAnterior3.onclick = function() { mostrarPaso(2); };
 
   // Mostrar/ocultar campos de nuevo cliente
   const selectCliente = document.getElementById('selectCliente');
@@ -724,25 +757,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
   });
-
-  // --- Modal abrir/cerrar ---
-  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
-    e.preventDefault();
-    limpiarModalPresupuesto();
-    document.getElementById('modalPresupuesto').style.display = 'block';
-  };
-  document.getElementById('cerrarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  document.getElementById('cancelarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  window.onclick = function(event) {
-    const modal = document.getElementById('modalPresupuesto');
-    if (event.target == modal) {
-      modal.style.display = 'none';
-    }
-  };
 });
 </script>
 
