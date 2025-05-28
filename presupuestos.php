@@ -240,17 +240,17 @@ body {
     <?php else: ?>
       <?php foreach ($presupuestos as $p): ?>
         <tr>
-          <td><?= $p['id_presupuestos'] ?></td>
+          <td><?= $p['id_presupuesto'] ?></td>
           <td><?= htmlspecialchars($p['nombre_cliente']) ?></td>
           <td><?= $p['fecha_creacion'] ?></td>
           <td>$<?= number_format($p['total'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
           <td>
-            <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuestos'] ?>" class="btn-link editar">Ver / Editar</a>
-            <?php if ($p['estado'] === 'activo'): ?>
-              | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuestos'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
+            <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
+            <?php if ($p['estado'] === 'abierto'): ?>
+              | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
             <?php endif; ?>
-            | <a href="presupuesto_action.php?delete=<?= $p['id_presupuestos'] ?>" onclick="return confirm('¿Eliminar presupuesto?')" class="btn-link eliminar">Eliminar</a>
+            | <a href="presupuesto_action.php?delete=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Eliminar presupuesto?')" class="btn-link eliminar">Eliminar</a>
           </td>
         </tr>
       <?php endforeach; ?>
