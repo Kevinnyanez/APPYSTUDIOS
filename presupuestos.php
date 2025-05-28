@@ -364,6 +364,7 @@ body {
 // Modal abrir/cerrar
   document.getElementById('abrirModalPresupuesto').onclick = function(e) {
     e.preventDefault();
+    limpiarModalPresupuesto();
     document.getElementById('modalPresupuesto').style.display = 'block';
   };
   document.getElementById('cerrarModalPresupuesto').onclick = function() {
@@ -378,6 +379,104 @@ body {
       modal.style.display = 'none';
     }
   };
+
+// Limpiar modal (para crear nuevo)
+function limpiarModalPresupuesto() {
+  document.getElementById('formPresupuestoModal').reset();
+  document.querySelector('#formPresupuestoModal input[name="id_presupuesto"]')?.remove();
+  document.querySelector('#tablaItems tbody').innerHTML = '';
+  document.getElementById('totalPresupuesto').textContent = '$0.00';
+}
+
+// Cargar presupuesto en el modal para editar
+function cargarPresupuestoEnModal(id) {
+  fetch('presupuesto_action.php?get_presupuesto=' + id)
+    .then(res => res.json())
+    .then(data => {
+      limpiarModalPresupuesto();
+      const f = document.getElementById('formPresupuestoModal');
+      // id_presupuesto hidden
+      let idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'id_presupuesto';
+      idInput.value = data.presupuesto.id_presupuesto;
+      f.appendChild(idInput);
+      // Cliente
+      f.id_cliente.value = data.presupuesto.id_cliente;
+      // Fecha
+      f.fecha_creacion.value = data.presupuesto.fecha_creacion.substr(0,10);
+      // Ítems
+      const tbody = document.querySelector('#tablaItems tbody');
+      tbody.innerHTML = '';
+      data.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.dataset.idStock = item.id_stock;
+        row.innerHTML = `
+          <td>
+            ${item.nombre_stock}
+            <input type="hidden" name="id_stock[]" value="${item.id_stock}">
+          </td>
+          <td><input type="number" name="cantidad[]" value="${item.cantidad}" min="1" class="input-cantidad"></td>
+          <td><input type="number" name="precio_unitario[]" value="${parseFloat(item.precio_unitario).toFixed(2)}" readonly></td>
+          <td class="td-subtotal">
+            <span class="subtotal-text">${parseFloat(item.subtotal).toFixed(2)}</span>
+            <input type="hidden" name="subtotal[]" value="${parseFloat(item.subtotal).toFixed(2)}">
+          </td>
+          <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
+        `;
+        tbody.appendChild(row);
+        // Listeners para recalcular
+        const qtyInput = row.querySelector('.input-cantidad');
+        const precioInput = row.querySelector('input[name="precio_unitario[]"]');
+        const textSub = row.querySelector('.subtotal-text');
+        const hiddenSub = row.querySelector('input[name="subtotal[]"]');
+        function recalc() {
+          const qty = parseFloat(qtyInput.value) || 0;
+          const pr  = parseFloat(precioInput.value) || 0;
+          const st  = qty * pr;
+          textSub.textContent = st.toFixed(2);
+          hiddenSub.value = st.toFixed(2);
+          calcularTotal();
+        }
+        qtyInput.addEventListener('input', recalc);
+        row.querySelector('.btn-eliminar-item')
+          .addEventListener('click', () => { row.remove(); calcularTotal(); });
+      });
+      calcularTotal();
+      document.getElementById('modalPresupuesto').style.display = 'block';
+    });
+}
+
+// Botones de editar
+Array.from(document.querySelectorAll('.btn-link.editar')).forEach(btn => {
+  btn.onclick = function(e) {
+    e.preventDefault();
+    const id = this.href.split('id_presupuesto=')[1];
+    cargarPresupuestoEnModal(id);
+  };
+});
+// Botones de eliminar
+Array.from(document.querySelectorAll('.btn-link.eliminar')).forEach(btn => {
+  btn.onclick = function(e) {
+    e.preventDefault();
+    if (!confirm('¿Eliminar presupuesto?')) return;
+    const id = this.href.split('delete=')[1];
+    fetch('presupuesto_action.php?delete=' + id)
+      .then(res => res.text())
+      .then(resp => { location.reload(); });
+  };
+});
+// Botones de cerrar
+Array.from(document.querySelectorAll('.btn-link.cerrar')).forEach(btn => {
+  btn.onclick = function(e) {
+    e.preventDefault();
+    if (!confirm('¿Cerrar presupuesto?')) return;
+    const id = this.href.split('cerrar=')[1];
+    fetch('presupuesto_action.php?cerrar=' + id)
+      .then(res => res.text())
+      .then(resp => { location.reload(); });
+  };
+});
 // JS para agregar ítems y calcular totales
   document.addEventListener('DOMContentLoaded', () => {
     const selectStock     = document.getElementById('selectStock');
