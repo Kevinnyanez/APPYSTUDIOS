@@ -413,38 +413,42 @@ body {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM Content Loaded - Inicializando eventos del modal');
+  
   // --- PASOS DEL MODAL ---
   function mostrarPaso(n) {
+    console.log('Intentando mostrar paso:', n);
     document.querySelectorAll('.paso').forEach(p => p.classList.remove('activo'));
     const paso = document.getElementById('paso' + n);
-    if (paso) paso.classList.add('activo');
-    else console.warn('No se encontró el paso', n);
+    if (paso) {
+      paso.classList.add('activo');
+      console.log('Paso', n, 'mostrado correctamente');
+    } else {
+      console.warn('No se encontró el paso', n);
+    }
   }
 
   // --- Modal abrir/cerrar ---
-  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
-    e.preventDefault();
-    limpiarModalPresupuesto();
-    mostrarPaso(1); // Siempre mostrar paso 1 al abrir
-    document.getElementById('modalPresupuesto').style.display = 'block';
-  };
-  document.getElementById('cerrarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  document.getElementById('cancelarModalPresupuesto').onclick = function() {
-    document.getElementById('modalPresupuesto').style.display = 'none';
-  };
-  window.onclick = function(event) {
-    const modal = document.getElementById('modalPresupuesto');
-    if (event.target == modal) {
-      modal.style.display = 'none';
-    }
-  };
+  const btnAbrir = document.getElementById('abrirModalPresupuesto');
+  if (btnAbrir) {
+    console.log('Botón abrir modal encontrado');
+    btnAbrir.onclick = function(e) {
+      console.log('Click en botón abrir modal');
+      e.preventDefault();
+      limpiarModalPresupuesto();
+      mostrarPaso(1);
+      document.getElementById('modalPresupuesto').style.display = 'block';
+    };
+  } else {
+    console.error('No se encontró el botón abrir modal');
+  }
 
   // --- Botón Siguiente Paso 1 ---
   const btnSiguiente1 = document.getElementById('siguientePaso1');
   if (btnSiguiente1) {
+    console.log('Botón siguiente paso 1 encontrado');
     btnSiguiente1.onclick = function() {
+      console.log('Click en botón siguiente paso 1');
       const selectCliente = document.getElementById('selectCliente');
       if (selectCliente.value === 'nuevo') {
         if (!document.getElementById('nuevoNombre').value.trim()) {
@@ -652,6 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Limpiar modal ---
   function limpiarModalPresupuesto() {
+    console.log('Limpiando modal');
     document.getElementById('formPresupuestoModal').reset();
     document.querySelector('#formPresupuestoModal input[name="id_presupuesto"]')?.remove();
     document.querySelector('#tablaItems tbody').innerHTML = '';
@@ -662,9 +667,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Cargar presupuesto en el modal para editar ---
   function cargarPresupuestoEnModal(id) {
+    console.log('Cargando presupuesto en modal:', id);
     fetch('presupuesto_action.php?get_presupuesto=' + id)
       .then(res => res.json())
       .then(data => {
+        console.log('Datos del presupuesto recibidos:', data);
         limpiarModalPresupuesto();
         mostrarPaso(2);
         const f = document.getElementById('formPresupuestoModal');
@@ -718,6 +725,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         calcularTotal();
         document.getElementById('modalPresupuesto').style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error al cargar presupuesto:', error);
       });
   }
   // Botones de editar
