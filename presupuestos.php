@@ -212,7 +212,7 @@ body {
 
 <nav>
         <a href="stock.php">Ver Stock</a>
-        <a href="presupuestos.php">Presupuestos</a>
+        <a href="clientes.php">clientes</a>
         <a href="ventas.php">Ventas</a>
         <a href="dashboard.php">Dashboard</a>
         <a href="recomendaciones.php">Recomendaciones</a>

@@ -25,7 +25,7 @@ $result_clientes = $conn ->query($sql_clientes);
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
+            background: #222;
             padding: 20px;
             margin: 0;
         }
