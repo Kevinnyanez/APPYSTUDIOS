@@ -299,6 +299,10 @@ body {
         <?php endforeach; ?>
       </select>
       <button type="button" id="btnAgregarItem">Agregar</button>
+      <!-- Inputs de recargo -->
+      <div style="margin: 10px 0;">
+        <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
+      </div>
       <table id="tablaItems" style="margin-top: 20px;">
         <thead>
           <tr>
@@ -314,6 +318,15 @@ body {
           <tr>
             <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
             <td id="totalPresupuesto">$0.00</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align:right"><strong>Recargo al total (%):</strong></td>
+            <td colspan="2"><input type="number" id="recargoTotal" value="10" min="0" step="0.1" style="width:70px;"></td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
+            <td id="totalConRecargo">$0.00</td>
             <td></td>
           </tr>
         </tfoot>
@@ -486,26 +499,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAgregarItem  = document.getElementById('btnAgregarItem');
   const tablaItemsBody  = document.querySelector('#tablaItems tbody');
   const totalPresupuesto= document.getElementById('totalPresupuesto');
-  if (!selectStock || !btnAgregarItem || !tablaItemsBody || !totalPresupuesto) return;
+  const recargoProductoInput = document.getElementById('recargoProducto');
+  const recargoTotalInput = document.getElementById('recargoTotal');
+  const totalConRecargo = document.getElementById('totalConRecargo');
+
+  if (!selectStock || !btnAgregarItem || !tablaItemsBody || !totalPresupuesto || !recargoProductoInput || !recargoTotalInput || !totalConRecargo) return;
+
   function calcularTotal() {
     let total = 0;
-    tablaItemsBody.querySelectorAll('tr').forEach(row => {
+    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
       const sub = parseFloat(row.querySelector('input[name="subtotal[]"]').value) || 0;
       total += sub;
     });
-    totalPresupuesto.textContent = '$' + total.toFixed(2);
+    document.getElementById('totalPresupuesto').textContent = '$' + total.toFixed(2);
+    // Calcular recargo al total
+    const recargoTotal = parseFloat(recargoTotalInput.value) || 0;
+    const totalFinal = total * (1 + recargoTotal / 100);
+    totalConRecargo.textContent = '$' + totalFinal.toFixed(2);
   }
+
+  // Recalcular precios de productos al cambiar el recargo por producto
+  recargoProductoInput.addEventListener('input', () => {
+    document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
+      const precioBase = parseFloat(row.dataset.precioBase);
+      const recargo = parseFloat(recargoProductoInput.value) || 0;
+      const precioConRecargo = precioBase * (1 + recargo / 100);
+      row.querySelector('input[name="precio_unitario[]"]').value = precioConRecargo.toFixed(2);
+      // Recalcular subtotal
+      const qty = parseFloat(row.querySelector('input[name="cantidad[]"]').value) || 0;
+      const subtotal = qty * precioConRecargo;
+      row.querySelector('.subtotal-text').textContent = subtotal.toFixed(2);
+      row.querySelector('input[name="subtotal[]"]').value = subtotal.toFixed(2);
+    });
+    calcularTotal();
+  });
+
+  // Recalcular total con recargo al total
+  recargoTotalInput.addEventListener('input', calcularTotal);
+
+  // Modifica la función de agregar ítems para guardar el precio base y aplicar recargo
   btnAgregarItem.addEventListener('click', () => {
     const opt = selectStock.selectedOptions[0];
     if (!opt || !opt.value) return alert('Seleccione un producto');
     const idStock = opt.value;
     const nombre  = opt.text;
-    const precio  = parseFloat(opt.dataset.precio) || 0;
+    const precioBase  = parseFloat(opt.dataset.precio) || 0;
+    const recargo = parseFloat(recargoProductoInput.value) || 0;
+    const precio = precioBase * (1 + recargo / 100);
     if ([...tablaItemsBody.children].some(r => r.dataset.idStock === idStock)) {
       return alert('Ya agregaste este producto');
     }
     const row = document.createElement('tr');
     row.dataset.idStock = idStock;
+    row.dataset.precioBase = precioBase;
     row.innerHTML = `
       <td>
         ${nombre}
