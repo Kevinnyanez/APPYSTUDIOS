@@ -134,9 +134,9 @@ $result_clientes = $conn ->query($sql_clientes);
             text-align: left;
         }
 
-        th {
-            background-color: white;
-            color: #222;
+        th, td {
+            background-color: #222;
+            color: white;
         }
 
         tr:nth-child(even) {
