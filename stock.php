@@ -64,7 +64,15 @@ if ($tipos_res) {
         background-color: #cbd5e1;
     }
 /* Igual que antes + un poco para el formulario */
-table { border-collapse: collapse; width: 90%; margin: 20px auto; border-radius: 8px;}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  background-color: #222;
+  border-radius: 8px;
+  overflow: hidden;
+}
 th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
 th, td { background-color: #222; color: white; }
 tr:nth-child(even) { background-color: #eee; }
