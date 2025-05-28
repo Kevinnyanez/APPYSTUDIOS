@@ -62,7 +62,7 @@ if ($tipos_res) {
 /* Igual que antes + un poco para el formulario */
 table { border-collapse: collapse; width: 90%; margin: 20px auto; }
 th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-th { background-color: #222; color: white; }
+th, td { background-color: #222; color: white; }
 tr:nth-child(even) { background-color: #eee; }
 h1 { text-align: center; margin-top: 20px; }
 .btn-volver, .btn-agregar { display: inline-block; padding: 8px 12px; background: #222; color: white; text-decoration: none; border-radius: 4px; margin: 10px; }
