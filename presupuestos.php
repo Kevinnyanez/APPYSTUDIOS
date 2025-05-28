@@ -12,6 +12,18 @@ $presupuestos = [];
 while ($row = $result->fetch_assoc()) {
     $presupuestos[] = $row;
 }
+
+// Cargar clientes y stock para el modal
+$clientes_result = $conn->query("SELECT id_cliente, nombre, telefono, email, direccion FROM clientes ORDER BY nombre");
+$clientes = [];
+while ($row = $clientes_result->fetch_assoc()) {
+    $clientes[] = $row;
+}
+$stock_result = $conn->query("SELECT id_stock, nombre, precio_unitario FROM stock ORDER BY nombre");
+$stock_items = [];
+while ($row = $stock_result->fetch_assoc()) {
+    $stock_items[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -205,6 +217,33 @@ body {
         nav a.logout:hover {
             background: #b91c1c;
         }
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-contenido {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%; max-width: 900px;
+  position: relative;
+  color: #222;
+}
+.cerrar-modal {
+  color: #aaa;
+  position: absolute;
+  top: 10px; right: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.cerrar-modal:hover { color: #222; }
 </style>
 
 </head>
@@ -221,7 +260,70 @@ body {
 
 <h1 class="titulo-presupuestos">Presupuestos</h1>
 
-<a href="presupuesto_form.php" class="btn-nuevo">+ Nuevo Presupuesto</a>
+<a href="#" class="btn-nuevo" id="abrirModalPresupuesto">+ Nuevo Presupuesto</a>
+
+<!-- Modal para crear presupuesto -->
+<div id="modalPresupuesto" class="modal">
+  <div class="modal-contenido">
+    <span class="cerrar-modal" id="cerrarModalPresupuesto">&times;</span>
+    <h2>Nuevo Presupuesto</h2>
+    <form id="formPresupuestoModal">
+      <label>Cliente:</label>
+      <select name="id_cliente" id="selectCliente" required>
+        <option value="">Seleccione un cliente</option>
+        <?php foreach ($clientes as $cliente): ?>
+          <option value="<?= $cliente['id_cliente'] ?>"
+            data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
+            data-email="<?= htmlspecialchars($cliente['email']) ?>"
+            data-direccion="<?= htmlspecialchars($cliente['direccion']) ?>">
+            <?= htmlspecialchars($cliente['nombre']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+      <div class="cliente-info" id="clienteInfo">
+        <p><strong>Teléfono:</strong> <span id="cliTelefono"></span></p>
+        <p><strong>Email:</strong> <span id="cliEmail"></span></p>
+        <p><strong>Dirección:</strong> <span id="cliDireccion"></span></p>
+      </div>
+      <label>Fecha:</label>
+      <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>"><br><br>
+      <hr>
+      <h3>Agregar ítems al presupuesto</h3>
+      <label>Producto:</label>
+      <select id="selectStock">
+        <option value="">Seleccione un producto</option>
+        <?php foreach ($stock_items as $item): ?>
+          <option value="<?= $item['id_stock'] ?>" data-precio="<?= $item['precio_unitario'] ?>">
+            <?= htmlspecialchars(strip_tags($item['nombre']), ENT_QUOTES) ?> – $<?= number_format($item['precio_unitario'], 2) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+      <button type="button" id="btnAgregarItem">Agregar</button>
+      <table id="tablaItems" style="margin-top: 20px;">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+            <td id="totalPresupuesto">$0.00</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+      <br>
+      <button type="submit">Crear</button>
+      <button type="button" id="cancelarModalPresupuesto">Cancelar</button>
+    </form>
+  </div>
+</div>
 
 <table class="tabla-presupuestos">
   <thead>
@@ -257,6 +359,102 @@ body {
     <?php endif; ?>
   </tbody>
 </table>
+
+<script>
+// Modal abrir/cerrar
+  document.getElementById('abrirModalPresupuesto').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('modalPresupuesto').style.display = 'block';
+  };
+  document.getElementById('cerrarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  document.getElementById('cancelarModalPresupuesto').onclick = function() {
+    document.getElementById('modalPresupuesto').style.display = 'none';
+  };
+  window.onclick = function(event) {
+    const modal = document.getElementById('modalPresupuesto');
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+// JS para agregar ítems y calcular totales
+  document.addEventListener('DOMContentLoaded', () => {
+    const selectStock     = document.getElementById('selectStock');
+    const btnAgregarItem  = document.getElementById('btnAgregarItem');
+    const tablaItemsBody  = document.querySelector('#tablaItems tbody');
+    const totalPresupuesto= document.getElementById('totalPresupuesto');
+    if (!selectStock || !btnAgregarItem || !tablaItemsBody || !totalPresupuesto) return;
+    function calcularTotal() {
+      let total = 0;
+      tablaItemsBody.querySelectorAll('tr').forEach(row => {
+        const sub = parseFloat(row.querySelector('input[name="subtotal[]"]').value) || 0;
+        total += sub;
+      });
+      totalPresupuesto.textContent = '$' + total.toFixed(2);
+    }
+    btnAgregarItem.addEventListener('click', () => {
+      const opt = selectStock.selectedOptions[0];
+      if (!opt || !opt.value) return alert('Seleccione un producto');
+      const idStock = opt.value;
+      const nombre  = opt.text;
+      const precio  = parseFloat(opt.dataset.precio) || 0;
+      if ([...tablaItemsBody.children].some(r => r.dataset.idStock === idStock)) {
+        return alert('Ya agregaste este producto');
+      }
+      const row = document.createElement('tr');
+      row.dataset.idStock = idStock;
+      row.innerHTML = `
+        <td>
+          ${nombre}
+          <input type="hidden" name="id_stock[]" value="${idStock}">
+        </td>
+        <td><input type="number" name="cantidad[]" value="1" min="1" class="input-cantidad"></td>
+        <td><input type="number" name="precio_unitario[]" value="${precio.toFixed(2)}" readonly></td>
+        <td class="td-subtotal">
+          <span class="subtotal-text">${precio.toFixed(2)}</span>
+          <input type="hidden" name="subtotal[]" value="${precio.toFixed(2)}">
+        </td>
+        <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
+      `;
+      tablaItemsBody.appendChild(row);
+      const qtyInput = row.querySelector('.input-cantidad');
+      const precioInput = row.querySelector('input[name="precio_unitario[]"]');
+      const textSub = row.querySelector('.subtotal-text');
+      const hiddenSub = row.querySelector('input[name="subtotal[]"]');
+      function recalc() {
+        const qty = parseFloat(qtyInput.value) || 0;
+        const pr  = parseFloat(precioInput.value) || 0;
+        const st  = qty * pr;
+        textSub.textContent = st.toFixed(2);
+        hiddenSub.value = st.toFixed(2);
+        calcularTotal();
+      }
+      qtyInput.addEventListener('input', recalc);
+      row.querySelector('.btn-eliminar-item')
+        .addEventListener('click', () => { row.remove(); calcularTotal(); });
+      calcularTotal();
+    });
+    // AJAX para enviar el formulario
+    document.getElementById('formPresupuestoModal').onsubmit = function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const datos = new FormData(form);
+      fetch('presupuesto_action.php', {
+        method: 'POST',
+        body: datos
+      })
+      .then(res => res.text())
+      .then(resp => {
+        document.getElementById('modalPresupuesto').style.display = 'none';
+        location.reload();
+      })
+      .catch(err => {
+        alert('Error al crear presupuesto');
+      });
+    };
+  });
+</script>
 
 </body>
 </html>
