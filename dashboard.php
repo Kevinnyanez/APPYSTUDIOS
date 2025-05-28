@@ -112,41 +112,65 @@ $result_clientes = $conn ->query($sql_clientes);
         }
 
         /* Contenedor tabla stock */
-        .stock-table-container {
-            flex: 2 1 600px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            overflow-x: auto;
-            min-width: 280px;
-        }
-
         table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95em;
-            border-radius: 8px;
-        }
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            text-align: left;
-            
-        }
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
 
-        th, td {
-            background-color: #222;
-            color: white;
-        }
+th {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: bold;
+  font-size: 14px;
+}
 
-        tr:nth-child(even) {
-            background-color: #f3f9ff;
-        }
-        tr:nth-child(even) {
-  background-color: #262626;
-}   
+td {
+  font-size: 14px;
+  color: #444;
+}
+
+tr:hover {
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.btn-volver {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.btn-volver:hover {
+  background-color: #0056b3;
+}
+ 
 
         /* Responsive básico */
         @media (max-width: 768px) {
