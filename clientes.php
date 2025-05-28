@@ -198,7 +198,7 @@ while ($row = $result->fetch_assoc()) {
 
   body {
   background-color: #222;
-  color: #eee;
+  color: #cbd5e1;
   font-family: 'Segoe UI', sans-serif;
 }
 

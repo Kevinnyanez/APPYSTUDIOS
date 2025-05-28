@@ -22,7 +22,7 @@ while ($row = $result->fetch_assoc()) {
 
   <style>
 body {
-  background-color: #222;
+  background-color: #cbd5e1;
   color: #eee;
   font-family: 'Segoe UI', sans-serif;
 }
