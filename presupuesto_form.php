@@ -60,11 +60,153 @@ if ($id_presupuesto) {
   <meta charset="UTF-8" />
   <title><?= $presupuesto ? "Editar Presupuesto" : "Nuevo Presupuesto" ?></title>
   <style>
-    table { border-collapse: collapse; width: 100%; }
-    table, th, td { border: 1px solid #ddd; }
-    th, td { padding: 8px; text-align: left; }
-    .cliente-info { margin: 10px 0; }
-    .item-row input[type=number] { width: 60px; }
+    /* Contenedor principal del formulario */
+form#presupuestoForm {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 25px;
+  border-radius: 10px;
+  max-width: 1000px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  color: #222;
+}
+
+/* Encabezados */
+h1, h3 {
+  color: #222;
+  margin-top: 0;
+}
+
+/* Labels */
+form#presupuestoForm label {
+  display: block;
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+/* Inputs y selects */
+form#presupuestoForm input[type="text"],
+form#presupuestoForm input[type="number"],
+form#presupuestoForm input[type="date"],
+form#presupuestoForm select,
+form#presupuestoForm textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+/* Info del cliente */
+.cliente-info {
+  background-color: #f9f9f9;
+  padding: 10px 15px;
+  border-left: 4px solid #222;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Botón agregar item */
+#btnAgregarItem {
+  background-color: #222;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+#btnAgregarItem:hover {
+  background-color: #444;
+}
+
+/* Tabla de ítems */
+#tablaItems {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+#tablaItems th,
+#tablaItems td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+#tablaItems th {
+  background-color: #222;
+  color: white;
+}
+#tablaItems input {
+  width: 80px;
+}
+
+/* Subtotal y total */
+#totalPresupuesto {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Botón eliminar item */
+.btn-eliminar-item {
+  background-color: #b00020;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-eliminar-item:hover {
+  background-color: #d00030;
+}
+
+/* Botones de acción */
+form#presupuestoForm button[type="submit"],
+form#presupuestoForm a {
+  display: inline-block;
+  margin-right: 15px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #222;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  transition: 0.2s;
+}
+form#presupuestoForm a {
+  background-color: #999;
+}
+form#presupuestoForm button[type="submit"]:hover {
+  background-color: #444;
+}
+form#presupuestoForm a:hover {
+  background-color: #777;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #tablaItems th, #tablaItems td {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .cliente-info {
+    font-size: 13px;
+  }
+
+  form#presupuestoForm input[type="number"],
+  form#presupuestoForm input[type="text"],
+  form#presupuestoForm input[type="date"],
+  form#presupuestoForm select {
+    font-size: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
