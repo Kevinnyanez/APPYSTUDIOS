@@ -27,7 +27,7 @@ $result_clientes = $conn ->query($sql_clientes);
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #cbd5e1;
+            background: #222;
             padding: 20px;
             margin: 0;
         }
@@ -112,81 +112,36 @@ $result_clientes = $conn ->query($sql_clientes);
         }
 
         /* Contenedor tabla stock */
-        
+        .stock-table-container {
+            flex: 2 1 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            min-width: 280px;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
 
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
 
-table {
-  width: 95%;
-  margin: 0 auto;
-  border-collapse: collapse;
-  background-color: #2b2b2b;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  border-radius: 8px;
-  overflow: hidden;
-}
+        th {
+            background-color: #222;
+            color: white;
+        }
 
-table th, table td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #444;
-}
-
-table th {
-  background-color: #333;
-  color: #fff;
-  font-weight: bold;
-}
-
-table tr:nth-child(even) {
-  background-color: #262626;
-}
-
-table tr:hover {
-  background-color: #383838;
-}
-
-.sin-presupuestos {
-  text-align: center;
-  padding: 20px;
-  color: #aaa;
-  font-style: italic;
-}
-
-
-
-/* ✅ Responsive */
-@media (max-width: 768px) {
-  table thead {
-    display: none;
-  }
-
-  table tr {
-    display: block;
-    margin-bottom: 20px;
-    background-color: #2b2b2b;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    overflow: hidden;
-  }
-
-  table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border-bottom: 1px solid #333;
-  }
-
-  table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #aaa;
-  }
-
-  table td:last-child {
-    border-bottom: none;
-  }
-}
+        tr:nth-child(even) {
+            background-color: #f3f9ff;
+        }
 
         /* Responsive básico */
         @media (max-width: 768px) {
