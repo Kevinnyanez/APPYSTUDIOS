@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  // Botones de cerrar
+  // Botones de cerrarr
   document.querySelectorAll('.btn-link.cerrar').forEach(btn => {
     btn.onclick = function(e) {
       e.preventDefault();
