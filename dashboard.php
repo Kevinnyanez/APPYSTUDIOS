@@ -126,6 +126,7 @@ $result_clientes = $conn ->query($sql_clientes);
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95em;
+            border-radius: 8px;
         }
 
         th, td {
@@ -138,7 +139,6 @@ $result_clientes = $conn ->query($sql_clientes);
         th, td {
             background-color: #222;
             color: white;
-            border-radius: 10px;
         }
 
         tr:nth-child(even) {
