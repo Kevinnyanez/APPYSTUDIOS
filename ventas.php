@@ -157,5 +157,35 @@ $result_presupuestos_cerrados = $conn->query($sql_presupuestos_cerrados);
       <?php endif; ?>
     </tbody>
   </table>
+  <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
+    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuesto'] ?>">
+    <button type="submit">Confirmar Venta</button>
+</form>
+
 </body>
+<script>
+document.querySelectorAll('.form-confirmar-venta').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        fetch('confirmar_venta.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(resp => resp.text())
+        .then(data => {
+            if (data.trim() === "ok") {
+                alert("Venta registrada correctamente.");
+                location.reload();
+            } else if (data.trim() === "existente") {
+                alert("Este presupuesto ya fue convertido en venta.");
+            } else {
+                alert("Error al registrar la venta.");
+            }
+        });
+    });
+});
+</script>
+
 </html>
