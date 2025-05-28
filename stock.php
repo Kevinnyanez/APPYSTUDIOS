@@ -59,8 +59,12 @@ if ($tipos_res) {
 <meta charset="UTF-8" />
 <title>Stock - Buscar y Filtrar</title>
 <style>
+    body {
+
+        background-color: #cbd5e1;
+    }
 /* Igual que antes + un poco para el formulario */
-table { border-collapse: collapse; width: 90%; margin: 20px auto; }
+table { border-collapse: collapse; width: 90%; margin: 20px auto; border-radius: 8px;}
 th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
 th, td { background-color: #222; color: white; }
 tr:nth-child(even) { background-color: #eee; }
