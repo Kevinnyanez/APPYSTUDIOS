@@ -32,7 +32,10 @@ while ($row = $result->fetch_assoc()) {
   <title>Gestión de Clientes</title>
   <link rel="stylesheet" href="styles.css">
   <style>
- 
+
+  body {
+    background-color: #cbd5e1;
+  }
 
   nav {
             display: flex;
@@ -198,7 +201,7 @@ while ($row = $result->fetch_assoc()) {
 
   body {
   background-color: #222;
-  color: #cbd5e1;
+  color: #eee;
   font-family: 'Segoe UI', sans-serif;
 }
 
@@ -307,7 +310,7 @@ while ($row = $result->fetch_assoc()) {
         <a href="stock.php">Ver Stock</a>
         <a href="presupuestos.php">Presupuestos</a>
         <a href="ventas.php">Ventas</a>
-        <a href="dashboard.php">Dashboard</a>
+        <a href="dahsboard.php">Clientes</a>
         <a href="recomendaciones.php">Recomendaciones</a>
         <a href="logout.php" class="logout">Cerrar Sesión</a>
     </nav>
