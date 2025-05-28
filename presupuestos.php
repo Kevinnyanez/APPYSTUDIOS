@@ -146,10 +146,78 @@ body {
     border-bottom: none;
   }
 }
+
+/* Responsive básico */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav a {
+                margin: 8px 10px;
+            }
+
+            nav a.logout {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+      nav {
+            display: flex;
+            align-items: center;
+            background: #1f2937;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+            margin-bottom: 30px;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            padding: 6px 8px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        nav a.logout {
+            margin-left: auto;
+            background: #ef4444;
+            color: white !important;
+            padding: 8px 15px;
+            font-weight: 700;
+            transition: background 0.3s ease;
+        }
+
+        nav a.logout:hover {
+            background: #b91c1c;
+        }
 </style>
 
 </head>
 <body>
+
+<nav>
+        <a href="stock.php">Ver Stock</a>
+        <a href="presupuestos.php">Presupuestos</a>
+        <a href="ventas.php">Ventas</a>
+        <a href="dashboard.php">Dashboard</a>
+        <a href="recomendaciones.php">Recomendaciones</a>
+        <a href="logout.php" class="logout">Cerrar Sesión</a>
+    </nav>
 
 <h1 class="titulo-presupuestos">Presupuestos</h1>
 
