@@ -295,14 +295,12 @@ form#presupuestoForm a:hover {
 </form>
 
 <script>
- <script>
 document.addEventListener('DOMContentLoaded', () => {
   const selectStock     = document.getElementById('selectStock');
   const btnAgregarItem  = document.getElementById('btnAgregarItem');
   const tablaItemsBody  = document.querySelector('#tablaItems tbody');
   const totalPresupuesto= document.getElementById('totalPresupuesto');
 
-  // Verifica que existan
   if (!selectStock || !btnAgregarItem || !tablaItemsBody || !totalPresupuesto) {
     console.error('Faltan IDs en el formulario de presupuesto');
     return;
@@ -333,8 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const row = document.createElement('tr');
     row.dataset.idStock = idStock;
 
-    const subtotal0 = precio;
-
     row.innerHTML = `
       <td>
         ${nombre}
@@ -343,8 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <td><input type="number" name="cantidad[]" value="1" min="1" class="input-cantidad"></td>
       <td><input type="number" name="precio_unitario[]" value="${precio.toFixed(2)}" readonly></td>
       <td class="td-subtotal">
-        <span class="subtotal-text">${subtotal0.toFixed(2)}</span>
-        <input type="hidden" name="subtotal[]" value="${subtotal0.toFixed(2)}">
+        <span class="subtotal-text">${precio.toFixed(2)}</span>
+        <input type="hidden" name="subtotal[]" value="${precio.toFixed(2)}">
       </td>
       <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
     `;
@@ -373,9 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
     calcularTotal();
   });
 });
-</script>
-
-
 </script>
 
 </body>
