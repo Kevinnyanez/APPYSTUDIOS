@@ -142,6 +142,9 @@ $result_clientes = $conn ->query($sql_clientes);
         tr:nth-child(even) {
             background-color: #f3f9ff;
         }
+        tr:nth-child(even) {
+  background-color: #262626;
+}   
 
         /* Responsive básico */
         @media (max-width: 768px) {
