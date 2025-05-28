@@ -1,6 +1,10 @@
 <?php
-include 'includes/db.php';
-include 'header.php';
+session_start();
+require_once 'includes/db.php';
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
 
 $mes_actual = date('m');
 $anio_actual = date('Y');
