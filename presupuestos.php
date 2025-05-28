@@ -35,7 +35,7 @@ body {
 
 .btn-nuevo {
   display: inline-block;
-  margin: 10px 20px;
+  margin: 0 auto;
   padding: 10px 20px;
   background-color: #00bcd4;
   color: #fff;
