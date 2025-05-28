@@ -1,7 +1,7 @@
 <?php
 include 'includes/db.php';
 
-// Cargar presupuestos con el nombre del cliente
+// Cargar presupuestos con el nombre del clientee
 $sql = "SELECT p.*, c.nombre AS nombre_cliente
         FROM presupuestos p
         JOIN clientes c ON p.id_cliente = c.id_cliente
