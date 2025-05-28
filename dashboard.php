@@ -130,14 +130,14 @@ th, td {
 
 th {
   background-color: #222;
-  color: #333;
+  color: #fff;
   font-weight: bold;
   font-size: 14px;
 }
 
 td {
   font-size: 14px;
-  color: #222;
+  color: #fff;
 }
 
 tr:hover {
