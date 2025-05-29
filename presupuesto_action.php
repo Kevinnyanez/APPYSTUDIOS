@@ -173,7 +173,7 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
         // Si todo fue bien, confirmar la transacción y responder 'ok'
         $conn->commit();
         $conn->close();
-         // Responder 'ok' para que JS sepa que todo fue bien
+        echo 'ok'; // Responder 'ok' para que JS sepa que todo fue bien
         exit; // Terminar el script aquí
 
     } catch (Exception $e) {
