@@ -171,23 +171,7 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
         $stmt_item->close();
 
         // Si todo fue bien, confirmar la transacción y responder 'ok'
-        $conn->commit();
-        $conn->close();
-        echo 'ok'; // Responder 'ok' para que JS sepa que todo fue bien
-        exit; // Terminar el script aquí
-
-    } catch (Exception $e) {
-        // Si algo falla, hacer rollback y responder con error
-        $conn->rollback();
-        $conn->close();
-        // Responder con un mensaje de error más detallado si es posible
-        echo 'error: ' . $e->getMessage();
-        exit; // Terminar el script aquí después del error
-    }
-
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once 'conexion.php';
 
     // Validaciones mínimas
@@ -240,6 +224,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     echo "ok";
 }
+
+
+    } catch (Exception $e) {
+        // Si algo falla, hacer rollback y responder con error
+        $conn->rollback();
+        $conn->close();
+        // Responder con un mensaje de error más detallado si es posible
+        echo 'error: ' . $e->getMessage();
+        exit; // Terminar el script aquí después del error
+    }
+
+}
+
 
 // Si la petición POST no tiene los datos mínimos esperados para crear/actualizar un presupuesto,
 // simplemente terminamos el script sin hacer nada (o podrías loggear/manejar esto si es un error inesperado)
