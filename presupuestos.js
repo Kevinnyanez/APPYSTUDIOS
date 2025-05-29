@@ -42,13 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Abrir modal inicial ---
   const btnAbrir = document.getElementById('abrirModalPresupuesto');
   if (btnAbrir) {
-    console.log('Botón abrir modal encontrado');
-    btnAbrir.onclick = function(e) {
-      console.log('Click en botón abrir modal');
-      e.preventDefault();
-      limpiarTodoPresupuesto();
-      abrirModalCliente();
-    };
+    console.log('Click en botón abrir modal. Llamando a limpieza y abriendo modal cliente.');
+    e.preventDefault();
+    limpiarTodoPresupuesto(); // Aseguramos la limpieza
+    abrirModalCliente();
   } else {
     console.error('No se encontró el botón abrir modal');
   }
@@ -129,16 +126,36 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   // --- Limpiar todo al cancelar o cerrar ---
   function limpiarTodoPresupuesto() {
-    console.log('Limpiando todos los formularios y tabla de ítems');
+    console.log('Iniciando limpieza total de formularios y estado.');
     const formCliente = document.getElementById('formCliente');
     const formProductos = document.getElementById('formProductos');
     const formResumen = document.getElementById('formResumen');
 
-    if (formCliente) formCliente.reset();
-    if (formProductos) formProductos.reset();
-    if (formResumen) formResumen.reset();
+    console.log('Intentando resetear formCliente:', formCliente);
+    if (formCliente && typeof formCliente.reset === 'function') {
+      formCliente.reset();
+      console.log('formCliente reseteado.');
+    } else {
+      console.warn('formCliente no encontrado o reset no es una función.', formCliente);
+    }
 
-    // Limpiar campos de nuevo cliente por si se llenaron y ocultar la sección
+    console.log('Intentando resetear formProductos:', formProductos);
+    if (formProductos && typeof formProductos.reset === 'function') {
+      formProductos.reset();
+      console.log('formProductos reseteado.');
+    } else {
+       console.warn('formProductos no encontrado o reset no es una función.', formProductos);
+    }
+
+    console.log('Intentando resetear formResumen:', formResumen);
+     if (formResumen && typeof formResumen.reset === 'function') {
+      formResumen.reset();
+      console.log('formResumen reseteado.');
+    } else {
+       console.warn('formResumen no encontrado o reset no es una función.', formResumen);
+    }
+
+    // Limpiar campos de nuevo cliente y ocultar la sección
     const nuevoNombre = document.getElementById('nuevoNombre');
     const nuevoEmail = document.getElementById('nuevoEmail');
     const nuevoTelefono = document.getElementById('nuevoTelefono');
@@ -153,14 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nuevoDireccion) nuevoDireccion.value = '';
     if (nuevoClienteFields) nuevoClienteFields.style.display = 'none';
     if (clienteInfo) clienteInfo.style.display = 'none';
-    // Asegurarse de que si el select cliente estaba en 'nuevo', vuelva a la opción por defecto
-    if (selectCliente) selectCliente.value = '';
+     if (selectCliente) selectCliente.value = ''; // Restablecer select cliente
 
-    // Limpiar tabla de ítems
+    // Limpiar tabla de ítems y totales
     const tablaItemsBody = document.querySelector('#tablaItems tbody');
-    if (tablaItemsBody) tablaItemsBody.innerHTML = '';
     const totalPresupuesto = document.getElementById('totalPresupuesto');
     const totalConRecargo = document.getElementById('totalConRecargo');
+
+    if (tablaItemsBody) tablaItemsBody.innerHTML = '';
     if (totalPresupuesto) totalPresupuesto.textContent = '$0.00';
     if (totalConRecargo) totalConRecargo.textContent = '$0.00';
 
@@ -172,14 +189,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (resumenProductos) resumenProductos.innerHTML = '';
     if (resumenTotales) resumenTotales.innerHTML = '';
 
-    // Restablecer estilos de validación (opcional, si se añadieron)
+    // Restablecer estilos de validación (si se aplicaron)
     document.querySelectorAll('.form-group input, .form-group select').forEach(input => {
-      input.style.border = '';
+      if(input) input.style.border = '';
     });
 
     // Remover input hidden del ID de presupuesto para edición si existe
     const idPresupuestoHidden = document.querySelector('#formResumen input[name="id_presupuesto"]');
     if (idPresupuestoHidden) idPresupuestoHidden.remove();
+
+    console.log('Limpieza total finalizada.');
   }
 
   // Mostrar/ocultar campos de nuevo cliente
