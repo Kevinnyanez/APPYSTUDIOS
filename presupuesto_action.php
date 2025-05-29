@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // ✅ Ruta correcta a tu conexión
-require_once(__DIR__ . '../includes/db.php'); // Cambiá esto si la ruta es diferente
+include 'includes/db.php'; // Cambiá esto si la ruta es diferente
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // --- DEBUG LOG ---
