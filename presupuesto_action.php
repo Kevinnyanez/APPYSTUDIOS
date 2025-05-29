@@ -8,7 +8,7 @@ if (isset($_GET['delete'])) {
     $conn->query("DELETE FROM presupuesto_items WHERE id_presupuesto = $id");
     // Eliminar presupuesto
     $conn->query("DELETE FROM presupuestos WHERE id_presupuesto = $id");
-    
+    header("Location: presupuesto.php?mensaje=ok");
     exit;
 }
 
