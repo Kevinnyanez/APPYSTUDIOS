@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       console.warn('No se encontró el paso', n);
     }
+    // Wizard bar visual
+    document.querySelectorAll('.wizard-step').forEach((w, i) => {
+      if (i === n - 1) w.classList.add('activo');
+      else w.classList.remove('activo');
+    });
   }
 
   // --- Modal abrir/cerrar ---
@@ -38,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const selectCliente = document.getElementById('selectCliente');
       if (selectCliente.value === 'nuevo') {
         if (!document.getElementById('nuevoNombre').value.trim()) {
-          alert('Ingrese el nombre del nuevo cliente');
+          mostrarErrorInput(document.getElementById('nuevoNombre'), 'Ingrese el nombre del nuevo cliente');
           return;
         }
       } else if (!selectCliente.value) {
-        alert('Seleccione un cliente o cree uno nuevo');
+        mostrarErrorInput(selectCliente, 'Seleccione un cliente o cree uno nuevo');
         return;
       }
       mostrarPaso(2);
@@ -133,9 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
     inputBuscar.addEventListener('input', function() {
       const val = this.value.toLowerCase();
       sugerencias.innerHTML = '';
+      idProductoSel.value = '';
+      precioProductoSel.value = '';
       if (!val) { sugerencias.style.display = 'none'; return; }
-      const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(val));
-      if (filtrados.length === 0) { sugerencias.style.display = 'none'; return; }
+      const filtrados = productos.filter(p => p.nombre.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').includes(val.normalize('NFD').replace(/\p{Diacritic}/gu, '')));
+      if (filtrados.length === 0) {
+        sugerencias.innerHTML = '<li style="padding:8px 12px;color:#bbb;">No se encontraron productos</li>';
+        sugerencias.style.display = 'block';
+        return;
+      }
       filtrados.forEach(p => {
         const li = document.createElement('li');
         li.textContent = `${p.nombre} – $${parseFloat(p.precio).toFixed(2)}`;
@@ -153,16 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       sugerencias.style.display = 'block';
     });
-    document.addEventListener('click', function(e) {
-      if (!sugerencias.contains(e.target) && e.target !== inputBuscar) {
-        sugerencias.style.display = 'none';
+    inputBuscar.addEventListener('blur', function() {
+      setTimeout(() => { sugerencias.style.display = 'none'; }, 150);
+    });
+    inputBuscar.addEventListener('change', function() {
+      if (!productos.some(p => p.nombre === this.value)) {
+        idProductoSel.value = '';
+        precioProductoSel.value = '';
       }
     });
     document.getElementById('btnAgregarItem').onclick = function() {
       const idStock = idProductoSel.value;
       const nombre = inputBuscar.value;
       const precioBase = parseFloat(precioProductoSel.value) || 0;
-      if (!idStock || !nombre) return alert('Seleccione un producto');
+      if (!idStock || !nombre) return alert('Seleccione un producto de la lista');
       if ([...document.querySelector('#tablaItems tbody').children].some(r => r.dataset.idStock === idStock)) {
         return alert('Ya agregaste este producto');
       }
@@ -350,4 +365,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
   });
+
+  // --- Validaciones visuales y feedback ---
+  function mostrarErrorInput(input, mensaje) {
+    input.style.border = '2px solid #e57373';
+    input.focus();
+    if (mensaje) alert(mensaje);
+  }
 }); 

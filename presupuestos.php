@@ -244,6 +244,107 @@ body {
   cursor: pointer;
 }
 .cerrar-modal:hover { color: #222; }
+
+/* Wizard bar */
+.wizard-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  background: #222;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.wizard-step {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  color: #cbd5e1;
+  font-weight: 600;
+  background: #222;
+  border-right: 1px solid #333;
+  transition: background 0.3s, color 0.3s;
+}
+.wizard-step:last-child { border-right: none; }
+.wizard-step.activo, .wizard-step.active {
+  background: #00bcd4;
+  color: #fff;
+}
+
+/* Mejoras visuales para los pasos */
+.paso-modal {
+  padding: 18px 0 0 0;
+  min-height: 320px;
+}
+.form-group {
+  margin-bottom: 18px;
+}
+input, select, button {
+  font-size: 1.1em;
+}
+input[type="text"], input[type="email"], input[type="number"], input[type="date"], select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  background: #f8fafc;
+  color: #222;
+  transition: border 0.2s;
+}
+input:focus, select:focus {
+  border: 1.5px solid #00bcd4;
+  outline: none;
+}
+.btn-siguiente, .btn-anterior, .btn-confirmar, .btn-cancelar, .btn-agregar {
+  background: #00bcd4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  margin: 8px 6px 0 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-siguiente:hover, .btn-anterior:hover, .btn-confirmar:hover, .btn-cancelar:hover, .btn-agregar:hover {
+  background: #0097a7;
+}
+.btn-cancelar {
+  background: #e57373;
+}
+.btn-cancelar:hover {
+  background: #ef5350;
+}
+.tabla-items-wrapper {
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+#tablaItems th, #tablaItems td {
+  font-size: 1em;
+  padding: 8px 10px;
+}
+#tablaItems th {
+  background: #222;
+  color: #fff;
+}
+#tablaItems tr:nth-child(even) {
+  background: #f3f3f3;
+}
+#tablaItems tr:nth-child(odd) {
+  background: #e0e7ef;
+}
+#tablaItems td {
+  color: #222;
+}
+@media (max-width: 600px) {
+  .modal-contenido { padding: 8px; }
+  .wizard-bar { font-size: 0.95em; }
+  .paso-modal { padding: 8px 0 0 0; }
+  #tablaItems th, #tablaItems td { font-size: 0.95em; }
+}
 </style>
 
 </head>
@@ -266,24 +367,32 @@ body {
 <div id="modalPresupuesto" class="modal">
   <div class="modal-contenido">
     <span class="cerrar-modal" id="cerrarModalPresupuesto">&times;</span>
-    <h2>Nuevo Presupuesto</h2>
+    <!-- Barra de progreso tipo wizard -->
+    <div class="wizard-bar">
+      <div class="wizard-step" id="wizardStep1">1. Cliente</div>
+      <div class="wizard-step" id="wizardStep2">2. Productos</div>
+      <div class="wizard-step" id="wizardStep3">3. Resumen</div>
+    </div>
+    <h2 style="margin-top: 10px;">Nuevo Presupuesto</h2>
     <form id="formPresupuestoModal">
       <!-- Paso 1: Cliente -->
-      <div id="paso1" class="paso activo">
+      <div id="paso1" class="paso activo paso-modal">
         <h3>Paso 1: Seleccionar Cliente</h3>
-        <label>Cliente:</label>
-        <select name="id_cliente" id="selectCliente" required>
-          <option value="">Seleccione un cliente</option>
-          <option value="nuevo">+ Nuevo cliente</option>
-          <?php foreach ($clientes as $cliente): ?>
-            <option value="<?= $cliente['id_cliente'] ?>"
-              data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
-              data-email="<?= htmlspecialchars($cliente['email']) ?>"
-              data-direccion="<?= htmlspecialchars($cliente['direccion']) ?>">
-              <?= htmlspecialchars($cliente['nombre']) ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
+        <div class="form-group">
+          <label>Cliente:</label>
+          <select name="id_cliente" id="selectCliente" required>
+            <option value="">Seleccione un cliente</option>
+            <option value="nuevo">+ Nuevo cliente</option>
+            <?php foreach ($clientes as $cliente): ?>
+              <option value="<?= $cliente['id_cliente'] ?>"
+                data-telefono="<?= htmlspecialchars($cliente['telefono']) ?>"
+                data-email="<?= htmlspecialchars($cliente['email']) ?>"
+                data-direccion="<?= htmlspecialchars($cliente['direccion']) ?>">
+                <?= htmlspecialchars($cliente['nombre']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
         <div class="cliente-info" id="clienteInfo" style="display:none;">
           <p><strong>Teléfono:</strong> <span id="cliTelefono"></span></p>
           <p><strong>Email:</strong> <span id="cliEmail"></span></p>
@@ -300,63 +409,69 @@ body {
           <input type="text" id="nuevoDireccion" name="nuevo_direccion" placeholder="Dirección">
         </div>
         <div class="navegacion">
-          <button type="button" id="cancelarModalPresupuesto">Cancelar</button>
-          <button type="button" id="siguientePaso1">Siguiente</button>
+          <button type="button" id="cancelarModalPresupuesto" class="btn-cancelar">Cancelar</button>
+          <button type="button" id="siguientePaso1" class="btn-siguiente">Siguiente</button>
         </div>
       </div>
 
       <!-- Paso 2: Productos -->
-      <div id="paso2" class="paso">
+      <div id="paso2" class="paso paso-modal">
         <h3>Paso 2: Agregar Productos</h3>
-        <label>Fecha:</label>
-        <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>">
-        <label>Producto:</label>
-        <div style="margin-bottom:10px; position:relative;">
-          <input type="text" id="inputBuscarProducto" placeholder="Buscar producto..." autocomplete="off">
-          <input type="hidden" id="idProductoSeleccionado">
-          <input type="hidden" id="precioProductoSeleccionado">
-          <ul id="sugerenciasProductos" style="position:absolute;z-index:10;left:0;right:0;max-height:180px;overflow-y:auto;background:#222;border:1px solid #444;border-radius:0 0 6px 6px;display:none;margin:0;padding:0;list-style:none;"></ul>
+        <div class="form-group">
+          <label>Fecha:</label>
+          <input type="date" name="fecha_creacion" required value="<?= date('Y-m-d') ?>">
         </div>
-        <button type="button" id="btnAgregarItem">Agregar</button>
-        <div style="margin: 10px 0;">
+        <div class="form-group">
+          <label>Producto:</label>
+          <div style="margin-bottom:10px; position:relative;">
+            <input type="text" id="inputBuscarProducto" placeholder="Buscar producto..." autocomplete="off">
+            <input type="hidden" id="idProductoSeleccionado">
+            <input type="hidden" id="precioProductoSeleccionado">
+            <ul id="sugerenciasProductos" style="position:absolute;z-index:10;left:0;right:0;max-height:180px;overflow-y:auto;background:#222;border:1px solid #444;border-radius:0 0 6px 6px;display:none;margin:0;padding:0;list-style:none;"></ul>
+          </div>
+          <button type="button" id="btnAgregarItem" class="btn-agregar">Agregar</button>
+        </div>
+        <div class="form-group">
           <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
         </div>
-        <table id="tablaItems">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Precio Unitario</th>
-              <th>Subtotal</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
-              <td id="totalPresupuesto">$0.00</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="3" style="text-align:right"><strong>Recargo al total (%):</strong></td>
-              <td colspan="2"><input type="number" id="recargoTotal" value="10" min="0" step="0.1" style="width:70px;"></td>
-            </tr>
-            <tr>
-              <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
-              <td id="totalConRecargo">$0.00</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+        <div class="tabla-items-wrapper">
+          <table id="tablaItems">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                <td id="totalPresupuesto">$0.00</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td colspan="3" style="text-align:right"><strong>Recargo al total (%):</strong></td>
+                <td colspan="2"><input type="number" id="recargoTotal" value="10" min="0" step="0.1" style="width:70px;"></td>
+              </tr>
+              <tr>
+                <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
+                <td id="totalConRecargo">$0.00</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
         <div class="navegacion">
-          <button type="button" id="anteriorPaso2">Anterior</button>
-          <button type="button" id="siguientePaso2">Siguiente</button>
+          <button type="button" id="anteriorPaso2" class="btn-anterior">Anterior</button>
+          <button type="button" id="siguientePaso2" class="btn-siguiente">Siguiente</button>
         </div>
       </div>
 
       <!-- Paso 3: Resumen -->
-      <div id="paso3" class="paso">
+      <div id="paso3" class="paso paso-modal">
         <h3>Paso 3: Resumen del Presupuesto</h3>
         <div class="resumen-presupuesto">
           <h4>Datos del Cliente</h4>
@@ -367,8 +482,8 @@ body {
           <div id="resumenTotales"></div>
         </div>
         <div class="navegacion">
-          <button type="button" id="anteriorPaso3">Anterior</button>
-          <button type="submit">Confirmar Presupuesto</button>
+          <button type="button" id="anteriorPaso3" class="btn-anterior">Anterior</button>
+          <button type="submit" class="btn-confirmar">Confirmar Presupuesto</button>
         </div>
       </div>
     </form>
