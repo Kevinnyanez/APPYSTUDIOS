@@ -29,7 +29,7 @@ while ($row = $stock_result->fetch_assoc()) {
 
 if ($id_presupuesto) {
     // Cargo presupuesto existente
-    $stmt = $conn->prepare("SELECT * FROM presupuestos WHERE id_presupuestos = ?");
+    $stmt = $conn->prepare("SELECT * FROM presupuestos WHERE id_presupuesto = ?");
     $stmt->bind_param("i", $id_presupuesto);
     $stmt->execute();
     $result = $stmt->get_result();
