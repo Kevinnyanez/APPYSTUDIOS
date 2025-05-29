@@ -129,15 +129,57 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   // --- Limpiar todo al cancelar o cerrar ---
   function limpiarTodoPresupuesto() {
-    document.getElementById('formCliente').reset();
-    document.getElementById('formProductos').reset();
-    document.getElementById('formResumen').reset();
-    document.querySelector('#tablaItems tbody').innerHTML = '';
-    document.getElementById('totalPresupuesto').textContent = '$0.00';
-    document.getElementById('totalConRecargo').textContent = '$0.00';
-    document.getElementById('resumenCliente').innerHTML = '';
-    document.getElementById('resumenProductos').innerHTML = '';
-    document.getElementById('resumenTotales').innerHTML = '';
+    console.log('Limpiando todos los formularios y tabla de ítems');
+    const formCliente = document.getElementById('formCliente');
+    const formProductos = document.getElementById('formProductos');
+    const formResumen = document.getElementById('formResumen');
+
+    if (formCliente) formCliente.reset();
+    if (formProductos) formProductos.reset();
+    if (formResumen) formResumen.reset();
+
+    // Limpiar campos de nuevo cliente por si se llenaron y ocultar la sección
+    const nuevoNombre = document.getElementById('nuevoNombre');
+    const nuevoEmail = document.getElementById('nuevoEmail');
+    const nuevoTelefono = document.getElementById('nuevoTelefono');
+    const nuevoDireccion = document.getElementById('nuevoDireccion');
+    const nuevoClienteFields = document.getElementById('nuevoClienteFields');
+    const clienteInfo = document.getElementById('clienteInfo');
+    const selectCliente = document.getElementById('selectCliente');
+
+    if (nuevoNombre) nuevoNombre.value = '';
+    if (nuevoEmail) nuevoEmail.value = '';
+    if (nuevoTelefono) nuevoTelefono.value = '';
+    if (nuevoDireccion) nuevoDireccion.value = '';
+    if (nuevoClienteFields) nuevoClienteFields.style.display = 'none';
+    if (clienteInfo) clienteInfo.style.display = 'none';
+    // Asegurarse de que si el select cliente estaba en 'nuevo', vuelva a la opción por defecto
+    if (selectCliente) selectCliente.value = '';
+
+    // Limpiar tabla de ítems
+    const tablaItemsBody = document.querySelector('#tablaItems tbody');
+    if (tablaItemsBody) tablaItemsBody.innerHTML = '';
+    const totalPresupuesto = document.getElementById('totalPresupuesto');
+    const totalConRecargo = document.getElementById('totalConRecargo');
+    if (totalPresupuesto) totalPresupuesto.textContent = '$0.00';
+    if (totalConRecargo) totalConRecargo.textContent = '$0.00';
+
+    // Limpiar resumen
+    const resumenCliente = document.getElementById('resumenCliente');
+    const resumenProductos = document.getElementById('resumenProductos');
+    const resumenTotales = document.getElementById('resumenTotales');
+    if (resumenCliente) resumenCliente.innerHTML = '';
+    if (resumenProductos) resumenProductos.innerHTML = '';
+    if (resumenTotales) resumenTotales.innerHTML = '';
+
+    // Restablecer estilos de validación (opcional, si se añadieron)
+    document.querySelectorAll('.form-group input, .form-group select').forEach(input => {
+      input.style.border = '';
+    });
+
+    // Remover input hidden del ID de presupuesto para edición si existe
+    const idPresupuestoHidden = document.querySelector('#formResumen input[name="id_presupuesto"]');
+    if (idPresupuestoHidden) idPresupuestoHidden.remove();
   }
 
   // Mostrar/ocultar campos de nuevo cliente
@@ -288,79 +330,239 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('recargoTotal').addEventListener('input', calcularTotal);
 
-  // --- Cargar presupuesto en el modal para editar ---
-  function cargarPresupuestoEnModal(id) {
-    console.log('Cargando presupuesto en modal:', id);
-    fetch('presupuesto_action.php?get_presupuesto=' + id)
+  // --- Cargar presupuesto en los modales para edición ---
+  function cargarPresupuestoParaEdicion(id) {
+    console.log('Cargando presupuesto para edición:', id);
+    // Limpiar cualquier estado previo de los modales antes de cargar nuevos datos
+    limpiarTodoPresupuesto();
+
+    fetch('presupuesto_action.php?get_presupuesto=' + id) // Endpoint para obtener datos de 1 presupuesto
       .then(res => res.json())
       .then(data => {
-        console.log('Datos del presupuesto recibidos:', data);
-        limpiarTodoPresupuesto();
-        mostrarPaso(2);
-        const f = document.getElementById('formPresupuestoModal');
-        // id_presupuesto hidden
-        let idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'id_presupuesto';
-        idInput.value = data.presupuesto.id_presupuesto;
-        f.appendChild(idInput);
-        // Cliente
-        f.id_cliente.value = data.presupuesto.id_cliente;
-        // Fecha
-        f.fecha_creacion.value = data.presupuesto.fecha_creacion.substr(0,10);
-        // Ítems
+        console.log('Datos del presupuesto para edición recibidos:', data);
+        if (!data || !data.presupuesto) {
+          alert('No se pudieron cargar los datos del presupuesto para edición.');
+          return;
+        }
+
+        // ** Importante: Agregar el ID del presupuesto al formulario de Resumen para la actualización **
+        // Lo añadimos aquí tan pronto como tenemos el ID
+        const formResumen = document.getElementById('formResumen');
+        if (formResumen) {
+            let idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id_presupuesto'; // El backend espera este nombre para actualizar
+            idInput.value = data.presupuesto.id_presupuesto;
+            formResumen.appendChild(idInput); // Añadir al formulario que se enviará
+        } else {
+             console.error('formResumen no encontrado al intentar agregar id_presupuesto para edición.');
+             // Continuar pero la edición podría no funcionar correctamente
+        }
+
+        // Rellenar Paso 1 (Cliente) - abrir este modal primero para empezar el flujo de edición
+        abrirModalCliente();
+        const selectCliente = document.getElementById('selectCliente');
+        if (selectCliente && data.presupuesto.id_cliente) {
+             selectCliente.value = data.presupuesto.id_cliente;
+             // Disparar el evento change para mostrar la info del cliente existente
+             selectCliente.dispatchEvent(new Event('change'));
+        } else if (selectCliente) {
+            // Si no hay id_cliente en el presupuesto (lo cual sería raro para uno existente),
+            // o si selectCliente no se encuentra, manejar el caso.
+            console.warn('ID de cliente no encontrado en los datos del presupuesto o selectCliente no está en el DOM.');
+            // Considerar qué hacer aquí: forzar selección de cliente o mostrar error.
+        }
+
+        // Rellenar Paso 2 (Productos) - Los datos se rellenan, pero el modal aún no se abre hasta que el usuario pase del Paso 1
+        const formProductos = document.getElementById('formProductos');
+        if (formProductos && formProductos.fecha_creacion) {
+             formProductos.fecha_creacion.value = data.presupuesto.fecha_creacion.substr(0,10);
+        } else {
+             console.warn('formProductos o campo fecha_creacion no encontrados.');
+        }
+
         const tbody = document.querySelector('#tablaItems tbody');
-        tbody.innerHTML = '';
-        data.items.forEach(item => {
-          const row = document.createElement('tr');
-          row.dataset.idStock = item.id_stock;
-          row.dataset.precioBase = item.precio_unitario;
-          row.innerHTML = `
-            <td>
-              ${item.nombre_stock}
-              <input type="hidden" name="id_stock[]" value="${item.id_stock}">
-            </td>
-            <td><input type="number" name="cantidad[]" value="${item.cantidad}" min="1" class="input-cantidad"></td>
-            <td><input type="number" name="precio_unitario[]" value="${parseFloat(item.precio_unitario).toFixed(2)}" readonly></td>
-            <td class="td-subtotal">
-              <span class="subtotal-text">${parseFloat(item.subtotal).toFixed(2)}</span>
-              <input type="hidden" name="subtotal[]" value="${parseFloat(item.subtotal).toFixed(2)}">
-            </td>
-            <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
-          `;
-          tbody.appendChild(row);
-          // Listeners para recalcular
-          const qtyInput = row.querySelector('.input-cantidad');
-          const precioInput = row.querySelector('input[name="precio_unitario[]"]');
-          const textSub = row.querySelector('.subtotal-text');
-          const hiddenSub = row.querySelector('input[name="subtotal[]"]');
-          function recalc() {
-            const qty = parseFloat(qtyInput.value) || 0;
-            const pr  = parseFloat(precioInput.value) || 0;
-            const st  = qty * pr;
-            textSub.textContent = st.toFixed(2);
-            hiddenSub.value = st.toFixed(2);
-            calcularTotal();
-          }
-          qtyInput.addEventListener('input', recalc);
-          row.querySelector('.btn-eliminar-item')
-            .addEventListener('click', () => { row.remove(); calcularTotal(); });
-        });
-        calcularTotal();
-        document.getElementById('modalPresupuesto').style.display = 'block';
+        if (tbody) {
+            tbody.innerHTML = ''; // Limpiar ítems existentes (si los hay)
+            data.items.forEach(item => {
+              const row = document.createElement('tr');
+              row.dataset.idStock = item.id_stock;
+              row.dataset.precioBase = item.precio_unitario; // Asumimos precio_unitario guardado es el base antes del recargo por ítem.
+              row.innerHTML = `
+                <td>
+                  ${item.nombre_stock}
+                  <input type="hidden" name="id_stock[]" value="${item.id_stock}">
+                </td>
+                <td><input type="number" name="cantidad[]" value="${item.cantidad}" min="1" class="input-cantidad"></td>
+                <td><input type="number" name="precio_unitario[]" value="${parseFloat(item.precio_unitario).toFixed(2)}" readonly></td>
+                <td class="td-subtotal">
+                  <span class="subtotal-text">${parseFloat(item.subtotal).toFixed(2)}</span>
+                  <input type="hidden" name="subtotal[]" value="${parseFloat(item.subtotal).toFixed(2)}">
+                </td>
+                <td><button type="button" class="btn-eliminar-item">Eliminar</button></td>
+              `;
+              tbody.appendChild(row);
+              // Re-adjuntar listeners para cantidad y eliminar item en las filas recién creadas
+              const qtyInput = row.querySelector('.input-cantidad');
+              const textSub = row.querySelector('.subtotal-text');
+              const hiddenSub = row.querySelector('input[name="subtotal[]"]');
+              if(qtyInput && textSub && hiddenSub) {
+                   qtyInput.addEventListener('input', function(){
+                        const qty = parseFloat(this.value) || 0;
+                        // Usar precio_unitario del input visible para recalcular, ya que este ya podría tener el recargo por ítem aplicado
+                        const pr  = parseFloat(row.querySelector('input[name="precio_unitario[]"]').value) || 0;
+                        const st  = qty * pr;
+                        textSub.textContent = st.toFixed(2);
+                        hiddenSub.value = st.toFixed(2);
+                        calcularTotal();
+                   });
+                   row.querySelector('.btn-eliminar-item')
+                      .addEventListener('click', () => { row.remove(); calcularTotal(); });
+              } else {
+                  console.warn('No se encontraron elementos necesarios para adjuntar listeners en la fila de ítem.', row);
+              }
+
+            });
+        } else {
+            console.error('Elemento tbody de tablaItems no encontrado.');
+        }
+
+        // Rellenar totales y recargo total
+        const recargoTotalInput = document.getElementById('recargoTotal');
+        if (recargoTotalInput) {
+            if (data.presupuesto.recargo_final !== undefined && data.presupuesto.recargo_final !== null) {
+                 recargoTotalInput.value = parseFloat(data.presupuesto.recargo_final);
+            } else {
+                 // Si no hay recargo final guardado, usar el valor por defecto del input o 0.
+                 recargoTotalInput.value = recargoTotalInput.defaultValue || 0;
+            }
+        } else {
+            console.warn('Input recargoTotal no encontrado.');
+        }
+
+        calcularTotal(); // Recalcular basado en los ítems cargados y recargoTotal
+
+        // El resumen (Paso 3) se generará dinámicamente al pasar al paso 3. Los datos ya están en los inputs/tabla.
+
+        // La función ahora solo abre el modal del cliente. El usuario navegará al paso 2 y 3.
+
+
       })
       .catch(error => {
-        console.error('Error al cargar presupuesto:', error);
+        console.error('Error al cargar presupuesto para edición:', error);
+        alert('Error al cargar los datos del presupuesto.');
       });
   }
-  // Botones de editar
+
+  // --- Adaptar botones de editar en la tabla ---
   document.querySelectorAll('.btn-link.editar').forEach(btn => {
     btn.onclick = function(e) {
       e.preventDefault();
       const id = this.href.split('id_presupuesto=')[1];
-      cargarPresupuestoEnModal(id);
+      cargarPresupuestoParaEdicion(id);
     };
   });
+
+  // --- Manejar Submit del formulario de Resumen ---
+  const formResumen = document.getElementById('formResumen');
+  if (formResumen) {
+    formResumen.addEventListener('submit', function(e) {
+      e.preventDefault();
+      console.log('Submit del formulario de resumen interceptado');
+
+      const formData = new FormData();
+
+      // 1. Datos del Cliente (obtener del formCliente)
+      const selectCliente = document.getElementById('selectCliente');
+      if (!selectCliente) { console.error('selectCliente no encontrado'); return; }
+      formData.append('id_cliente', selectCliente.value);
+      if (selectCliente.value === 'nuevo') {
+        const nuevoNombre = document.getElementById('nuevoNombre');
+        const nuevoEmail = document.getElementById('nuevoEmail');
+        const nuevoTelefono = document.getElementById('nuevoTelefono');
+        const nuevoDireccion = document.getElementById('nuevoDireccion');
+        if (!nuevoNombre || !nuevoEmail || !nuevoTelefono || !nuevoDireccion) { console.error('Campos de nuevo cliente no encontrados'); return; }
+
+        formData.append('crear_cliente', 'true'); // Indica al backend que cree un cliente
+        formData.append('nuevo_nombre', nuevoNombre.value);
+        formData.append('nuevo_email', nuevoEmail.value);
+        formData.append('nuevo_telefono', nuevoTelefono.value);
+        formData.append('nuevo_direccion', nuevoDireccion.value);
+      }
+
+      // 2. Datos generales (obtener del formProductos)
+      const fechaCreacionInput = document.getElementById('fecha_creacion');
+      const recargoTotalInput = document.getElementById('recargoTotal');
+      if (!fechaCreacionInput || !recargoTotalInput) { console.error('Campos de fecha o recargo total no encontrados'); return; }
+
+      formData.append('fecha_creacion', fechaCreacionInput.value);
+      formData.append('recargo_final', recargoTotalInput.value); // Usar 'recargo_final' según la base de datos
+
+      // 3. Datos de los ítems (de la tabla)
+      const itemsRows = document.querySelectorAll('#tablaItems tbody tr');
+      if (itemsRows.length === 0) {
+        alert('No se pueden crear presupuestos sin ítems.');
+        return;
+      }
+      itemsRows.forEach(row => {
+        const idStock = row.dataset.idStock;
+        const cantidadInput = row.querySelector('.input-cantidad');
+        const precioUnitarioInput = row.querySelector('input[name="precio_unitario[]"]');
+        const subtotalInput = row.querySelector('input[name="subtotal[]"]');
+        if (!idStock || !cantidadInput || !precioUnitarioInput || !subtotalInput) { console.error('Campos de ítem no encontrados en la fila', row); return; }
+
+        formData.append('id_stock[]', idStock);
+        formData.append('cantidad[]', cantidadInput.value);
+        formData.append('precio_unitario[]', precioUnitarioInput.value);
+        formData.append('subtotal[]', subtotalInput.value);
+      });
+
+       // 4. ID de presupuesto para edición (si existe, se añadió en cargarPresupuestoParaEdicion)
+      const idPresupuestoHidden = document.querySelector('#formResumen input[name="id_presupuesto"]');
+      if (idPresupuestoHidden && idPresupuestoHidden.value) {
+           formData.append('id_presupuesto', idPresupuestoHidden.value); // Añadir ID para UPDATE
+      }
+
+
+      // Enviar datos al backend
+      fetch('presupuesto_action.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text()) // Leer como texto para ver 'ok' o errores
+      .then(text => {
+        console.log('Respuesta del servidor:', text);
+        // Asumimos que presupuesto_action.php devuelve 'ok' si la creación/actualización fue exitosa.
+        // Si el backend solo devuelve 'cliente_id:X' sin un 'ok' final, la lógica del backend necesitaría ajuste.
+        // Me baso en la estructura original donde presupuesto_action.php parece manejar ambas cosas en el mismo script POST.
+
+        if (text.trim() === 'ok') {
+          alert('Presupuesto guardado con éxito!');
+          // Limpiar y cerrar modales antes de recargar
+          limpiarTodoPresupuesto();
+          cerrarModalResumen(); // Cierra el modal actual
+          // Cerrar otros modales por si acaso (aunque solo Resumen debería estar abierto)
+          cerrarModalCliente();
+          cerrarModalProductos();
+
+          window.location.reload(); // Recargar la página para ver el nuevo/actualizado presupuesto
+        } else if (text.trim().startsWith('error:')) {
+          // Si el backend devuelve un error específico
+          alert('Error al guardar el presupuesto: ' + text.trim().substring(6));
+        } else {
+          // Otras respuestas inesperadas del backend
+          alert('Respuesta inesperada del servidor: ' + text.trim() + '. Por favor, recarga la página y verifica si el presupuesto se creó/actualizó.');
+          // Opcional: No recargar automáticamente aquí para permitir al usuario inspeccionar el estado.
+          // cerrarModalResumen();
+          // limpiarTodoPresupuesto();
+        }
+      })
+      .catch(error => {
+        console.error('Error en la petición Fetch:', error);
+        alert('Hubo un problema de conexión o del servidor al intentar guardar el presupuesto. Detalles en la consola.');
+      });
+    });
+  }
 
   // --- RESUMEN DE ÍTEMS EN LA TABLA DE PRESUPUESTOS ---
   document.querySelectorAll('.btn-ver-items').forEach(btn => {
@@ -387,6 +589,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </ul>
           </td>`;
           row.parentNode.insertBefore(tr, row.nextSibling);
+        })
+        .catch(error => {
+            console.error('Error al cargar ítems del presupuesto:', error);
+            alert('Error al cargar los ítems.');
         });
     };
   });
@@ -394,7 +600,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Validaciones visuales y feedback ---
   function mostrarErrorInput(input, mensaje) {
     input.style.border = '2px solid #e57373';
-    input.focus();
-    if (mensaje) alert(mensaje);
+    // Remover borde de error después de un tiempo o al corregir
+    input.addEventListener('input', function() {
+        this.style.border = ''; // O restaurar borde original
+    });
+    if (mensaje) {
+        // Podrías usar un elemento para mostrar el mensaje junto al input en lugar de alert
+        console.warn('Validación fallida:', mensaje);
+        // alert(mensaje); // Evitar múltiples alerts molestos, usar console o UI feedback
+    }
   }
 }); 
