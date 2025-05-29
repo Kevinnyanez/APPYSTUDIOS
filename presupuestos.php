@@ -598,13 +598,14 @@ input:focus, select:focus {
       <th>Cliente</th>
       <th>Fecha</th>
       <th>Total</th>
+      <th>Total Con Recargo</th>
       <th>Estado</th>
       <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
     <?php if (empty($presupuestos)): ?>
-      <tr><td colspan="6" class="sin-presupuestos">No hay presupuestos registrados.</td></tr>
+      <tr><td colspan="7" class="sin-presupuestos">No hay presupuestos registrados.</td></tr>
     <?php else: ?>
       <?php foreach ($presupuestos as $p): ?>
         <tr>
@@ -612,6 +613,7 @@ input:focus, select:focus {
           <td><?= htmlspecialchars($p['nombre_cliente']) ?></td>
           <td><?= $p['fecha_creacion'] ?></td>
           <td>$<?= number_format($p['total'], 2) ?></td>
+          <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
           <td>
             <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
