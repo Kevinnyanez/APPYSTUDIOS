@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once(__DIR__ . 'includes/db.php'); // ✅ asegurate que este archivo existe
+require_once(__DIR__ . '/../includes/db.php'); // ✅ asegurate que este archivo existe
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // --- CREAR CLIENTE SI CORRESPONDE ---
