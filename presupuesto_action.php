@@ -176,7 +176,7 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
 
         // Si todo fue bien, confirmar la transacción y responder 'ok'
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once 'conexion.php';
+    require_once 'includes/db.php';
 
     // Validaciones mínimas
     if (!isset($_POST['id_cliente']) || empty($_POST['id_cliente'])) {
