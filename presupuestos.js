@@ -19,48 +19,63 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Modal abrir/cerrar ---
+  // --- MODALES SIMPLES POR PASO ---
+  function abrirModalCliente() {
+    document.getElementById('modalCliente').style.display = 'block';
+  }
+  function cerrarModalCliente() {
+    document.getElementById('modalCliente').style.display = 'none';
+  }
+  function abrirModalProductos() {
+    document.getElementById('modalProductos').style.display = 'block';
+  }
+  function cerrarModalProductos() {
+    document.getElementById('modalProductos').style.display = 'none';
+  }
+  function abrirModalResumen() {
+    document.getElementById('modalResumen').style.display = 'block';
+  }
+  function cerrarModalResumen() {
+    document.getElementById('modalResumen').style.display = 'none';
+  }
+
+  // --- Abrir modal inicial ---
   const btnAbrir = document.getElementById('abrirModalPresupuesto');
   if (btnAbrir) {
     console.log('Botón abrir modal encontrado');
     btnAbrir.onclick = function(e) {
       console.log('Click en botón abrir modal');
       e.preventDefault();
-      limpiarModalPresupuesto();
-      mostrarPaso(1);
-      document.getElementById('modalPresupuesto').style.display = 'block';
+      limpiarTodoPresupuesto();
+      abrirModalCliente();
     };
   } else {
     console.error('No se encontró el botón abrir modal');
   }
 
-  // --- Botón Siguiente Paso 1 ---
-  const btnSiguiente1 = document.getElementById('siguientePaso1');
-  if (btnSiguiente1) {
-    console.log('Botón siguiente paso 1 encontrado');
-    btnSiguiente1.onclick = function() {
-      console.log('Click en botón siguiente paso 1');
-      const selectCliente = document.getElementById('selectCliente');
-      if (selectCliente.value === 'nuevo') {
-        if (!document.getElementById('nuevoNombre').value.trim()) {
-          mostrarErrorInput(document.getElementById('nuevoNombre'), 'Ingrese el nombre del nuevo cliente');
-          return;
-        }
-      } else if (!selectCliente.value) {
-        mostrarErrorInput(selectCliente, 'Seleccione un cliente o cree uno nuevo');
+  // --- Cerrar modales ---
+  document.getElementById('cerrarModalCliente').onclick = cerrarModalCliente;
+  document.getElementById('cerrarModalProductos').onclick = cerrarModalProductos;
+  document.getElementById('cerrarModalResumen').onclick = cerrarModalResumen;
+  document.getElementById('cancelarModalCliente').onclick = cerrarModalCliente;
+
+  // --- Paso 1: Cliente -> Productos ---
+  document.getElementById('siguienteCliente').onclick = function() {
+    const selectCliente = document.getElementById('selectCliente');
+    if (selectCliente.value === 'nuevo') {
+      if (!document.getElementById('nuevoNombre').value.trim()) {
+        mostrarErrorInput(document.getElementById('nuevoNombre'), 'Ingrese el nombre del nuevo cliente');
         return;
       }
-      mostrarPaso(2);
-    };
-  } else {
-    console.error('No se encontró el botón siguientePaso1');
-  }
-
-  // --- Botón Anterior/Siguiente Paso 2 y Paso 3 ---
-  const btnAnterior2 = document.getElementById('anteriorPaso2');
-  if (btnAnterior2) btnAnterior2.onclick = function() { mostrarPaso(1); };
-  const btnSiguiente2 = document.getElementById('siguientePaso2');
-  if (btnSiguiente2) btnSiguiente2.onclick = function() {
+    } else if (!selectCliente.value) {
+      mostrarErrorInput(selectCliente, 'Seleccione un cliente o cree uno nuevo');
+      return;
+    }
+    cerrarModalCliente();
+    abrirModalProductos();
+  };
+  // --- Paso 2: Productos -> Resumen ---
+  document.getElementById('siguienteProductos').onclick = function() {
     if (document.querySelectorAll('#tablaItems tbody tr').length === 0) {
       alert('Agregue al menos un producto');
       return;
@@ -99,10 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><strong>Recargo total:</strong> ${document.getElementById('recargoTotal').value}%</p>
       <p><strong>Total final:</strong> ${document.getElementById('totalConRecargo').textContent}</p>
     `;
-    mostrarPaso(3);
+    cerrarModalProductos();
+    abrirModalResumen();
   };
-  const btnAnterior3 = document.getElementById('anteriorPaso3');
-  if (btnAnterior3) btnAnterior3.onclick = function() { mostrarPaso(2); };
+  // --- Paso 2: Productos <- Cliente ---
+  document.getElementById('anteriorProductos').onclick = function() {
+    cerrarModalProductos();
+    abrirModalCliente();
+  };
+  // --- Paso 3: Resumen <- Productos ---
+  document.getElementById('anteriorResumen').onclick = function() {
+    cerrarModalResumen();
+    abrirModalProductos();
+  };
+  // --- Limpiar todo al cancelar o cerrar ---
+  function limpiarTodoPresupuesto() {
+    document.getElementById('formCliente').reset();
+    document.getElementById('formProductos').reset();
+    document.getElementById('formResumen').reset();
+    document.querySelector('#tablaItems tbody').innerHTML = '';
+    document.getElementById('totalPresupuesto').textContent = '$0.00';
+    document.getElementById('totalConRecargo').textContent = '$0.00';
+    document.getElementById('resumenCliente').innerHTML = '';
+    document.getElementById('resumenProductos').innerHTML = '';
+    document.getElementById('resumenTotales').innerHTML = '';
+  }
 
   // Mostrar/ocultar campos de nuevo cliente
   const selectCliente = document.getElementById('selectCliente');
@@ -252,17 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('recargoTotal').addEventListener('input', calcularTotal);
 
-  // --- Limpiar modal ---
-  function limpiarModalPresupuesto() {
-    console.log('Limpiando modal');
-    document.getElementById('formPresupuestoModal').reset();
-    document.querySelector('#formPresupuestoModal input[name="id_presupuesto"]')?.remove();
-    document.querySelector('#tablaItems tbody').innerHTML = '';
-    document.getElementById('totalPresupuesto').textContent = '$0.00';
-    document.getElementById('totalConRecargo').textContent = '$0.00';
-    mostrarPaso(1);
-  }
-
   // --- Cargar presupuesto en el modal para editar ---
   function cargarPresupuestoEnModal(id) {
     console.log('Cargando presupuesto en modal:', id);
@@ -270,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(data => {
         console.log('Datos del presupuesto recibidos:', data);
-        limpiarModalPresupuesto();
+        limpiarTodoPresupuesto();
         mostrarPaso(2);
         const f = document.getElementById('formPresupuestoModal');
         // id_presupuesto hidden
