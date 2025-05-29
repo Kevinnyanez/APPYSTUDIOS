@@ -187,6 +187,60 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
 
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once 'conexion.php';
+
+    // Validaciones mínimas
+    if (!isset($_POST['id_cliente']) || empty($_POST['id_cliente'])) {
+        echo 'error: Cliente no seleccionado';
+        exit;
+    }
+
+    $id_cliente = $_POST['id_cliente'];
+    $fecha_creacion = $_POST['fecha_creacion'] ?? date('Y-m-d');
+    $recargo_final = $_POST['recargo_final'] ?? 0;
+
+    // Si hay que crear nuevo cliente
+    if (isset($_POST['crear_cliente']) && $_POST['crear_cliente'] === 'true') {
+        $stmt = $conn->prepare("INSERT INTO clientes (nombre, email, telefono, direccion) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $_POST['nuevo_nombre'], $_POST['nuevo_email'], $_POST['nuevo_telefono'], $_POST['nuevo_direccion']);
+        if ($stmt->execute()) {
+            $id_cliente = $conn->insert_id;
+        } else {
+            echo "error: No se pudo crear el cliente";
+            exit;
+        }
+        $stmt->close();
+    }
+
+    // Insertar presupuesto
+    $stmt = $conn->prepare("INSERT INTO presupuestos (id_cliente, fecha_creacion, recargo_final) VALUES (?, ?, ?)");
+    $stmt->bind_param("isd", $id_cliente, $fecha_creacion, $recargo_final);
+
+    if ($stmt->execute()) {
+        $id_presupuesto = $conn->insert_id;
+    } else {
+        echo "error: No se pudo guardar el presupuesto";
+        exit;
+    }
+    $stmt->close();
+
+    // Insertar ítems
+    if (isset($_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
+        $stmt = $conn->prepare("INSERT INTO presupuesto_items (id_presupuesto, id_stock, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
+        foreach ($_POST['id_stock'] as $i => $id_stock) {
+            $cantidad = $_POST['cantidad'][$i];
+            $precio_unitario = $_POST['precio_unitario'][$i];
+            $subtotal = $_POST['subtotal'][$i];
+            $stmt->bind_param("iiidd", $id_presupuesto, $id_stock, $cantidad, $precio_unitario, $subtotal);
+            $stmt->execute();
+        }
+        $stmt->close();
+    }
+
+    echo "ok";
+}
+
 // Si la petición POST no tiene los datos mínimos esperados para crear/actualizar un presupuesto,
 // simplemente terminamos el script sin hacer nada (o podrías loggear/manejar esto si es un error inesperado)
 ?>
