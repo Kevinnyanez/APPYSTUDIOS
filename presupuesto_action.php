@@ -16,7 +16,7 @@ if (isset($_GET['delete'])) {
 if (isset($_GET['cerrar'])) {
     $id = (int)$_GET['cerrar'];
     $conn->query("UPDATE presupuestos SET estado = 'cerrado' WHERE id_presupuesto = $id");
-    
+    header("Location: presupuestos.php?mensaje=ok");
     exit;
 }
 
