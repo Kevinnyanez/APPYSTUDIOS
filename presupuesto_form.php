@@ -215,7 +215,7 @@ form#presupuestoForm a:hover {
 
 <form action="presupuesto_action.php" method="post" id="presupuestoForm">
   <?php if ($presupuesto): ?>
-    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuestos'] ?>">
+    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuesto'] ?>">
   <?php endif; ?>
 
   <label>Cliente:</label><br>
