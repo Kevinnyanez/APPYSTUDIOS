@@ -18,7 +18,7 @@ if (isset($_GET['descargar_pdf'])) {
     $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id
-            WHERE p.id = $id";
+            WHERE p.id_presupuesto = $id";
 
     $result = $conn->query($sql);
     $presupuesto = $result->fetch_assoc();
