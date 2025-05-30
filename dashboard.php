@@ -306,14 +306,7 @@ a:hover {
     </style>
 </head>
 <body>
-    <nav>
-        <a href="stock.php">Ver Stock</a>
-        <a href="presupuestos.php">Presupuestos</a>
-        <a href="ventas.php">Ventas</a>
-        <a href="clientes.php">Clientes</a>
-        <a href="recomendaciones.php">Recomendaciones</a>
-        <a href="logout.php" class="logout">Cerrar Sesión</a>
-    </nav>
+<?php include 'header.php'; ?>
 
     <div class="dashboard">
         <div class="welcome-container">

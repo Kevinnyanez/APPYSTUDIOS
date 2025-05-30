@@ -701,15 +701,7 @@ input:focus, select:focus {
 
 </head>
 <body>
-
-<nav>
-        <a href="stock.php">Ver Stock</a>
-        <a href="clientes.php">clientes</a>
-        <a href="ventas.php">Ventas</a>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="recomendaciones.php">Recomendaciones</a>
-        <a href="logout.php" class="logout">Cerrar Sesión</a>
-    </nav>
+<?php include 'header.php'; ?>
 
 <h1 class="titulo-presupuestos">Presupuestos</h1>
 

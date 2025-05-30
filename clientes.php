@@ -307,15 +307,7 @@ while ($row = $result->fetch_assoc()) {
 </style>
 </head>
 <body>
-
-<nav>
-        <a href="stock.php">Ver Stock</a>
-        <a href="presupuestos.php">Presupuestos</a>
-        <a href="ventas.php">Ventas</a>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="recomendaciones.php">Recomendaciones</a>
-        <a href="logout.php" class="logout">Cerrar Sesión</a>
-    </nav>
+<?php include 'header.php'; ?>
 
 <h1 class="form-titulo">
   <?= $edit_cliente ? "Editar Cliente" : "Nuevo Cliente" ?>
