@@ -154,14 +154,34 @@ tfoot tr {
     font-size: 9.5pt;
 }
 
-        </style>
+.encabezado {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #004080;
+}
 
+.encabezado h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    color: #004080;
+    margin-bottom: 10px;
+}
+
+.encabezado p {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #222;
+    margin: 3px 0;
+}
+
+        </style>
+    <div class="encabezado">
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
-
+    </div>
         <h2>Ítems</h2>
         <table>
             <thead>
@@ -169,7 +189,7 @@ tfoot tr {
                     <th>Materiales</th>
                     <th>Cantidad</th>
                     <th></th>
-                    <th></th>
+                    
                 </tr>
             </thead>
             <tbody>';
