@@ -64,92 +64,118 @@ if ($tipos_res) {
         background-color: #cbd5e1;
     }
 /* Igual que antes + un poco para el formulario */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  background-color: #222;
-  border-radius: 8px;
-  overflow: hidden;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  margin: 0;
+  padding: 20px;
 }
-th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-th, td { background-color: #222; color: white; }
-tr:nth-child(even) { background-color: #eee; }
-h1 { text-align: center; margin-top: 20px; }
-.btn-volver, .btn-agregar { display: inline-block; padding: 8px 12px; background: #222; color: white; text-decoration: none; border-radius: 4px; margin: 10px; }
-form { width: 90%; margin: 10px auto; text-align: center; }
-input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
+
+h1.Stock-esti {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #1f2d3d;
+  border-bottom: 2px solid #0077b6;
+  display: inline-block;
+  padding-bottom: 5px;
+}
 
 .form-busqueda {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 16px;
-    background-color: #222;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
-.form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-}
-
-.input-text,
-.input-select {
-    padding: 10px 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    width: 100%;
-    max-width: 250px;
+.form-busqueda .input-text,
+.form-busqueda .input-select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 180px;
 }
 
 .btn {
-    padding: 10px 16px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    text-align: center;
-    display: inline-block;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 }
 
 .btn-buscar {
-    background-color: #007BFF;
-    color: white;
-}
-
-.btn-buscar:hover {
-    background-color: #0056b3;
+  background-color: #0077b6;
+  color: white;
 }
 
 .btn-limpiar {
-    background-color: #6c757d;
-    color: white;
+  background-color: #adb5bd;
+  color: white;
 }
 
-.btn-limpiar:hover {
-    background-color: #5a6268;
-}
-
-
-.Stock-esti {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #222;
-  font-family: 'Segoe UI', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid #007acc;
-  padding-bottom: 0.5rem;
+.btn-agregar {
   display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
+  margin-bottom: 15px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.btn-volver {
+  display: inline-block;
+  margin-top: 20px;
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table thead {
+  background-color: #0077b6;
+  color: white;
+}
+
+table th,
+table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e1e5ea;
+}
+
+table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+table a {
+  color: #0077b6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+table a:hover {
+  text-decoration: underline;
 }
 
 
