@@ -40,6 +40,7 @@ if ($row = $resTotal->fetch_assoc()) {
     $totalAcumulado = $row['total'];
 }
 
+?>
 
 <!DOCTYPE html>
 <html lang="es">
