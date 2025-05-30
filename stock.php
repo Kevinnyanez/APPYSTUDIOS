@@ -205,7 +205,7 @@ table tr:hover {
     border-bottom: none;
   }
 }
-table th {
+th {
   background-color: #333;
   color: #fff;
   font-weight: bold;
