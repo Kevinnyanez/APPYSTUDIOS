@@ -174,6 +174,37 @@ table tr:hover {
   background-color: #383838;
 }
 
+@media (max-width: 768px) {
+  table thead {
+    display: none;
+  }
+
+  table tr {
+    display: block;
+    margin-bottom: 20px;
+    background-color: #2b2b2b;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #333;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #aaa;
+  }
+
+  table td:last-child {
+    border-bottom: none;
+  }
+}
 
 
 </style>
