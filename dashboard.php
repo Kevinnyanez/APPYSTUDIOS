@@ -50,8 +50,9 @@ $presupAbiertos = $conn->query("SELECT p.*, c.nombre as nombre_cliente FROM pres
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #cbd5e1;
-            padding: 20px;
+            color: #222;
             margin: 0;
+            padding: 20px;
         }
 
         nav {
@@ -220,6 +221,88 @@ a:hover {
             
             display: inline-block; padding: 8px 12px; background: #222; color: white; text-decoration: none; border-radius: 4px; margin: 10px;
         }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            margin-bottom: 0;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            margin: 0 0 1.2rem 0;
+            color: #0077b6;
+            font-weight: 700;
+        }
+        .kpi {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0077b6;
+            margin-bottom: 0.2rem;
+        }
+        .kpi-label {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1.2rem;
+        }
+        .kpi-green { color: #22c55e; }
+        .kpi-red { color: #ef4444; }
+        .kpi-orange { color: #f59e42; }
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 0.5rem 0;
+        }
+        .card ul li {
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
+            color: #333;
+        }
+        .card .ver-mas {
+            color: #0077b6;
+            cursor: pointer;
+            font-size: 0.98rem;
+            margin-top: 0.2rem;
+            display: inline-block;
+            text-decoration: underline;
+        }
+        .card .ver-mas:hover { color: #023e8a; }
+        .card .btn-volver {
+            background: #38bdf8;
+            color: #222;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 10px 18px;
+            margin-top: 1.2rem;
+            font-size: 1.1rem;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            transition: background 0.2s;
+        }
+        .card .btn-volver:hover { background: #0ea5e9; color: #fff; }
+        .card .alerta {
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -238,91 +321,116 @@ a:hover {
             <p>Desde aquí podés administrar el stock, crear presupuestos y controlar las ventas.</p>
         </div>
 
-       <div class="dashboard" style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto;">
-  <div style="flex:1 1 320px; min-width:320px;">
+       <div class="dashboard-grid">
+  <!-- Resumen de Presupuestos -->
+  <div class="card">
     <h2>Resumen de Presupuestos</h2>
-    <ul style="list-style:none; padding:0;">
-      <li><strong>Total creados:</strong> <?= $presupResumen['total'] ?></li>
-      <li><strong>Abiertos:</strong> <?= $presupResumen['abiertos'] ?> | <strong>Cerrados:</strong> <?= $presupResumen['cerrados'] ?></li>
-      <li><strong>Monto total presupuestado:</strong> $<?= number_format($presupResumen['suma'] ?? 0,2) ?></li>
-      <li><strong>Promedio por cliente:</strong> $<?= number_format($promPresupuesto,2) ?></li>
-    </ul>
-    <h2>Últimos presupuestos</h2>
-    <ul style="list-style:none; padding:0;">
-      <?php while($p = $ultimosPresup->fetch_assoc()): ?>
-        <li>
-          <strong>#<?= $p['id_presupuesto'] ?></strong> - <?= htmlspecialchars($p['nombre_cliente']) ?> - <?= ucfirst($p['estado']) ?> - $<?= number_format($p['total_con_recargo'],2) ?> <span style="color:#888;">(<?= date('d/m/Y', strtotime($p['fecha_creacion'])) ?>)</span>
-        </li>
-      <?php endwhile; ?>
-    </ul>
-    <h2>Presupuestos abiertos más antiguos</h2>
-    <ul style="list-style:none; padding:0;">
-      <?php while($p = $presupAbiertosAntiguos->fetch_assoc()): ?>
-        <li>
-          <strong>#<?= $p['id_presupuesto'] ?></strong> - <?= htmlspecialchars($p['nombre_cliente']) ?> - <?= ucfirst($p['estado']) ?> - <span style="color:#888;">(<?= date('d/m/Y', strtotime($p['fecha_creacion'])) ?>)</span>
-        </li>
-      <?php endwhile; ?>
-    </ul>
-    <a href="presupuesto_form.php" class="btn-volver" style="background:#38bdf8; color:#222;">+ Nuevo presupuesto</a>
+    <div class="kpi"><?= $presupResumen['total'] ?></div>
+    <div class="kpi-label">Total creados</div>
+    <div class="kpi kpi-orange">Abiertos: <?= $presupResumen['abiertos'] ?></div>
+    <div class="kpi kpi-green">Cerrados: <?= $presupResumen['cerrados'] ?></div>
+    <div class="kpi-label">Monto total: <span class="kpi">$<?= number_format($presupResumen['suma'] ?? 0,2) ?></span></div>
+    <div class="kpi-label">Promedio por cliente: <span class="kpi">$<?= number_format($promPresupuesto,2) ?></span></div>
+    <div style="margin-top:1.2rem;">
+      <strong>Últimos presupuestos</strong>
+      <ul id="ultimosPresupuestos">
+        <?php $i=0; while($p = $ultimosPresup->fetch_assoc()): if($i++>=3) break; ?>
+          <li><strong>#<?= $p['id_presupuesto'] ?></strong> - <?= htmlspecialchars($p['nombre_cliente']) ?> - <?= ucfirst($p['estado']) ?> - $<?= number_format($p['total_con_recargo'],2) ?> <span style="color:#888;">(<?= date('d/m/Y', strtotime($p['fecha_creacion'])) ?>)</span></li>
+        <?php endwhile; ?>
+      </ul>
+      <span class="ver-mas" onclick="toggleVerMas('ultimosPresupuestos', <?= $i-1 ?>)">Ver más</span>
+    </div>
   </div>
-  <div style="flex:1 1 320px; min-width:320px;">
+  <!-- Estado de Clientes -->
+  <div class="card">
     <h2>Estado de Clientes</h2>
-    <ul style="list-style:none; padding:0;">
-      <li><strong>Total registrados:</strong> <?= $totalClientes ?></li>
-      <li><strong>Últimos añadidos:</strong>
-        <ul style="padding-left:18px;">
-          <?php while($c = $ultimosClientes->fetch_assoc()): ?>
-            <li><?= htmlspecialchars($c['nombre']) ?> (<?= htmlspecialchars($c['email']) ?>)</li>
-          <?php endwhile; ?>
-        </ul>
-      </li>
-      <li><strong>Clientes con más presupuestos:</strong>
-        <ul style="padding-left:18px;">
-          <?php while($c = $clientesMasPresup->fetch_assoc()): ?>
-            <li><?= htmlspecialchars($c['nombre']) ?> (<?= $c['cantidad'] ?> presupuestos)</li>
-          <?php endwhile; ?>
-        </ul>
-      </li>
+    <div class="kpi kpi-green"><?= $totalClientes ?></div>
+    <div class="kpi-label">Clientes registrados</div>
+    <strong>Últimos añadidos</strong>
+    <ul id="ultimosClientes">
+      <?php $i=0; while($c = $ultimosClientes->fetch_assoc()): if($i++>=3) break; ?>
+        <li><?= htmlspecialchars($c['nombre']) ?> (<?= htmlspecialchars($c['email']) ?>)</li>
+      <?php endwhile; ?>
     </ul>
-    <h2>Contactos rápidos</h2>
-    <ul style="list-style:none; padding:0;">
-      <?php $ultimosClientes2 = $conn->query("SELECT * FROM clientes ORDER BY fecha_registro DESC LIMIT 5"); while($c = $ultimosClientes2->fetch_assoc()): ?>
+    <span class="ver-mas" onclick="toggleVerMas('ultimosClientes', <?= $i-1 ?>)">Ver más</span>
+    <strong style="margin-top:1rem; display:block;">Top clientes</strong>
+    <ul id="topClientes">
+      <?php $i=0; while($c = $clientesMasPresup->fetch_assoc()): if($i++>=3) break; ?>
+        <li><?= htmlspecialchars($c['nombre']) ?> (<?= $c['cantidad'] ?> presupuestos)</li>
+      <?php endwhile; ?>
+    </ul>
+    <span class="ver-mas" onclick="toggleVerMas('topClientes', <?= $i-1 ?>)">Ver más</span>
+    <strong style="margin-top:1rem; display:block;">Contactos rápidos</strong>
+    <ul id="contactosRapidos">
+      <?php $ultimosClientes2 = $conn->query("SELECT * FROM clientes ORDER BY fecha_registro DESC LIMIT 5"); $i=0; while($c = $ultimosClientes2->fetch_assoc()): if($i++>=3) break; ?>
         <li><a href="mailto:<?= htmlspecialchars($c['email']) ?>">📧 <?= htmlspecialchars($c['nombre']) ?></a> - <?= htmlspecialchars($c['telefono']) ?></li>
       <?php endwhile; ?>
     </ul>
+    <span class="ver-mas" onclick="toggleVerMas('contactosRapidos', <?= $i-1 ?>)">Ver más</span>
   </div>
-  <div style="flex:1 1 320px; min-width:320px;">
+  <!-- Estado del Stock -->
+  <div class="card">
     <h2>Estado del Stock</h2>
-    <ul style="list-style:none; padding:0;">
-      <li><strong>Productos con menor disponibilidad:</strong>
-        <ul style="padding-left:18px;">
-          <?php while($s = $stockBajo->fetch_assoc()): ?>
-            <li><?= htmlspecialchars($s['nombre']) ?> (<?= $s['cantidad'] ?> unidades)</li>
-          <?php endwhile; ?>
-        </ul>
-      </li>
-      <li><strong>Tipos más usados en presupuestos:</strong>
-        <ul style="padding-left:18px;">
-          <?php while($t = $tiposMasUsados->fetch_assoc()): ?>
-            <li><?= htmlspecialchars($t['tipo']) ?> (<?= $t['usados'] ?> usos)</li>
-          <?php endwhile; ?>
-        </ul>
-      </li>
+    <strong>Productos con menor disponibilidad</strong>
+    <ul id="stockBajo">
+      <?php $i=0; while($s = $stockBajo->fetch_assoc()): if($i++>=3) break; ?>
+        <li><?= htmlspecialchars($s['nombre']) ?> <span class="alerta">(<?= $s['cantidad'] ?> unidades)</span></li>
+      <?php endwhile; ?>
     </ul>
+    <span class="ver-mas" onclick="toggleVerMas('stockBajo', <?= $i-1 ?>)">Ver más</span>
+    <strong style="margin-top:1rem; display:block;">Tipos más usados en presupuestos</strong>
+    <ul id="tiposMasUsados">
+      <?php $i=0; while($t = $tiposMasUsados->fetch_assoc()): if($i++>=3) break; ?>
+        <li><?= htmlspecialchars($t['tipo']) ?> (<?= $t['usados'] ?> usos)</li>
+      <?php endwhile; ?>
+    </ul>
+    <span class="ver-mas" onclick="toggleVerMas('tiposMasUsados', <?= $i-1 ?>)">Ver más</span>
+  </div>
+  <!-- Acciones rápidas -->
+  <div class="card">
     <h2>Acciones rápidas</h2>
-    <ul style="list-style:none; padding:0;">
-      <li><a href="presupuesto_form.php" class="btn-volver" style="background:#38bdf8; color:#222;">+ Nuevo presupuesto</a></li>
-      <li><strong>Presupuestos pendientes de revisión:</strong>
-        <ul style="padding-left:18px;">
-          <?php while($p = $presupAbiertos->fetch_assoc()): ?>
-            <li><a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>">#<?= $p['id_presupuesto'] ?> - <?= htmlspecialchars($p['nombre_cliente']) ?></a></li>
-          <?php endwhile; ?>
-        </ul>
-      </li>
+    <a href="presupuesto_form.php" class="btn-volver">+ Nuevo presupuesto</a>
+    <strong style="margin-top:1.2rem; display:block;">Presupuestos pendientes de revisión</strong>
+    <ul id="presupAbiertos">
+      <?php $i=0; while($p = $presupAbiertos->fetch_assoc()): if($i++>=3) break; ?>
+        <li><a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>">#<?= $p['id_presupuesto'] ?> - <?= htmlspecialchars($p['nombre_cliente']) ?></a></li>
+      <?php endwhile; ?>
     </ul>
+    <span class="ver-mas" onclick="toggleVerMas('presupAbiertos', <?= $i-1 ?>)">Ver más</span>
   </div>
 </div>
 
     </div>
+
+    <script>
+    function toggleVerMas(id, mostrados) {
+        const ul = document.getElementById(id);
+        if (!ul) return;
+        const lis = ul.querySelectorAll('li');
+        let ocultos = 0;
+        lis.forEach((li, idx) => {
+            if (idx > 2) {
+                if (li.style.display === 'none' || !li.style.display) {
+                    li.style.display = 'list-item';
+                    ocultos++;
+                } else {
+                    li.style.display = 'none';
+                }
+            }
+        });
+        // Cambia el texto del botón
+        const btn = ul.nextElementSibling;
+        if (btn) btn.textContent = ocultos ? 'Ver menos' : 'Ver más';
+    }
+    // Al cargar, oculta los extras
+    window.addEventListener('DOMContentLoaded', () => {
+        ['ultimosPresupuestos','ultimosClientes','topClientes','contactosRapidos','stockBajo','tiposMasUsados','presupAbiertos'].forEach(id => {
+            const ul = document.getElementById(id);
+            if (!ul) return;
+            const lis = ul.querySelectorAll('li');
+            lis.forEach((li, idx) => { if (idx > 2) li.style.display = 'none'; });
+        });
+    });
+    </script>
 </body>
 </html>
