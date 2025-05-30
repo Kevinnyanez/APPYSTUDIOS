@@ -276,12 +276,15 @@ if (btnAbrir) {
     document.getElementById('btnAgregarItem').onclick = function() {
       const idStock = idProductoSel.value;
       const nombre = inputBuscar.value;
-      const precioBase = parseFloat(precioProductoSel.value) || 0;
+      // Asegurar que el precio base es un número válido y con punto decimal
+      let precioBase = precioProductoSel.value.replace(',', '.');
+      precioBase = parseFloat(precioBase) || 0;
       if (!idStock || !nombre) return alert('Seleccione un producto de la lista');
       if ([...document.querySelector('#tablaItems tbody').children].some(r => r.dataset.idStock === idStock)) {
         return alert('Ya agregaste este producto');
       }
       const recargo = parseFloat(document.getElementById('recargoProducto').value) || 0;
+      // Calcular precio con recargo (ej: 150% -> precio final = base + 150% del base)
       const precio = precioBase * (1 + recargo / 100);
       const row = document.createElement('tr');
       row.dataset.idStock = idStock;
@@ -338,6 +341,7 @@ if (btnAbrir) {
   }
   document.getElementById('recargoProducto').addEventListener('input', () => {
     document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
+      // Usar siempre el precio base guardado en el dataset
       const precioBase = parseFloat(row.dataset.precioBase);
       const recargo = parseFloat(document.getElementById('recargoProducto').value) || 0;
       const precioConRecargo = precioBase * (1 + recargo / 100);
