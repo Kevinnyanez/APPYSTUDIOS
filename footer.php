@@ -1,16 +1,15 @@
 <footer style="
-            background: linear-gradient(to bottom, #0c162d, #16233d);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
-            bottom: 0;
-            margin-left: 0;
-            padding-left: 10px;
+    background-color: #cbd5e1;
+    color: #444;
+    font-size: 11px;
+    width: 100%;
+    margin-top: 150px;
+    margin-left: 0;
+    margin-bottom: 0;
+    margin-rigth: 0;
+    text-align: center;
+    border-top: 1px solid #ccc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 ">
     <div style="margin-bottom: 6px; font-weight: bold; color: #222;">
         FD | Soñando Bajito
