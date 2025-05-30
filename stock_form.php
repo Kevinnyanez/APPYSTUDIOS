@@ -112,6 +112,38 @@ form button[type="submit"] {
 form button[type="submit"]:hover {
   background-color: #005fa3;
 }
+
+/* Estilo empresarial para el h1 */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #0077b6; /* azul profesional */
+  margin-bottom: 1.5rem;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+/* Botón principal */
+button[type="submit"] {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
+}
+
+button[type="submit"]:hover {
+  background-color: #005f87;
+  transform: scale(1.02);
+}
+
+button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
 </style>
 </head>
 <body>

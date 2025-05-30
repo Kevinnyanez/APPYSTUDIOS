@@ -207,7 +207,7 @@ table tr:hover {
 }
 th {
   background-color: #333;
-  color: #fff;
+  color: #fff !important;
   font-weight: bold;
   font-size: 14px;
 }
