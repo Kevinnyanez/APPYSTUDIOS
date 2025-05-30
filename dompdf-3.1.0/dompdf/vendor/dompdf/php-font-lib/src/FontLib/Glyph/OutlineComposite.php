@@ -10,7 +10,7 @@ namespace FontLib\Glyph;
 
 /**
  * Composite glyph outline
- *
+ 
  * @package php-font-lib
  */
 class OutlineComposite extends Outline {
