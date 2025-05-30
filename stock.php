@@ -143,39 +143,35 @@ h1.Stock-esti {
   text-decoration: none;
 }
 
-table {
-  width: 100%;
+.table {
+  width: 95%;
+  margin: 0 auto;
   border-collapse: collapse;
   background-color: #2b2b2b;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   border-radius: 8px;
   overflow: hidden;
 }
 
-table thead {
-  background-color: #2b2b2b;
-  color: white;
-}
-
-table th,
-table td {
-  padding: 12px 14px;
+.table th,
+.table td {
+  padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #444;
 }
 
-table tbody tr:hover {
-  background-color: #f1f3f5;
+.table th {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
 }
 
-table a {
-  color: #0077b6;
-  text-decoration: none;
-  font-weight: 500;
+.table tr:nth-child(even) {
+  background-color: #262626;
 }
 
-table a:hover {
-  text-decoration: underline;
+.table tr:hover {
+  background-color: #383838;
 }
 
 
