@@ -1,7 +1,11 @@
 <?php
 
 
-include 'includes/db.php';
+require_once 'includes/db.php';
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
  // Este archivo debe definir $conn (MySQLi)
@@ -232,14 +236,6 @@ tfoot tr {
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
     $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
-    exit;
-}
-
-
-
-session_start();
-if (!isset($_SESSION['usuario'])) {
-    header("Location: index.php");
     exit;
 }
 
