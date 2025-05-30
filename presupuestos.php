@@ -155,7 +155,7 @@ tfoot tr {
     $html .= '
             <tr style="font-weight: bold; background-color: #f2f2f2;">
                 <td colspan="3" style="text-align: right;">Total Ítems:</td>
-                <td>$' . number_format($item['total_con_recargo'], 2, ',', '.') . '</td>
+                <td>$' . number_format($total_subtotal, 2, ',', '.') . '</td>
             </tr>
         </tbody>
     </table>';
