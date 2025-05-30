@@ -205,7 +205,11 @@ table tr:hover {
     border-bottom: none;
   }
 }
-
+table th {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+}
 
 </style>
 </head>
