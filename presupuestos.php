@@ -661,7 +661,20 @@ input:focus, select:focus {
         <tr>
           <td><?= $p['id_presupuesto'] ?></td>
           <td><?= htmlspecialchars($p['nombre_cliente']) ?></td>
-          <td><?= strftime('%d de %B de %Y', strtotime($p['fecha_creacion'])) ?></td>
+          <td>
+          <?php
+          $fecha = new DateTime($p['fecha_creacion']);
+          $formatter = new IntlDateFormatter(
+              'es_ES', 
+              IntlDateFormatter::LONG, 
+              IntlDateFormatter::NONE,
+             null,
+             null,
+             "d 'de' MMMM 'de' yyyy"
+          );
+          echo $formatter->format($fecha);
+          ?>
+          </td>
           <td>$<?= number_format($p['total'], 2) ?></td>
           <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
