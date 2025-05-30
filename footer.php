@@ -2,9 +2,11 @@
     background-color: #f4f6f9;
     color: #444;
     font-size: 11px;
-    
     width: 100%;
     margin-top: 150px;
+    margin-left: 0;
+    margin-bottom: 0;
+    margin-rigth: 0;
     text-align: center;
     border-top: 1px solid #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
