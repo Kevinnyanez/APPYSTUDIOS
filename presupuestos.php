@@ -18,15 +18,21 @@ if (isset($_GET['descargar_pdf'])) {
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = ?";
-$sql_items = "SELECT * FROM presupuesto_items WHERE id_presupuesto = ?";
+$sql_items = "SELECT pi.*, s.nombre AS nombre_producto
+              FROM presupuesto_items pi
+              JOIN stock s ON pi.id_item = s.id_stock
+              WHERE pi.id_presupuesto = ?";
+
 $stmt_items = $conn->prepare($sql_items);
 $stmt_items->bind_param("i", $id);
 $stmt_items->execute();
 $result_items = $stmt_items->get_result();
+
 $items = [];
 while ($row = $result_items->fetch_assoc()) {
     $items[] = $row;
 }
+
 
 
     $stmt = $conn->prepare($sql);
@@ -40,36 +46,35 @@ while ($row = $result_items->fetch_assoc()) {
     }
 
    $html = '
-<h1>Presupuesto</h1>
-<p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
-<p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
-<p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
-
-<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
-    <thead>
-        <tr>
-            <th>Descripción</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>';
+    <h1>Presupuesto</h1>
+    <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+    <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+    <p><strong>Fecha:</strong> ' . htmlspecialchars($presupuesto['fecha_creacion']) . '</p>
+    <p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
+    <h2>Ítems</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>';
 foreach ($items as $item) {
     $subtotal = $item['cantidad'] * $item['precio_unitario'];
     $html .= '
         <tr>
-            <td>' . htmlspecialchars($item['descripcion']) . '</td>
+            <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
             <td>' . $item['cantidad'] . '</td>
             <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
             <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
         </tr>';
 }
 $html .= '
-    </tbody>
-</table>
-
-<p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
+        </tbody>
+    </table>
 ';
 
 
