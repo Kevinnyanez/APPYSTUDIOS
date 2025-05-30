@@ -1,195 +1,76 @@
 <?php
-session_start();
-require_once 'includes/db.php';
-if (!isset($_SESSION['id'])) {
-    header('Location: index.php');
-    exit();
-}// Asegurate de tener la conexión a DB
+// ventas.php
+include 'includes/db.php'; // Asegurate de tener esto apuntando a tu archivo de conexión
 
-// Función para obtener ventas del mes actual
-$mesActual = date('m');
-$anioActual = date('Y');
+// Traemos presupuestos cerrados (ventas)
+$sql = "SELECT p.id_presupuesto, p.fecha_creacion, p.total_con_recargo, c.nombre
+        FROM presupuestos p
+        JOIN clientes c ON p.id_cliente = c.id_cliente
+        WHERE p.estado = 'cerrado'
+        ORDER BY p.fecha_creacion DESC";
 
-$sql_ventas = "
-  SELECT v.*, c.nombre, p.total_con_recargo
-  FROM ventas v
-  JOIN clientes c ON v.id_cliente = c.id_cliente
-  LEFT JOIN presupuestos p ON v.id_presupuesto = p.id_presupuesto
-  WHERE MONTH(v.fecha_venta) = $mesActual AND YEAR(v.fecha_venta) = $anioActual
-  ORDER BY v.fecha_venta DESC
-";
-$result_ventas = $conn->query($sql_ventas);
-
-// Clientes con presupuestos activos (estado ≠ 'cerrado')
-$sql_presupuestos_activos = "
-  SELECT p.*, c.nombre
-  FROM presupuestos p
-  JOIN clientes c ON p.id_cliente = c.id_cliente
-  WHERE p.estado != 'cerrado'
-  ORDER BY p.fecha_creacion DESC
-";
-$result_presupuestos_activos = $conn->query($sql_presupuestos_activos);
-
-// Presupuestos cerrados
-$sql_presupuestos_cerrados = "
-  SELECT p.*, c.nombre
-  FROM presupuestos p
-  JOIN clientes c ON p.id_cliente = c.id_cliente
-  WHERE p.estado = 'cerrado'
-  ORDER BY p.fecha_creacion DESC
-";
-$result_presupuestos_cerrados = $conn->query($sql_presupuestos_cerrados);
+$result = $conn->query($sql);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel de Ventas</title>
-  <link rel="stylesheet" href="estilos.css"> <!-- si tenés uno -->
+  <title>Ventas Confirmadas</title>
   <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
     table {
-      border-collapse: collapse;
       width: 100%;
-      margin-bottom: 40px;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-
     th, td {
-      border: 1px solid #ccc;
-      padding: 8px 10px;
+      padding: 10px;
       text-align: left;
+      border-bottom: 1px solid #ccc;
     }
-
     th {
-      background-color: #f3f3f3;
+      background-color: #ecf0f1;
     }
-
-    h2 {
-      margin-top: 60px;
+    .total {
+      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
-  <h1>Panel de Ventas</h1>
 
-  <h2>🗓️ Ventas del Mes (<?= date('F Y') ?>)</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID Venta</th>
-        <th>Cliente</th>
-        <th>Presupuesto</th>
-        <th>Fecha</th>
-        <th>Monto Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php while ($p = $result_presupuestos_activos->fetch_assoc()): ?>
-  <tr>
-    <td>#<?= $p['id_presupuesto'] ?></td>
-    <td><?= htmlspecialchars($p['nombre']) ?></td>
-    <td><?= $p['fecha_creacion'] ?></td>
-    <td><?= ucfirst($p['estado']) ?></td>
-    <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
-    <td>
-      <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
-        <input type="hidden" name="id_presupuesto" value="<?= $p['id_presupuesto'] ?>">
-        <button type="submit">Confirmar Venta</button>
-      </form>
-    </td>
-  </tr>
-<?php endwhile; ?>
+<h1>🧾 Ventas Confirmadas</h1>
 
-    </tbody>
-  </table>
-
-  <h2>📝 Presupuestos en Proceso</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if ($result_presupuestos_activos->num_rows > 0): ?>
-        <?php while ($p = $result_presupuestos_activos->fetch_assoc()): ?>
-          <tr>
-            <td>#<?= $p['id_presupuesto'] ?></td>
-            <td><?= htmlspecialchars($p['nombre']) ?></td>
-            <td><?= $p['fecha_creacion'] ?></td>
-            <td><?= ucfirst($p['estado']) ?></td>
-            <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
-          </tr>
-        <?php endwhile; ?>
-      <?php else: ?>
-        <tr><td colspan="5">No hay presupuestos activos.</td></tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
-  <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
-    <input type="hidden" name="id_presupuesto" value="<?= $presupuesto['id_presupuesto'] ?>">
-    <button type="submit">Confirmar Venta</button>
-</form>
-
-  <h2>✅ Presupuestos Cerrados</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Fecha</th>
-        <th>Total</th>
-        <th>Recargo</th>
-        <th>Total Final</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if ($result_presupuestos_cerrados->num_rows > 0): ?>
-        <?php while ($p = $result_presupuestos_cerrados->fetch_assoc()): ?>
-          <tr>
-            <td>#<?= $p['id_presupuesto'] ?></td>
-            <td><?= htmlspecialchars($p['nombre']) ?></td>
-            <td><?= $p['fecha_creacion'] ?></td>
-            <td>$<?= number_format($p['total'], 2) ?></td>
-            <td>$<?= number_format($p['recargo_final'], 2) ?></td>
-            <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
-          </tr>
-        <?php endwhile; ?>
-      <?php else: ?>
-        <tr><td colspan="6">No hay presupuestos cerrados.</td></tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
-  
+<table>
+  <thead>
+    <tr>
+      <th># Presupuesto</th>
+      <th>Cliente</th>
+      <th>Fecha</th>
+      <th>Total Pagado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php if ($result && $result->num_rows > 0): ?>
+      <?php while ($row = $result->fetch_assoc()): ?>
+        <tr>
+          <td>#<?= $row['id_presupuesto'] ?></td>
+          <td><?= htmlspecialchars($row['nombre']) ?></td>
+          <td><?= date('d/m/Y', strtotime($row['fecha_creacion'])) ?></td>
+          <td class="total">$<?= number_format($row['total_con_recargo'], 2, ',', '.') ?></td>
+        </tr>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <tr><td colspan="4">No hay ventas registradas todavía.</td></tr>
+    <?php endif; ?>
+  </tbody>
+</table>
 
 </body>
-<script>
-document.querySelectorAll('.form-confirmar-venta').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        fetch('confirmar_venta.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(resp => resp.text())
-        .then(data => {
-            if (data.trim() === "ok") {
-                alert("Venta registrada correctamente.");
-                location.reload();
-            } else if (data.trim() === "existente") {
-                alert("Este presupuesto ya fue convertido en venta.");
-            } else {
-                alert("Error al registrar la venta.");
-            }
-        });
-    });
-});
-</script>
-
 </html>
