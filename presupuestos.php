@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include 'includes/db.php';
 
 // Cargar presupuestos con el nombre del clientee
@@ -27,7 +32,7 @@ while ($row = $stock_result->fetch_assoc()) {
   // ajusta la ruta si hace falta
 
 if (isset($_GET['descargar_pdf'])) {
-    require_once 'dompdf/autoload.inc.php';
+    require_once '../dompdf-3.1.0/dompdf/autoload.inc.php';
     use Dompdf\Dompdf;
 
     $dompdf = new Dompdf();
