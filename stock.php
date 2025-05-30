@@ -66,7 +66,7 @@ if ($tipos_res) {
 /* Igual que antes + un poco para el formulario */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f7fa;
+  background-color: #cbd5e1;
   color: #333;
   margin: 0;
   padding: 20px;
@@ -146,14 +146,14 @@ h1.Stock-esti {
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background-color: #2b2b2b;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   border-radius: 8px;
   overflow: hidden;
 }
 
 table thead {
-  background-color: #0077b6;
+  background-color: #2b2b2b;
   color: white;
 }
 
@@ -161,7 +161,7 @@ table th,
 table td {
   padding: 12px 14px;
   text-align: left;
-  border-bottom: 1px solid #e1e5ea;
+  border-bottom: 1px solid #333;
 }
 
 table tbody tr:hover {
