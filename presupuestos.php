@@ -1,16 +1,17 @@
 
 <?php
-session_start();
-if (!isset($_SESSION['usuario'])) {
-    header("Location: index.php");
-    exit;
-}
+
 
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include 'includes/db.php';
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: index.php");
+    exit;
+}
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
  // Este archivo debe definir $conn (MySQLi)
