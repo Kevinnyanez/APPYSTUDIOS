@@ -139,7 +139,7 @@ tfoot tr {
 
     $total_subtotal = 0;
     foreach ($items as $item) {
-        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $subtotal = $item['cantidad'] * $item['subtotal'];
         $total_subtotal += $subtotal;
 
         $html .= '
@@ -147,7 +147,7 @@ tfoot tr {
                 <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
                 <td>' . $item['cantidad'] . '</td>
                 <td>$' . number_format($item['subtotal'], 2, ',', '.') . '</td>
-                <td>$' . number_format($item['total_con_recargo'], 2, ',', '.') . '</td>
+                <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
             </tr>';
     }
 
