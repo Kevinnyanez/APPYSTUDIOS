@@ -198,7 +198,7 @@ table tr:hover {
   table td::before {
     content: attr(data-label);
     font-weight: bold;
-    color: #aaa;
+    color: #fff;
   }
 
   table td:last-child {
