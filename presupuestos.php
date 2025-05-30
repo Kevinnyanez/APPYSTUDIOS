@@ -138,12 +138,9 @@ tfoot tr {
             <tbody>';
 
     $total_subtotal = 0;
-foreach ($items as $item) {
-    $precio_unitario_con_recargo = $item['precio_unitario'] * 1.10;
-    $subtotal_con_recargo = $item['cantidad'] * $precio_unitario_con_recargo;
-    $total_subtotal += $subtotal_con_recargo;
-}
-
+    foreach ($items as $item) {
+        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $total_subtotal += $subtotal;
 
         $html .= '
             <tr>
