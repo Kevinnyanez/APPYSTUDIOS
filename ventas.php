@@ -1,6 +1,14 @@
 <?php
-include 'includes/db.php';
 
+
+
+
+include 'includes/db.php';
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit;
+}
 // Obtener mes y año desde el formulario si existen
 $mes = isset($_GET['mes']) ? $_GET['mes'] : date('m');
 $anio = isset($_GET['anio']) ? $_GET['anio'] : date('Y');

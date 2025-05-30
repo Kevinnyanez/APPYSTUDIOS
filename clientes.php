@@ -1,6 +1,10 @@
 <?php
 include 'includes/db.php';
-
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit;
+}
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $conn->query("DELETE FROM clientes WHERE id_cliente = $id");
