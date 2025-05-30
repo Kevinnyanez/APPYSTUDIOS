@@ -189,7 +189,7 @@ tfoot tr {
                     <th>Materiales</th>
                     <th>Cantidad</th>
                     <th></th>
-                    
+                    <th></th>
                 </tr>
             </thead>
             <tbody>';
