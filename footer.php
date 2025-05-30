@@ -2,8 +2,8 @@
 // Footer unificado y moderno para toda la app
 ?>
 <footer class="footer-appy">
-  <div>
-    <img src="AppyLogo.png" alt="Logo Appy Studios" class="footer-logo" />
+  <div class="footer-logo-wrapper">
+    <?php include 'AppyLogoSV.svg'; ?>
   </div>
   <div class="footer-title"><strong>Appy Studios Desarrollo Web</strong></div>
   <div>Aplicaciones y Sitios Webs Profesionales</div>
@@ -31,10 +31,18 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 24px 8px 16px 8px;
 }
-.footer-logo {
-  height: 60px;
-  object-fit: contain;
-  margin-bottom: 6px;
+.footer-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.footer-logo-wrapper svg {
+  height: 90px;
+  width: auto;
+  max-width: 260px;
+  display: block;
 }
 .footer-title {
   font-weight: bold;
@@ -49,7 +57,7 @@
   text-decoration: underline;
 }
 @media (max-width: 600px) {
-  .footer-logo { height: 38px; }
+  .footer-logo-wrapper svg { height: 48px; max-width: 120px; }
   .footer-appy { font-size: 11px; padding: 16px 2px 10px 2px; }
 }
 </style>
