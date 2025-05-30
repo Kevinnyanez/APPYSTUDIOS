@@ -72,8 +72,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
                 <td>$<?=number_format($row['precio_unitario'], 2)?></td>
                 <td><?=htmlspecialchars($row['tipo'])?></td>
                 <td>
-                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a> |
-                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
+                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a>
+                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" class="btn-eliminar-stock" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
                 </td>
             </tr>
             <?php endwhile; ?>
@@ -94,7 +94,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 <title>Stock - Buscar y Filtrar</title>
 <style>
     body {
-
         background-color: #cbd5e1;
     }
 /* Igual que antes + un poco para el formulario */
@@ -177,75 +176,166 @@ h1.Stock-esti {
   text-decoration: none;
 }
 
-table {
+/* MODAL MEJORADO */
+#modalProducto {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#modalProducto .modal-content {
+  background: #fff;
+  color: #222;
+  border-radius: 18px;
+  max-width: 420px;
   width: 95%;
+  margin: auto;
+  padding: 2.2rem 2rem 1.5rem 2rem;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  animation: modalShow 0.25s;
+}
+@keyframes modalShow { from { transform: translateY(-40px); opacity:0; } to { transform: none; opacity:1; } }
+#modalProducto h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0077b6;
+  margin-bottom: 1.2rem;
+}
+#cerrarModalProducto {
+  position: absolute;
+  top: 12px; right: 18px;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+}
+#cerrarModalProducto:hover { color: #0077b6; }
+#formProducto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+#formProducto label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+#formProducto input, #formProducto textarea, #formProducto select {
+  padding: 9px 12px;
+  border: 1px solid #b0b0b0;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #f7fafd;
+  color: #222;
+  margin-bottom: 2px;
+  transition: border-color 0.2s;
+}
+#formProducto input:focus, #formProducto textarea:focus, #formProducto select:focus {
+  border-color: #0077b6;
+  outline: none;
+}
+#btnGuardarProducto {
+  margin-top: 1.2rem;
+  padding: 12px 0;
+  background-color: #0077b6;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 7px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#btnGuardarProducto:hover {
+  background: #023e8a;
+}
+
+/* TABLA MEJORADA */
+table {
+  width: 98%;
   margin: 0 auto;
-  border-collapse: collapse;
-  background-color: #2b2b2b;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #23272f;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  border-radius: 12px;
   overflow: hidden;
 }
-
-table th,
-table td {
-  padding: 12px 15px;
+table th, table td {
+  padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid #444;
+  font-size: 1rem;
 }
-
 table th {
-  background-color: #333;
+  background-color: #1a1d23;
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
 }
-
+table tr {
+  transition: background 0.18s;
+}
 table tr:nth-child(even) {
-  background-color: #262626;
+  background-color: #23272f;
 }
-
+table tr:nth-child(odd) {
+  background-color: #2d323c;
+}
 table tr:hover {
-  background-color: #383838;
+  background-color: #0077b6 !important;
+  color: #fff;
+}
+table td, table th {
+  border-bottom: 1px solid #353a45;
+}
+table td {
+  color: #f1f1f1;
+  font-size: 1rem;
+}
+/* Botones de acciones */
+.btn-editar-stock, .btn-eliminar-stock {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-right: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+.btn-editar-stock {
+  background: #38bdf8;
+  color: #1a1d23;
+  border: none;
+}
+.btn-editar-stock:hover {
+  background: #0ea5e9;
+  color: #fff;
+}
+.btn-eliminar-stock {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+}
+.btn-eliminar-stock:hover {
+  background: #b91c1c;
 }
 
 @media (max-width: 768px) {
-  table thead {
-    display: none;
+  table th, table td {
+    padding: 10px 6px;
+    font-size: 0.98rem;
   }
-
-  table tr {
-    display: block;
-    margin-bottom: 20px;
-    background-color: #2b2b2b;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    overflow: hidden;
-  }
-
-  table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border-bottom: 1px solid #333;
-  }
-
-  table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #fff;
-  }
-
-  table td:last-child {
-    border-bottom: none;
+  #modalProducto .modal-content {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
   }
 }
-th {
-  background-color: #333;
-  color: #fff !important;
-  font-weight: bold;
-  font-size: 14px;
-}
-
 </style>
 </head>
 <body>
@@ -316,8 +406,8 @@ th {
                 <td>$<?=number_format($row['precio_unitario'], 2)?></td>
                 <td><?=htmlspecialchars($row['tipo'])?></td>
                 <td>
-                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a> |
-                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
+                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a>
+                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" class="btn-eliminar-stock" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
                 </td>
             </tr>
             <?php endwhile; ?>
