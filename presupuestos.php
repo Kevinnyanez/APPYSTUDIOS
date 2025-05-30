@@ -129,10 +129,8 @@ tfoot tr {
         <table>
             <thead>
                 <tr>
-                    <th>Producto</th>
+                    <th>Materiales</th>
                     <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>';
@@ -146,8 +144,6 @@ tfoot tr {
             <tr>
                 <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
                 <td>' . $item['cantidad'] . '</td>
-                <td>$' . number_format($item['subtotal'], 2, ',', '.') . '</td>
-                <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
             </tr>';
     }
 
@@ -155,7 +151,7 @@ tfoot tr {
     $html .= '
             <tr style="font-weight: bold; background-color: #f2f2f2;">
                 <td colspan="3" style="text-align: right;">Total Ítems:</td>
-                <td>$' . number_format($item['total_con_recargo'], 2, ',', '.') . '</td>
+                <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
             </tr>
         </tbody>
     </table>';
