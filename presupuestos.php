@@ -3,7 +3,27 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+if (isset($_GET['descargar_pdf'])) {
+    require_once '/../dompdf-3.1.0/dompdf/autoload.inc.php';
+    use Dompdf\Dompdf;
 
+    $dompdf = new Dompdf();
+
+    // Acá podés generar HTML dinámico desde los datos obtenidos, esto es solo ejemplo:
+    $html = '
+        <h1>Presupuesto</h1>
+        <p>Cliente: ' . $presupuestos[0]['nombre_cliente'] . '</p>
+        <p>Fecha: ' . $presupuestos[0]['fecha_creacion'] . '</p>
+        <p>Total: $' . $presupuestos[0]['total'] . '</p>
+    ';
+
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    $dompdf->stream("presupuesto.pdf", ["Attachment" => true]);
+    exit; // ❗ Muy importante: cortar ejecución acá
+}
 include 'includes/db.php';
 
 // Cargar presupuestos con el nombre del clientee
@@ -31,27 +51,7 @@ while ($row = $stock_result->fetch_assoc()) {
 }
   // ajusta la ruta si hace falta
 
-if (isset($_GET['descargar_pdf'])) {
-    require_once '../dompdf-3.1.0/dompdf/autoload.inc.php';
-    use Dompdf\Dompdf;
 
-    $dompdf = new Dompdf();
-
-    // Acá podés generar HTML dinámico desde los datos obtenidos, esto es solo ejemplo:
-    $html = '
-        <h1>Presupuesto</h1>
-        <p>Cliente: ' . $presupuestos[0]['nombre_cliente'] . '</p>
-        <p>Fecha: ' . $presupuestos[0]['fecha_creacion'] . '</p>
-        <p>Total: $' . $presupuestos[0]['total'] . '</p>
-    ';
-
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-
-    $dompdf->stream("presupuesto.pdf", ["Attachment" => true]);
-    exit; // ❗ Muy importante: cortar ejecución acá
-}
 ?>
 
 <!DOCTYPE html>
