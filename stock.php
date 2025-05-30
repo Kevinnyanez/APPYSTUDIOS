@@ -340,6 +340,15 @@ table td {
 </head>
 <body>
 
+<nav>
+    <a href="stock.php">Ver Stock</a>
+    <a href="clientes.php">clientes</a>
+    <a href="ventas.php">Ventas</a>
+    <a href="dashboard.php">Dashboard</a>
+    <a href="recomendaciones.php">Recomendaciones</a>
+    <a href="logout.php" class="logout">Cerrar Sesión</a>
+</nav>
+
 <div style="text-align: center;">
   <h1 class="Stock-esti">Stock de Materiales y Muebles</h1>
 </div>
@@ -347,15 +356,12 @@ table td {
 <form method="GET" action="stock.php" class="form-busqueda">
     <div class="form-group">
         <input type="text" name="search" placeholder="Buscar por nombre" value="<?=htmlspecialchars($search)?>" class="input-text" />
-        
         <select name="tipo" class="input-select">
             <option value="">-- Filtrar por tipo --</option>
             <?php foreach($tipos as $t): ?>
                 <option value="<?=htmlspecialchars($t)?>" <?= $filter_tipo === $t ? 'selected' : '' ?>><?=htmlspecialchars($t)?></option>
             <?php endforeach; ?>
         </select>
-
-        <button type="submit" class="btn btn-buscar">Buscar</button>
         <a href="stock.php" class="btn btn-limpiar">Limpiar</a>
     </div>
 </form>
