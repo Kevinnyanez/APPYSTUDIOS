@@ -116,7 +116,42 @@ tfoot tr {
     text-align: center;
     font-style: italic;
 }
+.pdf-footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 10pt;
+    color: #444;
+    line-height: 1.5;
+    text-align: center;
+}
 
+.pdf-footer h4 {
+    font-size: 11pt;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.pdf-footer p {
+    margin: 3px 0;
+}
+
+.pdf-footer .contacto {
+    margin-top: 10px;
+    font-size: 9pt;
+    color: #666;
+}
+
+.pdf-footer .nota {
+    margin-top: 15px;
+    font-style: italic;
+    color: #777;
+    border-left: 3px solid #ccc;
+    padding-left: 10px;
+    font-size: 9.5pt;
+}
         </style>
 
         <h1>Presupuesto</h1>
@@ -131,6 +166,7 @@ tfoot tr {
                 <tr>
                     <th>Materiales</th>
                     <th>Cantidad</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>';
@@ -155,7 +191,20 @@ tfoot tr {
             </tr>
         </tbody>
     </table>';
-
+    $html .= '
+<div class="pdf-footer">
+    <h4>¡Gracias por consultarnos!</h4>
+    <p>Esperamos con ansias trabajar con vos.</p>
+    
+    <div class="contacto">
+        <p><strong>IG:</strong> @fd.sonandobajito</p>
+        <p><strong>Teléfono:</strong> +54 9 11 1234-5678</p>
+    </div>
+    
+    <div class="nota">
+        <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
+    </div>
+</div>';
     // Generar PDF
     $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
