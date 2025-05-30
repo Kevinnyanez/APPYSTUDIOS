@@ -51,6 +51,40 @@ if ($tipos_res) {
         $tipos[] = $row['tipo'];
     }
 }
+
+if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
+    ob_start();
+    ?>
+    <thead>
+        <tr>
+            <th>ID</th><th>Nombre</th><th>Descripción</th><th>Cantidad</th><th>Precio Unitario</th><th>Tipo</th><th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (
+            $result && $result->num_rows > 0): ?>
+            <?php while($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?=htmlspecialchars($row['id_stock'])?></td>
+                <td><?=htmlspecialchars($row['nombre'])?></td>
+                <td><?=htmlspecialchars($row['descripcion'])?></td>
+                <td><?=htmlspecialchars($row['cantidad'])?></td>
+                <td>$<?=number_format($row['precio_unitario'], 2)?></td>
+                <td><?=htmlspecialchars($row['tipo'])?></td>
+                <td>
+                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a> |
+                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="7" style="text-align:center;">No se encontraron items.</td></tr>
+        <?php endif; ?>
+    </tbody>
+    <?php
+    echo ob_get_clean();
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -179,9 +213,35 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
 </form>
 
 
-<a href="stock_form.php" class="btn-agregar">Agregar nuevo</a>
+<a href="#" class="btn-agregar" id="btnAbrirModalAgregar">Agregar nuevo</a>
 
-<table>
+<!-- Modal para Alta/Edición de Producto -->
+<div id="modalProducto" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; color:#222; border-radius:12px; max-width:500px; width:95%; margin:auto; padding:2rem; position:relative;">
+    <span id="cerrarModalProducto" style="position:absolute; top:10px; right:18px; font-size:2rem; cursor:pointer;">&times;</span>
+    <h2 id="tituloModalProducto">Agregar producto</h2>
+    <form id="formProducto">
+      <input type="hidden" name="id" id="idProducto">
+      <label for="nombre">Nombre *</label>
+      <input type="text" name="nombre" id="nombreProducto" required>
+      <label for="descripcion">Descripción</label>
+      <textarea name="descripcion" id="descripcionProducto"></textarea>
+      <label for="cantidad">Cantidad *</label>
+      <input type="number" name="cantidad" id="cantidadProducto" required>
+      <label for="precio_unitario">Precio Unitario *</label>
+      <input type="number" name="precio_unitario" id="precioProducto" step="0.01" min="0" required>
+      <label for="tipo">Tipo *</label>
+      <select name="tipo" id="tipoProducto" required>
+        <option value="">-- Seleccionar --</option>
+        <option value="Material">Material</option>
+        <option value="Mueble">Mueble</option>
+      </select>
+      <button type="submit" id="btnGuardarProducto" style="margin-top:1.5rem; padding:12px 24px; background-color:#007acc; color:white; font-weight:600; border:none; border-radius:8px; cursor:pointer;">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<table id="tablaStock">
     <thead>
         <tr>
             <th>ID</th><th>Nombre</th><th>Descripción</th><th>Cantidad</th><th>Precio Unitario</th><th>Tipo</th><th>Acciones</th>
@@ -198,7 +258,7 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
                 <td>$<?=number_format($row['precio_unitario'], 2)?></td>
                 <td><?=htmlspecialchars($row['tipo'])?></td>
                 <td>
-                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>">Editar</a> |
+                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>" class="btn-editar-stock">Editar</a> |
                     <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
                 </td>
             </tr>
@@ -210,6 +270,115 @@ input[type="text"], select { padding: 6px; margin: 0 10px 10px 0; }
 </table>
 
 <a href="dashboard.php" class="btn-volver">Volver al Dashboard</a>
+
+<script>
+// --- Modal y AJAX para Alta/Edición ---
+const modal = document.getElementById('modalProducto');
+const btnAbrir = document.getElementById('btnAbrirModalAgregar');
+const cerrar = document.getElementById('cerrarModalProducto');
+const form = document.getElementById('formProducto');
+const tituloModal = document.getElementById('tituloModalProducto');
+const btnGuardar = document.getElementById('btnGuardarProducto');
+const idInput = document.getElementById('idProducto');
+const nombreInput = document.getElementById('nombreProducto');
+const descInput = document.getElementById('descripcionProducto');
+const cantInput = document.getElementById('cantidadProducto');
+const precioInput = document.getElementById('precioProducto');
+const tipoInput = document.getElementById('tipoProducto');
+
+function abrirModal(modo, datos = null) {
+  tituloModal.textContent = modo === 'editar' ? 'Editar producto' : 'Agregar producto';
+  form.reset();
+  idInput.value = '';
+  if (modo === 'editar' && datos) {
+    idInput.value = datos.id_stock;
+    nombreInput.value = datos.nombre;
+    descInput.value = datos.descripcion;
+    cantInput.value = datos.cantidad;
+    precioInput.value = datos.precio_unitario;
+    tipoInput.value = datos.tipo;
+  }
+  modal.style.display = 'flex';
+}
+
+btnAbrir.onclick = function(e) {
+  e.preventDefault();
+  abrirModal('agregar');
+};
+cerrar.onclick = function() { modal.style.display = 'none'; };
+window.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+
+// --- Enviar formulario por AJAX ---
+form.onsubmit = function(e) {
+  e.preventDefault();
+  btnGuardar.disabled = true;
+  const datos = new FormData(form);
+  let url = 'stock_action.php';
+  let action = idInput.value ? 'edit' : 'add';
+  if (action === 'edit') url += '?action=edit&id=' + encodeURIComponent(idInput.value);
+  else url += '?action=add';
+  fetch(url, {
+    method: 'POST',
+    body: datos
+  })
+  .then(r => r.text())
+  .then(resp => {
+    btnGuardar.disabled = false;
+    modal.style.display = 'none';
+    cargarTabla();
+  })
+  .catch(() => { btnGuardar.disabled = false; alert('Error al guardar'); });
+};
+
+// --- Cargar tabla por AJAX ---
+function cargarTabla() {
+  fetch('stock.php?ajax=1')
+    .then(r => r.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const nuevaTabla = doc.getElementById('tablaStock');
+      document.getElementById('tablaStock').innerHTML = nuevaTabla.innerHTML;
+      agregarListenersEdicion();
+    });
+}
+
+// --- Listener para editar ---
+function agregarListenersEdicion() {
+  document.querySelectorAll('.btn-editar-stock').forEach(btn => {
+    btn.onclick = function(e) {
+      e.preventDefault();
+      const fila = this.closest('tr');
+      abrirModal('editar', {
+        id_stock: fila.children[0].textContent.trim(),
+        nombre: fila.children[1].textContent.trim(),
+        descripcion: fila.children[2].textContent.trim(),
+        cantidad: fila.children[3].textContent.trim(),
+        precio_unitario: fila.children[4].textContent.replace('$','').trim(),
+        tipo: fila.children[5].textContent.trim()
+      });
+    };
+  });
+}
+agregarListenersEdicion();
+
+// --- Buscador dinámico ---
+const inputBuscar = document.querySelector('input[name="search"]');
+const selectTipo = document.querySelector('select[name="tipo"]');
+inputBuscar.addEventListener('input', filtrarTabla);
+selectTipo.addEventListener('change', filtrarTabla);
+function filtrarTabla() {
+  const texto = inputBuscar.value.toLowerCase();
+  const tipo = selectTipo.value;
+  document.querySelectorAll('#tablaStock tbody tr').forEach(tr => {
+    const nombre = tr.children[1].textContent.toLowerCase();
+    const tipoProd = tr.children[5].textContent;
+    let visible = nombre.includes(texto);
+    if (tipo && tipoProd !== tipo) visible = false;
+    tr.style.display = visible ? '' : 'none';
+  });
+}
+</script>
 
 </body>
 </html>
