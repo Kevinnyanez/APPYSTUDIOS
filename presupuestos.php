@@ -611,7 +611,7 @@ input:focus, select:focus {
         <tr>
           <td><?= $p['id_presupuesto'] ?></td>
           <td><?= htmlspecialchars($p['nombre_cliente']) ?></td>
-          <td><?= strftime('%d de %B de %Y', strtotime($p['fecha_creacion'])) ?></td>
+          <td><?= $p['fecha_creacion'] ?></td>
           <td>$<?= number_format($p['total'], 2) ?></td>
           <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
