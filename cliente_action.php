@@ -4,10 +4,11 @@ include 'includes/db.php'; // cargamos $conn
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     if ($conn->query("DELETE FROM clientes WHERE id_cliente = $id") === false) {
-        // Podés loguear el error, pero para el usuario solo redirigí
         error_log("Error al borrar cliente ID $id: " . $conn->error);
+        header("Location: clientes.php?error=foranea");
+        exit;
     }
-    header("Location: clientes.php");
+    header("Location: clientes.php?success=deleted");
     exit;
 }
 

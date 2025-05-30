@@ -350,6 +350,12 @@ while ($row = $result->fetch_assoc()) {
 
 <hr>
 
+<?php if (isset($_GET['error']) && $_GET['error'] === 'foranea'): ?>
+  <div style="background:#ef4444;color:#fff;padding:14px 20px;border-radius:8px;margin:20px auto;max-width:600px;text-align:center;font-weight:600;font-size:1.1rem;">
+    No es posible eliminar este cliente porque tiene presupuestos asociados.<br>Elimine primero los presupuestos relacionados o contacte al administrador.
+  </div>
+<?php endif; ?>
+
 <h2 class="titulo-clientes">Listado de Clientes</h2>
 
 <table class="tabla-clientes">
