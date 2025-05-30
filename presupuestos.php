@@ -24,7 +24,7 @@ $stock_items = [];
 while ($row = $stock_result->fetch_assoc()) {
     $stock_items[] = $row;
 }
-require_once 'dompdf/autoload.inc.php';  // ajusta la ruta si hace falta
+  // ajusta la ruta si hace falta
 
 if (isset($_GET['descargar_pdf'])) {
     require_once 'dompdf/autoload.inc.php';
