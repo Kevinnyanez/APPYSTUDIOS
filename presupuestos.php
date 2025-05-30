@@ -3,27 +3,49 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+<?php
+require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
+use Dompdf\Dompdf;
+
 if (isset($_GET['descargar_pdf'])) {
-    require_once '/../dompdf-3.1.0/dompdf/autoload.inc.php';
-    use Dompdf\Dompdf;
+    // Validar id
+    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($id <= 0) {
+        die("ID inválido para descargar PDF");
+    }
 
-    $dompdf = new Dompdf();
+    // Asumo que $pdo está inicializado y conectado a la DB
+    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
+            FROM presupuestos p
+            JOIN clientes c ON p.id_cliente = c.id
+            WHERE p.id = :id";
 
-    // Acá podés generar HTML dinámico desde los datos obtenidos, esto es solo ejemplo:
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $id]);
+    $presupuesto = $stmt->fetch();
+
+    if (!$presupuesto) {
+        die("No se encontró el presupuesto con ID $id");
+    }
+
     $html = '
         <h1>Presupuesto</h1>
-        <p>Cliente: ' . $presupuestos[0]['nombre_cliente'] . '</p>
-        <p>Fecha: ' . $presupuestos[0]['fecha_creacion'] . '</p>
-        <p>Total: $' . $presupuestos[0]['total'] . '</p>
+        <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+        <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+        <p><strong>Fecha:</strong> ' . htmlspecialchars($presupuesto['fecha_creacion']) . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
     ';
 
+    $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
-    $dompdf->stream("presupuesto.pdf", ["Attachment" => true]);
-    exit; // ❗ Muy importante: cortar ejecución acá
+    $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
+    exit; // Muy importante
 }
+?>
+
 include 'includes/db.php';
 
 // Cargar presupuestos con el nombre del clientee
