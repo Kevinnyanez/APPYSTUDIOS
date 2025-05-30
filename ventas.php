@@ -48,7 +48,7 @@ if ($row = $resTotal->fetch_assoc()) {
   <meta charset="UTF-8">
   <title>Ventas Confirmadas</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
+    body { font-family: sans-serif; padding: 20px;background-color:  #cbd5e1;}
     h1 { color: #2c3e50; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ccc; }

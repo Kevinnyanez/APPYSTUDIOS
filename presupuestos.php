@@ -24,6 +24,23 @@ $stock_items = [];
 while ($row = $stock_result->fetch_assoc()) {
     $stock_items[] = $row;
 }
+require_once '../dompdf/autoload.inc.php';  // ajusta la ruta si hace falta
+
+use Dompdf\Dompdf;
+
+$dompdf = new Dompdf();
+
+$html = '
+<h1>Presupuesto</h1>
+<p>Detalle del presupuesto...</p>
+';
+
+$dompdf->loadHtml($html);
+$dompdf->setPaper('A4', 'portrait');
+$dompdf->render();
+
+$dompdf->stream("presupuesto.pdf", ["Attachment" => true]); // true para descargar, false para ver en navegador
+
 ?>
 
 <!DOCTYPE html>
