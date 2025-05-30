@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 include 'includes/db.php';
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
+ // Este archivo debe definir $conn (MySQLi)
 
 if (isset($_GET['descargar_pdf'])) {
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
@@ -13,57 +14,81 @@ if (isset($_GET['descargar_pdf'])) {
         die("ID inválido para descargar PDF");
     }
 
-    // Consulta usando mysqli
+    // Obtener presupuesto y cliente
     $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
             FROM presupuestos p
-            JOIN clientes c ON p.id_cliente = c.id_cliente
-            WHERE p.id_presupuesto = ?";
-$sql_items = "SELECT pi.*, s.nombre AS nombre_producto
-              FROM presupuesto_items pi
-              JOIN stock s ON pi.id_item = s.id_stock
-              WHERE pi.id_presupuesto = ?";
+            JOIN clientes c ON p.id_cliente = c.id
+            WHERE p.id = $id";
 
-$stmt_items = $conn->prepare($sql_items);
-$stmt_items->bind_param("i", $id);
-$stmt_items->execute();
-$result_items = $stmt_items->get_result();
-
-$items = [];
-while ($row = $result_items->fetch_assoc()) {
-    $items[] = $row;
-}
-
-
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    $presupuesto = $resultado->fetch_assoc();
+    $result = $conn->query($sql);
+    $presupuesto = $result->fetch_assoc();
 
     if (!$presupuesto) {
         die("No se encontró el presupuesto con ID $id");
     }
 
-   $html = '
-    <h1>Presupuesto</h1>
-    <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
-    <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
-    <p><strong>Fecha:</strong> ' . htmlspecialchars($presupuesto['fecha_creacion']) . '</p>
-    <p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
-    <h2>Ítems</h2>
-    <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
+    // Obtener ítems del presupuesto
+    $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
+                  FROM presupuesto_items pi
+                  JOIN stock s ON pi.id_item = s.id_stock
+                  WHERE pi.id_presupuesto = $id";
+
+    $result_items = $conn->query($sql_items);
+    $items = [];
+    while ($row = $result_items->fetch_assoc()) {
+        $items[] = $row;
+    }
+
+    // Formatear fecha
+    $fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
+
+    // Crear HTML
+    $html = '
+        <style>
+            body { font-family: Arial, sans-serif; }
+            h1 { color: #333; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
+            th { background-color: #eee; }
+        </style>
+
+        <h1>Presupuesto</h1>
+        <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+        <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+        <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+
+        <h2>Ítems</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    foreach ($items as $item) {
+        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $html .= '
             <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>';
+                <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
+                <td>' . $item['cantidad'] . '</td>
+                <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
+                <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
+            </tr>';
+    }
+
+    $html .= '
+            </tbody>
+        </table>';
+
+        $total_subtotal = 0;
 foreach ($items as $item) {
     $subtotal = $item['cantidad'] * $item['precio_unitario'];
+    $total_subtotal += $subtotal;
     $html .= '
         <tr>
             <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
@@ -72,20 +97,24 @@ foreach ($items as $item) {
             <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
         </tr>';
 }
+
+// Agregamos fila de total final
 $html .= '
-        </tbody>
-    </table>
-';
+    <tr style="font-weight: bold; background-color: #f2f2f2;">
+        <td colspan="3" style="text-align: right;">Total Ítems:</td>
+        <td>$' . number_format($total_subtotal, 2, ',', '.') . '</td>
+    </tr>';
 
 
+    // Generar PDF
     $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
-
     $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
     exit;
 }
+
 
 
 
