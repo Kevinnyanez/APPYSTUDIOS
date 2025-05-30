@@ -125,11 +125,11 @@ $result_clientes = $conn ->query($sql_clientes);
 th, td {
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #444;
 }
 
 th {
-  background-color: #222;
+  background-color: #333;
   color: #fff;
   font-weight: bold;
   font-size: 14px;
