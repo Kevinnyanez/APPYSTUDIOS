@@ -78,7 +78,7 @@ if (isset($_GET['descargar_pdf'])) {
             <tr>
                 <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
                 <td>' . $item['cantidad'] . '</td>
-                <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
+                <td>$' . number_format($item['total_con_recargo'], 2, ',', '.') . '</td>
                 <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
             </tr>';
     }
