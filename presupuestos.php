@@ -71,7 +71,7 @@ if (isset($_GET['descargar_pdf'])) {
 
     $total_subtotal = 0;
     foreach ($items as $item) {
-        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $subtotal = $item['cantidad'] * $item['subtotal'];
         $total_subtotal += $subtotal;
 
         $html .= '
