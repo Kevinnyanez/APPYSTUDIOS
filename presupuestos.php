@@ -26,21 +26,27 @@ while ($row = $stock_result->fetch_assoc()) {
 }
 require_once 'dompdf/autoload.inc.php';  // ajusta la ruta si hace falta
 
-use Dompdf\Dompdf;
+if (isset($_GET['descargar_pdf'])) {
+    require_once 'dompdf/autoload.inc.php';
+    use Dompdf\Dompdf;
 
-$dompdf = new Dompdf();
+    $dompdf = new Dompdf();
 
-$html = '
-<h1>Presupuesto</h1>
-<p>Detalle del presupuesto...</p>
-';
+    // Acá podés generar HTML dinámico desde los datos obtenidos, esto es solo ejemplo:
+    $html = '
+        <h1>Presupuesto</h1>
+        <p>Cliente: ' . $presupuestos[0]['nombre_cliente'] . '</p>
+        <p>Fecha: ' . $presupuestos[0]['fecha_creacion'] . '</p>
+        <p>Total: $' . $presupuestos[0]['total'] . '</p>
+    ';
 
-$dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'portrait');
-$dompdf->render();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
 
-$dompdf->stream("presupuesto.pdf", ["Attachment" => true]); // true para descargar, false para ver en navegador
-
+    $dompdf->stream("presupuesto.pdf", ["Attachment" => true]);
+    exit; // ❗ Muy importante: cortar ejecución acá
+}
 ?>
 
 <!DOCTYPE html>
