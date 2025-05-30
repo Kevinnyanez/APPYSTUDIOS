@@ -40,15 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Abrir modal inicial ---
-  const btnAbrir = document.getElementById('abrirModalPresupuesto');
-  if (btnAbrir) {
+ const btnAbrir = document.getElementById('abrirModalPresupuesto');
+if (btnAbrir) {
+  btnAbrir.addEventListener('click', function (e) {
     console.log('Click en botón abrir modal. Llamando a limpieza y abriendo modal cliente.');
-    e.preventDefault();
+    e.preventDefault(); // Ahora sí funciona
     limpiarTodoPresupuesto(); // Aseguramos la limpieza
     abrirModalCliente();
-  } else {
-    console.error('No se encontró el botón abrir modal');
-  }
+  });
+} else {
+  console.error('No se encontró el botón abrir modal');
+}
+
 
   // --- Cerrar modales ---
   document.getElementById('cerrarModalCliente').onclick = cerrarModalCliente;

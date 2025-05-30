@@ -1,5 +1,179 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include 'includes/db.php';
+require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
+use Dompdf\Dompdf;
+ // Este archivo debe definir $conn (MySQLi)
+
+if (isset($_GET['descargar_pdf'])) {
+    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($id <= 0) {
+        die("ID inválido para descargar PDF");
+    }
+
+    // Obtener presupuesto y cliente
+    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
+            FROM presupuestos p
+            JOIN clientes c ON p.id_cliente = c.id_cliente
+            WHERE p.id_presupuesto = $id";
+    $result = $conn->query($sql);
+    $presupuesto = $result->fetch_assoc();
+
+    if (!$presupuesto) {
+        die("No se encontró el presupuesto con ID $id");
+    }
+
+    // Obtener ítems del presupuesto
+   $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
+              FROM presupuesto_items pi
+              JOIN stock s ON pi.id_stock = s.id_stock
+              WHERE pi.id_presupuesto = $id";
+
+    $result_items = $conn->query($sql_items);
+    $items = [];
+    while ($row = $result_items->fetch_assoc()) {
+        $items[] = $row;
+    }
+
+    // Formatear fecha
+    $fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
+
+    // Crear HTML
+    $html = '
+        <style>
+            body {
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    margin: 20px;
+    font-size: 12pt;
+}
+
+h1 {
+    color: #004080;
+    border-bottom: 3px solid #004080;
+    padding-bottom: 8px;
+    font-weight: 700;
+    font-size: 24pt;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: #004080;
+    font-weight: 600;
+    font-size: 16pt;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+strong {
+    color: #004080;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 11pt;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #e0e7f1;
+    color: #004080;
+    font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9fafc;
+}
+
+tfoot tr {
+    font-weight: 700;
+    background-color: #d0d8e8;
+}
+
+.footer {
+    margin-top: 40px;
+    font-size: 9pt;
+    color: #555;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+        </style>
+
+        <h1>Presupuesto</h1>
+        <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+        <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+        <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+
+        <h2>Ítems</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    $total_subtotal = 0;
+    foreach ($items as $item) {
+        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $total_subtotal += $subtotal;
+
+        $html .= '
+            <tr>
+                <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
+                <td>' . $item['cantidad'] . '</td>
+                <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
+                <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
+            </tr>';
+    }
+
+    // Agregamos fila de total final
+    $html .= '
+            <tr style="font-weight: bold; background-color: #f2f2f2;">
+                <td colspan="3" style="text-align: right;">Total Ítems:</td>
+                <td>$' . number_format($total_subtotal, 2, ',', '.') . '</td>
+            </tr>
+        </tbody>
+    </table>';
+
+    // Generar PDF
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
+    exit;
+}
+
+
+
+
+
+
 
 // Cargar presupuestos con el nombre del clientee
 $sql = "SELECT p.*, c.nombre AS nombre_cliente
@@ -24,6 +198,9 @@ $stock_items = [];
 while ($row = $stock_result->fetch_assoc()) {
     $stock_items[] = $row;
 }
+  // ajusta la ruta si hace falta
+
+
 ?>
 
 <!DOCTYPE html>
@@ -598,20 +775,35 @@ input:focus, select:focus {
       <th>Cliente</th>
       <th>Fecha</th>
       <th>Total</th>
+      <th>Total Con Recargo</th>
       <th>Estado</th>
       <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
     <?php if (empty($presupuestos)): ?>
-      <tr><td colspan="6" class="sin-presupuestos">No hay presupuestos registrados.</td></tr>
+      <tr><td colspan="7" class="sin-presupuestos">No hay presupuestos registrados.</td></tr>
     <?php else: ?>
       <?php foreach ($presupuestos as $p): ?>
         <tr>
           <td><?= $p['id_presupuesto'] ?></td>
           <td><?= htmlspecialchars($p['nombre_cliente']) ?></td>
-          <td><?= $p['fecha_creacion'] ?></td>
+          <td>
+          <?php
+          $fecha = new DateTime($p['fecha_creacion']);
+          $formatter = new IntlDateFormatter(
+              'es_ES', 
+              IntlDateFormatter::LONG, 
+              IntlDateFormatter::NONE,
+             null,
+             null,
+             "d 'de' MMMM 'de' yyyy"
+          );
+          echo $formatter->format($fecha);
+          ?>
+          </td>
           <td>$<?= number_format($p['total'], 2) ?></td>
+          <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
           <td>
             <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
@@ -620,6 +812,8 @@ input:focus, select:focus {
               | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
             <?php endif; ?>
             | <a href="presupuesto_action.php?delete=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Eliminar presupuesto?')" class="btn-link eliminar">Eliminar</a>
+              | <a href="presupuestos.php?descargar_pdf=1&id=<?= $p['id_presupuesto'] ?>" target="_blank" class="btn-link descargar-pdf">Descargar PDF</a>
+
           </td>
         </tr>
       <?php endforeach; ?>
