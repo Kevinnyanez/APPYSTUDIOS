@@ -11,7 +11,7 @@
     border-top: 1px solid #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 ">
-<div style="margin-bottom: 10px;">
+<div style="margin-bottom: 2px;">
         <img src="AppyLogo.png" alt="Logo Appy Studios" style="height: 80px; object-fit: contain;" />
     </div>
     <div style="margin-bottom: 6px; font-weight: bold; color: #222;">
