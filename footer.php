@@ -3,6 +3,8 @@
     color: #444;
     font-size: 11px;
     padding: 20px 40px;
+    width: 100%;
+    margin-top: 150px;
     text-align: center;
     border-top: 1px solid #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
