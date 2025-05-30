@@ -237,7 +237,11 @@ tfoot tr {
 
 
 
-
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: index.php");
+    exit;
+}
 
 
 // Cargar presupuestos con el nombre del clientee
