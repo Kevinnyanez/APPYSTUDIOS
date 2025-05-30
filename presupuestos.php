@@ -18,10 +18,16 @@ if (isset($_GET['descargar_pdf'])) {
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = ?";
-  $sql_items = "SELECT * FROM presupuesto_items WHERE id_presupuesto = :id";
-  $stmt_items = $pdo->prepare($sql_items);
-  $stmt_items->execute(['id' => $id]);
-  $items = $stmt_items->fetchAll();
+$sql_items = "SELECT * FROM presupuesto_items WHERE id_presupuesto = ?";
+$stmt_items = $conn->prepare($sql_items);
+$stmt_items->bind_param("i", $id);
+$stmt_items->execute();
+$result_items = $stmt_items->get_result();
+$items = [];
+while ($row = $result_items->fetch_assoc()) {
+    $items[] = $row;
+}
+
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
