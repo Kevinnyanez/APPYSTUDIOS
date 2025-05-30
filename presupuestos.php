@@ -474,12 +474,16 @@ body {
   margin: 5% auto;
   padding: 30px 30px 20px 30px;
   border-radius: 12px;
-  width: 98%;
-  max-width: 1100px;
+  width: 96%;
+  max-width: 950px;
   min-width: 350px;
+  max-height: 90vh;
+  overflow: hidden;
   position: relative;
   color: #222;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 .cerrar-modal {
   color: #aaa;
@@ -520,8 +524,9 @@ body {
 
 /* Mejoras visuales para los pasos */
 .paso-modal {
-  padding: 18px 0 0 0;
-  min-height: 320px;
+  overflow-y: auto;
+  max-height: 70vh;
+  padding-right: 8px;
 }
 .form-group {
   margin-bottom: 28px;
@@ -567,6 +572,7 @@ input:focus, select:focus {
 .tabla-items-wrapper {
   overflow-x: auto;
   margin-bottom: 10px;
+  max-width: 100%;
 }
 #tablaItems th, #tablaItems td {
   font-size: 1em;
@@ -618,10 +624,9 @@ input:focus, select:focus {
 .sugerencias-lista li:hover { background: #e0f7fa; }
 
 .modal-paso {
-  max-width: 420px;
-  width: 98%;
-  margin: 0 auto;
-  padding: 18px 10px 0 10px;
+  overflow-y: auto;
+  max-height: 70vh;
+  padding-right: 8px;
 }
 @media (max-width: 600px) {
   .modal-paso { max-width: 99vw; padding: 8px 2vw 0 2vw; }
