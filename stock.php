@@ -143,7 +143,7 @@ h1.Stock-esti {
   text-decoration: none;
 }
 
-.table {
+table {
   width: 95%;
   margin: 0 auto;
   border-collapse: collapse;
@@ -153,24 +153,24 @@ h1.Stock-esti {
   overflow: hidden;
 }
 
-.table th,
-.table td {
+table th,
+table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #444;
 }
 
-.table th {
+table th {
   background-color: #333;
   color: #fff;
   font-weight: bold;
 }
 
-.table tr:nth-child(even) {
+table tr:nth-child(even) {
   background-color: #262626;
 }
 
-.table tr:hover {
+table tr:hover {
   background-color: #383838;
 }
 
