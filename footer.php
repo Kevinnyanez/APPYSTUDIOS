@@ -12,18 +12,18 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 ">
     <div style="margin-bottom: 6px; font-weight: bold; color: #222;">
-        FD | Soñando Bajito
+        Appy Studios Desarrollo Web
     </div>
     <div style="margin-bottom: 4px;">
-        Diseño y ambientación de eventos | Estilo único para cada celebración
+        Aplicaciones y Sitios Webs Profesionales
     </div>
     <div style="margin-bottom: 4px;">
-        📍 Buenos Aires, Argentina | 📞 +54 11 2345 6789
+        📍 Buenos Aires, Argentina | 📞 +2922442186
     </div>
     <div style="margin-bottom: 4px;">
-        📧 contacto@sonandobajito.com | 🕸️ www.sonandobajito.com
+        📧 appystudiosweb@gmail.com |  www.Pronto.com
     </div>
     <div>
-        IG: <a href="https://instagram.com/fd.sonandobajito" target="_blank" style="color: #004080; text-decoration: none;">@fd.sonandobajito</a>
+        IG: <a href="https://instagram.com/appystudiosweb" target="_blank" style="color: #004080; text-decoration: none;">@appystudiosweb</a>
     </div>
 </footer>
