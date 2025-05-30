@@ -391,6 +391,7 @@ while ($row = $result->fetch_assoc()) {
     <?php endif; ?>
   </tbody>
 </table>
+<?php include 'footer.php'; ?>
 
 </body>
 </html>

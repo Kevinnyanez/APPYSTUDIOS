@@ -896,6 +896,7 @@ window.productosPresupuesto = [
 ];
 </script>
 <script src="presupuestos.js"></script>
+<?php include 'footer.php'; ?>
 
 </body>
 </html>
