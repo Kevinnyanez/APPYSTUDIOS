@@ -44,11 +44,79 @@ if (isset($_GET['descargar_pdf'])) {
     // Crear HTML
     $html = '
         <style>
-            body { font-family: Arial, sans-serif; }
-            h1 { color: #333; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-            th, td { border: 1px solid #aaa; padding: 8px; text-align: left; }
-            th { background-color: #eee; }
+            body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    margin: 20px;
+    font-size: 12pt;
+}
+
+h1 {
+    color: #004080;
+    border-bottom: 3px solid #004080;
+    padding-bottom: 8px;
+    font-weight: 700;
+    font-size: 24pt;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: #004080;
+    font-weight: 600;
+    font-size: 16pt;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+strong {
+    color: #004080;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 11pt;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #e0e7f1;
+    color: #004080;
+    font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9fafc;
+}
+
+tfoot tr {
+    font-weight: 700;
+    background-color: #d0d8e8;
+}
+
+.footer {
+    margin-top: 40px;
+    font-size: 9pt;
+    color: #555;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
         </style>
 
         <h1>Presupuesto</h1>
@@ -71,14 +139,14 @@ if (isset($_GET['descargar_pdf'])) {
 
     $total_subtotal = 0;
     foreach ($items as $item) {
-        $subtotal = $item['cantidad'] * $item['subtotal'];
+        $subtotal = $item['cantidad'] * $item['precio_con_recargo'];
         $total_subtotal += $subtotal;
 
         $html .= '
             <tr>
                 <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
                 <td>' . $item['cantidad'] . '</td>
-                <td>$' . number_format($item['total_con_recargo'], 2, ',', '.') . '</td>
+                <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
                 <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
             </tr>';
     }
