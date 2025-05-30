@@ -18,13 +18,28 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 // Consulta para total acumulado
+// Consulta para total acumulado
 $totalAcumulado = 0;
 $sqlTotal = "SELECT SUM(total_con_recargo) AS total FROM presupuestos WHERE estado = 'cerrado'";
 $resTotal = $conn->query($sqlTotal);
 if ($row = $resTotal->fetch_assoc()) {
     $totalAcumulado = $row['total'];
 }
-?>
+// Consulta para total acumulado del mes filtrado
+$totalAcumulado = 0;
+$sqlTotal = "SELECT SUM(total_con_recargo) AS total 
+             FROM presupuestos 
+             WHERE estado = 'cerrado' 
+             AND MONTH(fecha_creacion) = ? 
+             AND YEAR(fecha_creacion) = ?";
+$stmtTotal = $conn->prepare($sqlTotal);
+$stmtTotal->bind_param("ii", $mes, $anio);
+$stmtTotal->execute();
+$resTotal = $stmtTotal->get_result();
+if ($row = $resTotal->fetch_assoc()) {
+    $totalAcumulado = $row['total'];
+}
+
 
 <!DOCTYPE html>
 <html lang="es">
