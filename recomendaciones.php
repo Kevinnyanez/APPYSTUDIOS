@@ -126,5 +126,6 @@ nav .logout:hover {
 
         </footer>
     </div>
+<?php include 'footer.php'; ?>
 </body>
 </html>

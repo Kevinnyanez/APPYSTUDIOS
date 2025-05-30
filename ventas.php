@@ -227,5 +227,6 @@ if ($row = $resTotal->fetch_assoc()) {
   💰 Total acumulado de todas las ventas: <strong>$<?= number_format($totalAcumulado, 2, ',', '.') ?></strong>
 </div>
 
+<?php include 'footer.php'; ?>
 </body>
 </html>
