@@ -15,6 +15,28 @@ $result = $conn->query($sql);
 
 $sql_clientes = "SELECT * FROM clientes";
 $result_clientes = $conn ->query($sql_clientes);
+
+// --- CONSULTAS PARA DASHBOARD ---
+// 1. Resumen de presupuestos
+$resPresup = $conn->query("SELECT COUNT(*) as total, SUM(total_con_recargo) as suma, SUM(CASE WHEN estado='abierto' THEN 1 ELSE 0 END) as abiertos, SUM(CASE WHEN estado='cerrado' THEN 1 ELSE 0 END) as cerrados FROM presupuestos");
+$presupResumen = $resPresup->fetch_assoc();
+$resProm = $conn->query("SELECT AVG(total_con_recargo) as promedio FROM presupuestos");
+$promPresupuesto = $resProm->fetch_assoc()['promedio'] ?? 0;
+
+// 2. Estado de clientes
+$resClientes = $conn->query("SELECT COUNT(*) as total FROM clientes");
+$totalClientes = $resClientes->fetch_assoc()['total'] ?? 0;
+$ultimosClientes = $conn->query("SELECT * FROM clientes ORDER BY fecha_registro DESC LIMIT 5");
+$clientesMasPresup = $conn->query("SELECT c.*, COUNT(p.id_presupuesto) as cantidad FROM clientes c LEFT JOIN presupuestos p ON c.id_cliente = p.id_cliente GROUP BY c.id_cliente ORDER BY cantidad DESC, c.nombre ASC LIMIT 5");
+
+// 3. Estado del stock
+$stockBajo = $conn->query("SELECT * FROM stock ORDER BY cantidad ASC, nombre ASC LIMIT 5");
+$tiposMasUsados = $conn->query("SELECT s.tipo, COUNT(pi.id_item) as usados FROM presupuesto_items pi JOIN stock s ON pi.id_stock = s.id_stock GROUP BY s.tipo ORDER BY usados DESC LIMIT 3");
+
+// 4. Últimos presupuestos
+$ultimosPresup = $conn->query("SELECT p.*, c.nombre as nombre_cliente FROM presupuestos p JOIN clientes c ON p.id_cliente = c.id_cliente ORDER BY p.fecha_creacion DESC LIMIT 5");
+$presupAbiertosAntiguos = $conn->query("SELECT p.*, c.nombre as nombre_cliente FROM presupuestos p JOIN clientes c ON p.id_cliente = c.id_cliente WHERE p.estado='abierto' ORDER BY p.fecha_creacion ASC LIMIT 5");
+$presupAbiertos = $conn->query("SELECT p.*, c.nombre as nombre_cliente FROM presupuestos p JOIN clientes c ON p.id_cliente = c.id_cliente WHERE p.estado='abierto' ORDER BY p.fecha_creacion DESC LIMIT 5");
 ?>
 
 <!DOCTYPE html>
@@ -216,62 +238,90 @@ a:hover {
             <p>Desde aquí podés administrar el stock, crear presupuestos y controlar las ventas.</p>
         </div>
 
-       <table>
-    <thead>
-        <tr>
-            <th>ID</th><th>Nombre</th><th>Descripción</th><th>Cantidad</th><th>Precio Unitario</th><th>Tipo</th><th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><?=htmlspecialchars($row['id_stock'])?></td>
-                <td><?=htmlspecialchars($row['nombre'])?></td>
-                <td><?=htmlspecialchars($row['descripcion'])?></td>
-                <td><?=htmlspecialchars($row['cantidad'])?></td>
-                <td>$<?=number_format($row['precio_unitario'], 2)?></td>
-                <td><?=htmlspecialchars($row['tipo'])?></td>
-                <td>
-                    <a href="stock_form.php?id=<?= $row['id_stock'] ?>">Editar</a> |
-                    <a href="stock_action.php?action=delete&id=<?= $row['id_stock'] ?>" onclick="return confirm('¿Seguro querés eliminar este item?');">Eliminar</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <tr><td colspan="7" style="text-align:center;">No se encontraron items.</td></tr>
-        <?php endif; ?>
-    </tbody>
-</table>
-<a href="stock.php" class="btn-volver">Ir a Stock</a>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th><th>Nombre</th><th>Gmail</th><th>Telefono</th><th>Direccion</th><th>Fecha de Registro</th><th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if ($result_clientes && $result_clientes->num_rows > 0): ?>
-            <?php while($row = $result_clientes->fetch_assoc()): ?>
-            <tr>
-                <td><?=htmlspecialchars($row['id_cliente'])?></td>
-                <td><?=htmlspecialchars($row['nombre'])?></td>
-                <td><?=htmlspecialchars($row['email'])?></td>
-                <td><?=htmlspecialchars($row['telefono'])?></td>
-                <td><?=htmlspecialchars($row['direccion'])?></td>
-                <td><?=htmlspecialchars($row['fecha_registro'])?></td>
-                <td>
-                    <a href="clientes.php?id=">Editar</a> |
-                    <a href="clientes.php">Eliminar</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <tr><td colspan="7" style="text-align:center;">No se encontraron items.</td></tr>
-        <?php endif; ?>
-    </tbody>
-</table>
-<a href="clientes.php" class="btn-volver">Ir a Clientes</a>
+       <div class="dashboard" style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto;">
+  <div style="flex:1 1 320px; min-width:320px;">
+    <h2>Resumen de Presupuestos</h2>
+    <ul style="list-style:none; padding:0;">
+      <li><strong>Total creados:</strong> <?= $presupResumen['total'] ?></li>
+      <li><strong>Abiertos:</strong> <?= $presupResumen['abiertos'] ?> | <strong>Cerrados:</strong> <?= $presupResumen['cerrados'] ?></li>
+      <li><strong>Monto total presupuestado:</strong> $<?= number_format($presupResumen['suma'] ?? 0,2) ?></li>
+      <li><strong>Promedio por cliente:</strong> $<?= number_format($promPresupuesto,2) ?></li>
+    </ul>
+    <h2>Últimos presupuestos</h2>
+    <ul style="list-style:none; padding:0;">
+      <?php while($p = $ultimosPresup->fetch_assoc()): ?>
+        <li>
+          <strong>#<?= $p['id_presupuesto'] ?></strong> - <?= htmlspecialchars($p['nombre_cliente']) ?> - <?= ucfirst($p['estado']) ?> - $<?= number_format($p['total_con_recargo'],2) ?> <span style="color:#888;">(<?= date('d/m/Y', strtotime($p['fecha_creacion'])) ?>)</span>
+        </li>
+      <?php endwhile; ?>
+    </ul>
+    <h2>Presupuestos abiertos más antiguos</h2>
+    <ul style="list-style:none; padding:0;">
+      <?php while($p = $presupAbiertosAntiguos->fetch_assoc()): ?>
+        <li>
+          <strong>#<?= $p['id_presupuesto'] ?></strong> - <?= htmlspecialchars($p['nombre_cliente']) ?> - <?= ucfirst($p['estado']) ?> - <span style="color:#888;">(<?= date('d/m/Y', strtotime($p['fecha_creacion'])) ?>)</span>
+        </li>
+      <?php endwhile; ?>
+    </ul>
+    <a href="presupuesto_form.php" class="btn-volver" style="background:#38bdf8; color:#222;">+ Nuevo presupuesto</a>
+  </div>
+  <div style="flex:1 1 320px; min-width:320px;">
+    <h2>Estado de Clientes</h2>
+    <ul style="list-style:none; padding:0;">
+      <li><strong>Total registrados:</strong> <?= $totalClientes ?></li>
+      <li><strong>Últimos añadidos:</strong>
+        <ul style="padding-left:18px;">
+          <?php while($c = $ultimosClientes->fetch_assoc()): ?>
+            <li><?= htmlspecialchars($c['nombre']) ?> (<?= htmlspecialchars($c['email']) ?>)</li>
+          <?php endwhile; ?>
+        </ul>
+      </li>
+      <li><strong>Clientes con más presupuestos:</strong>
+        <ul style="padding-left:18px;">
+          <?php while($c = $clientesMasPresup->fetch_assoc()): ?>
+            <li><?= htmlspecialchars($c['nombre']) ?> (<?= $c['cantidad'] ?> presupuestos)</li>
+          <?php endwhile; ?>
+        </ul>
+      </li>
+    </ul>
+    <h2>Contactos rápidos</h2>
+    <ul style="list-style:none; padding:0;">
+      <?php $ultimosClientes2 = $conn->query("SELECT * FROM clientes ORDER BY fecha_registro DESC LIMIT 5"); while($c = $ultimosClientes2->fetch_assoc()): ?>
+        <li><a href="mailto:<?= htmlspecialchars($c['email']) ?>">📧 <?= htmlspecialchars($c['nombre']) ?></a> - <?= htmlspecialchars($c['telefono']) ?></li>
+      <?php endwhile; ?>
+    </ul>
+  </div>
+  <div style="flex:1 1 320px; min-width:320px;">
+    <h2>Estado del Stock</h2>
+    <ul style="list-style:none; padding:0;">
+      <li><strong>Productos con menor disponibilidad:</strong>
+        <ul style="padding-left:18px;">
+          <?php while($s = $stockBajo->fetch_assoc()): ?>
+            <li><?= htmlspecialchars($s['nombre']) ?> (<?= $s['cantidad'] ?> unidades)</li>
+          <?php endwhile; ?>
+        </ul>
+      </li>
+      <li><strong>Tipos más usados en presupuestos:</strong>
+        <ul style="padding-left:18px;">
+          <?php while($t = $tiposMasUsados->fetch_assoc()): ?>
+            <li><?= htmlspecialchars($t['tipo']) ?> (<?= $t['usados'] ?> usos)</li>
+          <?php endwhile; ?>
+        </ul>
+      </li>
+    </ul>
+    <h2>Acciones rápidas</h2>
+    <ul style="list-style:none; padding:0;">
+      <li><a href="presupuesto_form.php" class="btn-volver" style="background:#38bdf8; color:#222;">+ Nuevo presupuesto</a></li>
+      <li><strong>Presupuestos pendientes de revisión:</strong>
+        <ul style="padding-left:18px;">
+          <?php while($p = $presupAbiertos->fetch_assoc()): ?>
+            <li><a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>">#<?= $p['id_presupuesto'] ?> - <?= htmlspecialchars($p['nombre_cliente']) ?></a></li>
+          <?php endwhile; ?>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
 
     </div>
 </body>
