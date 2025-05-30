@@ -209,6 +209,7 @@ th {
   background-color: #333;
   color: #fff;
   font-weight: bold;
+  font-size: 14px;
 }
 
 </style>
