@@ -27,10 +27,11 @@ if (isset($_GET['descargar_pdf'])) {
     }
 
     // Obtener ítems del presupuesto
-    $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
-                  FROM presupuesto_items pi
-                  JOIN stock s ON pi.id_item = s.id_stock
-                  WHERE pi.id_presupuesto = $id";
+   $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
+              FROM presupuesto_items pi
+              JOIN stock s ON pi.id_stock = s.id_stock
+              WHERE pi.id_presupuesto = $id";
+
     $result_items = $conn->query($sql_items);
     $items = [];
     while ($row = $result_items->fetch_assoc()) {
