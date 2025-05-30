@@ -130,7 +130,7 @@ h1 {
 }
 
 /* Botón principal */
-button {
+button[type="submit"] {
   background-color: #0077b6;
   color: white;
   border: none;
@@ -141,13 +141,28 @@ button {
   transition: background-color 0.2s ease-in-out, transform 0.1s;
 }
 
-button:hover {
+button[type="submit"]:hover {
   background-color: #005f87;
   transform: scale(1.02);
 }
 
-button:active {
+button[type="submit"]:active {
   transform: scale(0.98);
+}
+
+a[href="stock.php"] {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #0077b6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out, transform 0.1s;
+}
+
+a[href="stock.php"]:hover {
+  color: #005f87;
+  text-decoration: underline;
+  transform: translateX(-2px);
 }
 
 </style>
