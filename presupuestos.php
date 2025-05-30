@@ -685,11 +685,6 @@ input:focus, select:focus {
               | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
             <?php endif; ?>
             | <a href="presupuesto_action.php?delete=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Eliminar presupuesto?')" class="btn-link eliminar">Eliminar</a>
-              <td>
-  <a href="presupuestos.php?descargar_pdf=1&id=<?= $p['id'] ?>" target="_blank" class="btn btn-sm btn-primary">
-    Descargar PDF
-  </a>
-</td>
           </td>
         </tr>
       <?php endforeach; ?>
