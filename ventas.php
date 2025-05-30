@@ -53,55 +53,119 @@ if ($row = $resTotal->fetch_assoc()) {
   <meta charset="UTF-8">
   <title>Ventas Confirmadas</title>
   <style>
-    body { font-family: sans-serif; padding: 20px;background-color:  #cbd5e1;}
-    h1 { color: #2c3e50; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ccc; }
-    th { background-color: #ecf0f1; }
-    .total { font-weight: bold; color: green; }
-    .filtros { margin-top: 10px; margin-bottom: 20px; }
-    .total-acumulado { margin-top: 20px; font-weight: bold; background: #f5f5f5; padding: 10px; border: 1px solid #ccc; display: inline-block; }
-  
-    nav {
-  background: #232b36;
-  border-radius: 12px;
-  padding: 22px 36px 18px 36px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  gap: 36px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.10);
-}
-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.18rem;
-  font-weight: 500;
-  margin-right: 18px;
-  transition: color 0.18s, background 0.18s, box-shadow 0.18s;
-  padding: 6px 12px;
-  border-radius: 6px;
-}
-nav a:hover {
-  background: #0077b6;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0,119,182,0.10);
-}
-nav .logout {
-  margin-left: auto;
-  background: #ef4444;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 8px 22px;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 8px rgba(239,68,68,0.10);
-  transition: background 0.18s, color 0.18s;
-}
-nav .logout:hover {
-  background: #b91c1c;
-  color: #fff;
-}
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #cbd5e1;
+      color: #222;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #00bcd4;
+      margin-bottom: 24px;
+      text-align: center;
+      font-size: 2rem;
+    }
+    .filtros {
+      margin: 0 auto 28px auto;
+      max-width: 700px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px 24px 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+    .filtros label {
+      font-weight: 600;
+      color: #0077b6;
+      margin-right: 6px;
+    }
+    .filtros select, .filtros button {
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+    .filtros button {
+      background: #00bcd4;
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .filtros button:hover {
+      background: #0097a7;
+    }
+    table {
+      width: 98%;
+      margin: 0 auto 24px auto;
+      border-collapse: separate;
+      border-spacing: 0;
+      background-color: #23272f;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #1a1d23;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.08rem;
+      letter-spacing: 0.5px;
+    }
+    tr {
+      transition: background 0.18s;
+    }
+    tr:nth-child(even) {
+      background-color: #23272f;
+    }
+    tr:nth-child(odd) {
+      background-color: #2d323c;
+    }
+    tr:hover {
+      background-color: #0077b6 !important;
+      color: #fff;
+    }
+    td, th {
+      border-bottom: 1px solid #353a45;
+    }
+    td {
+      color: #f1f1f1;
+      font-size: 1rem;
+    }
+    .total {
+      font-weight: bold;
+      color: #22c55e;
+    }
+    .total-acumulado {
+      margin: 0 auto 0 auto;
+      font-weight: bold;
+      background: #fff;
+      padding: 18px 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: block;
+      max-width: 700px;
+      color: #0077b6;
+      font-size: 1.15rem;
+      text-align: center;
+    }
+    @media (max-width: 900px) {
+      table, .filtros, .total-acumulado { width: 99%; padding: 10px; }
+      th, td { padding: 8px 6px; font-size: 0.98rem; }
+      h1 { font-size: 1.3rem; }
+    }
   </style>
 </head>
 <body>
