@@ -121,7 +121,7 @@ tfoot tr {
     margin-top: 50px;
     padding-top: 20px;
     border-top: 1px solid #ddd;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Segoe UI, sans-serif;
     font-size: 10pt;
     color: #444;
     line-height: 1.5;
