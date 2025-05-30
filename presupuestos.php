@@ -45,7 +45,7 @@ if (isset($_GET['descargar_pdf'])) {
     $html = '
         <style>
             body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
     color: #222;
     margin: 20px;
     font-size: 12pt;
