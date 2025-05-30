@@ -12,7 +12,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 ">
 <div style="margin-bottom: 10px;">
-        <img src="Appylogo.png" alt="Logo Soñando Bajito" style="height: 40px; object-fit: contain;" />
+        <img src="AppyLogo.png" alt="Logo Appy Studios" style="height: 40px; object-fit: contain;" />
     </div>
     <div style="margin-bottom: 6px; font-weight: bold; color: #222;">
         Appy Studios Desarrollo Web
