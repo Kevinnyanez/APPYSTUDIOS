@@ -19,7 +19,6 @@ if (isset($_GET['descargar_pdf'])) {
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = $id";
-
     $result = $conn->query($sql);
     $presupuesto = $result->fetch_assoc();
 
@@ -32,7 +31,6 @@ if (isset($_GET['descargar_pdf'])) {
                   FROM presupuesto_items pi
                   JOIN stock s ON pi.id_item = s.id_stock
                   WHERE pi.id_presupuesto = $id";
-
     $result_items = $conn->query($sql_items);
     $items = [];
     while ($row = $result_items->fetch_assoc()) {
@@ -70,8 +68,11 @@ if (isset($_GET['descargar_pdf'])) {
             </thead>
             <tbody>';
 
+    $total_subtotal = 0;
     foreach ($items as $item) {
         $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $total_subtotal += $subtotal;
+
         $html .= '
             <tr>
                 <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
@@ -81,30 +82,14 @@ if (isset($_GET['descargar_pdf'])) {
             </tr>';
     }
 
+    // Agregamos fila de total final
     $html .= '
-            </tbody>
-        </table>';
-
-        $total_subtotal = 0;
-foreach ($items as $item) {
-    $subtotal = $item['cantidad'] * $item['precio_unitario'];
-    $total_subtotal += $subtotal;
-    $html .= '
-        <tr>
-            <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
-            <td>' . $item['cantidad'] . '</td>
-            <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
-            <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
-        </tr>';
-}
-
-// Agregamos fila de total final
-$html .= '
-    <tr style="font-weight: bold; background-color: #f2f2f2;">
-        <td colspan="3" style="text-align: right;">Total Ítems:</td>
-        <td>$' . number_format($total_subtotal, 2, ',', '.') . '</td>
-    </tr>';
-
+            <tr style="font-weight: bold; background-color: #f2f2f2;">
+                <td colspan="3" style="text-align: right;">Total Ítems:</td>
+                <td>$' . number_format($total_subtotal, 2, ',', '.') . '</td>
+            </tr>
+        </tbody>
+    </table>';
 
     // Generar PDF
     $dompdf = new Dompdf();
@@ -114,6 +99,7 @@ $html .= '
     $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
     exit;
 }
+
 
 
 
