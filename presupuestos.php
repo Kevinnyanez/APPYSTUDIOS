@@ -472,11 +472,14 @@ body {
 .modal-contenido {
   background-color: #fff;
   margin: 5% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%; max-width: 900px;
+  padding: 30px 30px 20px 30px;
+  border-radius: 12px;
+  width: 98%;
+  max-width: 1100px;
+  min-width: 350px;
   position: relative;
   color: #222;
+  box-sizing: border-box;
 }
 .cerrar-modal {
   color: #aaa;
@@ -521,7 +524,7 @@ body {
   min-height: 320px;
 }
 .form-group {
-  margin-bottom: 18px;
+  margin-bottom: 28px;
 }
 input, select, button {
   font-size: 1.1em;
@@ -774,6 +777,13 @@ input:focus, select:focus {
       <div class="form-group">
         <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
       </div>
+      <!-- FLETE -->
+      <div class="form-group" style="display:flex; align-items:center; gap:18px;">
+        <input type="checkbox" id="agregarFlete" style="width:22px; height:22px; margin-right:8px;">
+        <label for="agregarFlete" style="margin:0; font-weight:600;">Agregar flete</label>
+        <input type="number" id="montoFlete" placeholder="Monto del flete" min="0" step="0.01" style="width:140px; display:none; margin-left:10px;">
+      </div>
+      <!-- FIN FLETE -->
       <div class="tabla-items-wrapper">
         <table id="tablaItems">
           <thead>
@@ -799,6 +809,18 @@ input:focus, select:focus {
             <tr>
               <td colspan="3" style="text-align:right"><strong>Total con recargo:</strong></td>
               <td id="totalConRecargo">$0.00</td>
+              <td></td>
+            </tr>
+            <!-- Fila de flete -->
+            <tr id="filaFlete" style="display:none;">
+              <td colspan="3" style="text-align:right"><strong>Flete:</strong></td>
+              <td id="totalFlete">$0.00</td>
+              <td></td>
+            </tr>
+            <!-- Total final con flete -->
+            <tr id="filaTotalFinal" style="display:none;">
+              <td colspan="3" style="text-align:right"><strong>Total final (con flete):</strong></td>
+              <td id="totalFinalConFlete">$0.00</td>
               <td></td>
             </tr>
           </tfoot>
@@ -895,6 +917,44 @@ window.productosPresupuesto = [
 ];
 </script>
 <script src="presupuestos.js"></script>
+<script>
+// --- Lógica para flete ---
+const chkFlete = document.getElementById('agregarFlete');
+const inputFlete = document.getElementById('montoFlete');
+const filaFlete = document.getElementById('filaFlete');
+const filaTotalFinal = document.getElementById('filaTotalFinal');
+const tdTotalFlete = document.getElementById('totalFlete');
+const tdTotalFinalConFlete = document.getElementById('totalFinalConFlete');
+const tdTotalConRecargo = document.getElementById('totalConRecargo');
+
+function actualizarFlete() {
+  let totalConRecargo = parseFloat(tdTotalConRecargo.textContent.replace('$','').replace(',','')) || 0;
+  let flete = chkFlete.checked ? parseFloat(inputFlete.value) || 0 : 0;
+  if (chkFlete.checked && flete > 0) {
+    filaFlete.style.display = '';
+    filaTotalFinal.style.display = '';
+    tdTotalFlete.textContent = `$${flete.toFixed(2)}`;
+    tdTotalFinalConFlete.textContent = `$${(totalConRecargo + flete).toFixed(2)}`;
+  } else {
+    filaFlete.style.display = 'none';
+    filaTotalFinal.style.display = 'none';
+    tdTotalFlete.textContent = '$0.00';
+    tdTotalFinalConFlete.textContent = '$0.00';
+  }
+}
+if (chkFlete && inputFlete) {
+  chkFlete.addEventListener('change', function() {
+    inputFlete.style.display = this.checked ? '' : 'none';
+    actualizarFlete();
+  });
+  inputFlete.addEventListener('input', actualizarFlete);
+}
+// También actualizar cuando cambie el total con recargo
+if (tdTotalConRecargo) {
+  const observer = new MutationObserver(actualizarFlete);
+  observer.observe(tdTotalConRecargo, { childList: true });
+}
+</script>
 <?php include 'footer.php'; ?>
 </body>
 </html>
