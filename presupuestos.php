@@ -780,7 +780,7 @@ input:focus, select:focus {
         <button type="button" id="btnAgregarItem" class="btn-agregar">Agregar</button>
       </div>
       <div class="form-group">
-        <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="2.5" min="0" step="0.1" style="width:70px;"> </label>
+        <label>Recargo por producto (%): <input type="number" id="recargoProducto" value="150" min="0" step="0.1" style="width:70px;"> </label>
       </div>
       <!-- FLETE -->
       <div class="form-group" style="display:flex; align-items:center; gap:18px;">
