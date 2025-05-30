@@ -57,7 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title><?= $modo ?> producto</title>
-    <style>form {
+    <style>
+    
+    body {
+    background-color:  #cbd5e1;
+    }
+
+    form {
   max-width: 500px;
   margin: 2rem auto;
   padding: 2rem;
@@ -124,7 +130,7 @@ h1 {
 }
 
 /* Botón principal */
-button[type="submit"] {
+button {
   background-color: #0077b6;
   color: white;
   border: none;
@@ -135,12 +141,12 @@ button[type="submit"] {
   transition: background-color 0.2s ease-in-out, transform 0.1s;
 }
 
-button[type="submit"]:hover {
+button:hover {
   background-color: #005f87;
   transform: scale(1.02);
 }
 
-button[type="submit"]:active {
+button:active {
   transform: scale(0.98);
 }
 
