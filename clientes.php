@@ -1,9 +1,9 @@
 <?php
-include 'includes/db.php';
+require_once 'includes/db.php';
 session_start();
-if (!isset($_SESSION['usuario'])) {
-    header("Location: index.php");
-    exit;
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
 }
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
