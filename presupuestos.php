@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+include 'includes/db.php';
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
@@ -46,7 +46,7 @@ if (isset($_GET['descargar_pdf'])) {
 }
 
 
-include 'includes/db.php';
+
 
 // Cargar presupuestos con el nombre del clientee
 $sql = "SELECT p.*, c.nombre AS nombre_cliente
