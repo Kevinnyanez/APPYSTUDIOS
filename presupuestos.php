@@ -18,6 +18,10 @@ if (isset($_GET['descargar_pdf'])) {
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = ?";
+  $sql_items = "SELECT * FROM presupuesto_items WHERE id_presupuesto = :id";
+  $stmt_items = $pdo->prepare($sql_items);
+  $stmt_items->execute(['id' => $id]);
+  $items = $stmt_items->fetchAll();
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
@@ -29,13 +33,39 @@ if (isset($_GET['descargar_pdf'])) {
         die("No se encontró el presupuesto con ID $id");
     }
 
-    $html = '
-        <h1>Presupuesto</h1>
-        <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
-        <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
-        <p><strong>Fecha:</strong> ' . htmlspecialchars($presupuesto['fecha_creacion']) . '</p>
-        <p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
-    ';
+   $html = '
+<h1>Presupuesto</h1>
+<p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+<p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+<p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
+
+<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>';
+foreach ($items as $item) {
+    $subtotal = $item['cantidad'] * $item['precio_unitario'];
+    $html .= '
+        <tr>
+            <td>' . htmlspecialchars($item['descripcion']) . '</td>
+            <td>' . $item['cantidad'] . '</td>
+            <td>$' . number_format($item['precio_unitario'], 2, ',', '.') . '</td>
+            <td>$' . number_format($subtotal, 2, ',', '.') . '</td>
+        </tr>';
+}
+$html .= '
+    </tbody>
+</table>
+
+<p><strong>Total:</strong> $' . number_format($presupuesto['total'], 2, ',', '.') . '</p>
+';
+
 
     $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
