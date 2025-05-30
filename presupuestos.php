@@ -8,21 +8,22 @@ require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
 if (isset($_GET['descargar_pdf'])) {
-    // Validar id
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
     if ($id <= 0) {
         die("ID inválido para descargar PDF");
     }
 
-    // Asumo que $pdo está inicializado y conectado a la DB
+    // Consulta usando mysqli
     $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
             FROM presupuestos p
-            JOIN clientes c ON p.id_cliente = c.id
-            WHERE p.id = :id";
+            JOIN clientes c ON p.id_cliente = c.id_cliente
+            WHERE p.id_presupuesto = ?";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $id]);
-    $presupuesto = $stmt->fetch();
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $presupuesto = $resultado->fetch_assoc();
 
     if (!$presupuesto) {
         die("No se encontró el presupuesto con ID $id");
@@ -42,8 +43,9 @@ if (isset($_GET['descargar_pdf'])) {
     $dompdf->render();
 
     $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
-    exit; // Muy importante
+    exit;
 }
+
 
 
 
