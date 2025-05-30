@@ -44,6 +44,7 @@
   gap: 32px;
   max-width: 800px;
   margin: 0 auto;
+  min-height: 120px;
 }
 .footer-logo-wrapper {
   display: flex;
@@ -64,14 +65,20 @@
   display: block;
 }
 .footer-contact {
-  text-align: left;
+  text-align: center;
   flex: 1;
   min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
 .footer-title {
   font-weight: bold;
   color: #222;
   margin-bottom: 4px;
+  margin-top: 0;
 }
 .footer-appy a {
   color: #004080;
@@ -85,9 +92,12 @@
     flex-direction: column;
     gap: 10px;
     text-align: center;
+    min-height: unset;
   }
   .footer-contact {
     text-align: center;
+    align-items: center;
+    justify-content: center;
   }
   .footer-logo-wrapper svg { height: 38px; max-width: 80px; }
   .footer-logo-bg { padding: 6px 8px; }
