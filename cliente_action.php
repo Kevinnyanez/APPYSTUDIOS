@@ -1,15 +1,18 @@
 <?php
 include 'includes/db.php'; // cargamos $conn
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    if ($conn->query("DELETE FROM clientes WHERE id_cliente = $id") === false) {
-        error_log("Error al borrar cliente ID $id: " . $conn->error);
+    try {
+        $conn->query("DELETE FROM clientes WHERE id_cliente = $id");
+        header("Location: clientes.php?success=deleted");
+        exit;
+    } catch (mysqli_sql_exception $e) {
+        error_log("Error al borrar cliente ID $id: " . $e->getMessage());
         header("Location: clientes.php?error=foranea");
         exit;
     }
-    header("Location: clientes.php?success=deleted");
-    exit;
 }
 
 
