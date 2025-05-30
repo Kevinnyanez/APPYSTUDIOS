@@ -84,19 +84,22 @@ $result_presupuestos_cerrados = $conn->query($sql_presupuestos_cerrados);
       </tr>
     </thead>
     <tbody>
-      <?php if ($result_ventas->num_rows > 0): ?>
-        <?php while ($venta = $result_ventas->fetch_assoc()): ?>
-          <tr>
-            <td><?= $venta['id_ventas'] ?></td>
-            <td><?= htmlspecialchars($venta['nombre']) ?></td>
-            <td>#<?= $venta['id_presupuesto'] ?? '—' ?></td>
-            <td><?= $venta['fecha_venta'] ?></td>
-            <td>$<?= number_format($venta['monto_total'], 2) ?></td>
-          </tr>
-        <?php endwhile; ?>
-      <?php else: ?>
-        <tr><td colspan="5">No se registraron ventas este mes.</td></tr>
-      <?php endif; ?>
+      <?php while ($p = $result_presupuestos_activos->fetch_assoc()): ?>
+  <tr>
+    <td>#<?= $p['id_presupuesto'] ?></td>
+    <td><?= htmlspecialchars($p['nombre']) ?></td>
+    <td><?= $p['fecha_creacion'] ?></td>
+    <td><?= ucfirst($p['estado']) ?></td>
+    <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
+    <td>
+      <form method="post" action="confirmar_venta.php" class="form-confirmar-venta">
+        <input type="hidden" name="id_presupuesto" value="<?= $p['id_presupuesto'] ?>">
+        <button type="submit">Confirmar Venta</button>
+      </form>
+    </td>
+  </tr>
+<?php endwhile; ?>
+
     </tbody>
   </table>
 
