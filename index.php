@@ -43,16 +43,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; }
-        form { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px #ccc; width: 300px; }
-        input { width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
-        .error { color: red; margin-bottom: 10px; }
-        button { background: #007bff; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; }
-        button:hover { background: #0056b3; }
+        body { font-family: 'Inter', sans-serif; background: #f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; }
+        form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    background: #0d6efd;
+    transition: background 0.3s;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #0b5ed7;
+}
+form {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
     </style>
 </head>
 <body>
+    <img src="logo.png" alt="Logo" style="max-width:100px; margin: 0 auto 20px; display:block;">
+
     <form method="POST" action="">
         <h2>Iniciar Sesión</h2>
         <?php if ($error): ?>
@@ -62,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" name="clave" placeholder="Contraseña" required />
         <button type="submit">Entrar</button>
     </form>
-    <?php include 'footer.php'; ?>
+    
 
 </body>
 </html>
