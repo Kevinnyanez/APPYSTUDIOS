@@ -46,29 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; }
+        form { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px #ccc; width: 300px; }
+        input { width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
+        .error { color: red; margin-bottom: 10px; }
+        button { background: #007bff; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; }
+        button:hover { background: #0056b3; }
         form {
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-input {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-button {
-    background: #0d6efd;
-    transition: background 0.3s;
-    font-weight: bold;
-}
-
-button:hover {
-    background: #0b5ed7;
-}
-form {
   animation: fadeIn 0.8s ease-in-out;
 }
 
@@ -79,7 +62,7 @@ form {
     </style>
 </head>
 <body>
-    <img src="logo.png" alt="Logo" style="max-width:100px; margin: 0 auto 20px; display:block;">
+    <img src="logo.jpg" alt="Logo" style="max-width:100px; margin: 0 auto 20px; display:block;">
 
     <form method="POST" action="">
         <h2>Iniciar Sesión</h2>
