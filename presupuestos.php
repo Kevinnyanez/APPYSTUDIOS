@@ -10,7 +10,8 @@ if (!isset($_SESSION['id'])) {
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
-$id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+$id = isset($_REQUEST['id']) && is_numeric($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
+
 $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
 
 if ($id <= 0) {
