@@ -221,9 +221,9 @@ tfoot tr {
 $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
 
 $html .= '
-  <h3>Descripción adicional</h3>
-  <p>'. nl2br(htmlspecialchars($descripcion)) . '</p>
-  ';
+  '<h3>Descripción adicional</h3>'
+  '<p>'. nl2br(htmlspecialchars($descripcion)) . '</p>
+  ;
 
     <div class="pdf-footer">
     <h4>¡Gracias por consultarnos!</h4>
