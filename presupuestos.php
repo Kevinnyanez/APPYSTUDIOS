@@ -217,6 +217,14 @@ tfoot tr {
             </tr>
         </tbody>
     </table>
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+$descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+$html .= '
+  <h3>Descripción adicional</h3>
+  <p>'. nl2br(htmlspecialchars($descripcion)) . '</p>
+  ';
+
     <div class="pdf-footer">
     <h4>¡Gracias por consultarnos!</h4>
     <p>Esperamos con ansias trabajar con vos.</p>
@@ -905,7 +913,11 @@ input:focus, select:focus {
     <?php endif; ?>
   </tbody>
 </table>
-
+<div id="modal-descripcion" style="display: none; padding: 10px; border: 1px solid #ccc; margin-top: 10px;">
+  <textarea id="descripcion_input" rows="4" style="width: 100%;" placeholder="Agregá una descripción para el PDF..."></textarea>
+  <br>
+  <button id="confirmar_descarga">Confirmar y Descargar PDF</button>
+</div>
 <script>
 window.productosPresupuesto = [
   <?php foreach ($stock_items as $item): ?>
@@ -951,6 +963,39 @@ if (tdTotalConRecargo) {
   const observer = new MutationObserver(actualizarFlete);
   observer.observe(tdTotalConRecargo, { childList: true });
 }
+let idPresupuestoSeleccionado = null;
+
+document.querySelectorAll('.btn-descargar').forEach(btn => {
+  btn.addEventListener('click', function () {
+    idPresupuestoSeleccionado = this.getAttribute('data-id');
+    document.getElementById('modal-descripcion').style.display = 'block';
+    document.getElementById('descripcion_input').value = ''; // limpiar si quedó algo
+  });
+});
+
+document.getElementById('confirmar_descarga').addEventListener('click', function () {
+  const descripcion = document.getElementById('descripcion_input').value;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'generar_pdf.php', true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.responseType = 'blob';
+
+  xhr.onload = function () {
+    if (this.status === 200) {
+      const blob = new Blob([this.response], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `presupuesto_${idPresupuestoSeleccionado}.pdf`;
+      link.click();
+    } else {
+      alert('Error al generar el PDF');
+    }
+  };
+
+  xhr.send(`id=${idPresupuestoSeleccionado}&descripcion=${encodeURIComponent(descripcion)}`);
+});
+
 </script>
 <?php include 'footer.php'; ?>
 </body>
