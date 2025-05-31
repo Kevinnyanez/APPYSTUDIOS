@@ -62,5 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" name="clave" placeholder="Contraseña" required />
         <button type="submit">Entrar</button>
     </form>
+    <?php include 'footer.php'; ?>
+
 </body>
 </html>

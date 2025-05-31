@@ -217,8 +217,8 @@ tfoot tr {
             </tr>
         </tbody>
     </table>
-    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-$descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+    $id = isset($_POST[id]) ? intval($_POST[id]) : 0;
+$descripcion = isset($_POST[descripcion]) ? trim($_POST[descripcion]) : '';
 
 $html .= '
   '<h3>Descripción adicional</h3>'
