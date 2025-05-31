@@ -9,101 +9,236 @@ if (!isset($_SESSION['id'])) {
 }
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
+ // Este archivo debe definir $conn (MySQLi)
 
-$id = isset($_REQUEST['id']) && is_numeric($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
+if (isset($_GET['descargar_pdf'])) {
+    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($id <= 0) {
+        die("ID inválido para descargar PDF");
+    }
 
-$descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+    // Obtener presupuesto y cliente
+    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
+            FROM presupuestos p
+            JOIN clientes c ON p.id_cliente = c.id_cliente
+            WHERE p.id_presupuesto = $id";
+    $result = $conn->query($sql);
+    $presupuesto = $result->fetch_assoc();
 
-if ($id <= 0) {
-    die("ID inválido");
-}
+    if (!$presupuesto) {
+        die("No se encontró el presupuesto con ID $id");
+    }
 
-// Conexión a la base de datos ($conn ya debería estar disponible)
-
-$sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
-        FROM presupuestos p
-        JOIN clientes c ON p.id_cliente = c.id_cliente
-        WHERE p.id_presupuesto = $id";
-$result = $conn->query($sql);
-$presupuesto = $result->fetch_assoc();
-
-if (!$presupuesto) {
-    die("No se encontró el presupuesto");
-}
-
-$sql_items = "SELECT pi.*, s.nombre AS nombre_producto
+    // Obtener ítems del presupuesto
+   $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
               FROM presupuesto_items pi
               JOIN stock s ON pi.id_stock = s.id_stock
               WHERE pi.id_presupuesto = $id";
 
-$result_items = $conn->query($sql_items);
-$items = [];
-while ($row = $result_items->fetch_assoc()) {
-    $items[] = $row;
+    $result_items = $conn->query($sql_items);
+    $items = [];
+    while ($row = $result_items->fetch_assoc()) {
+        $items[] = $row;
+    }
+
+    // Formatear fecha
+    $fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
+
+    // Crear HTML
+    $html = '
+        <style>
+            body {
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    margin: 20px;
+    font-size: 12pt;
 }
 
-$fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
-
-$html = '<style>/* tu CSS aquí */</style>
-<div class="encabezado">
-    <h1>Presupuesto</h1>
-    <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
-    <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
-    <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
-    <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
-</div>
-<h2>Ítems</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Materiales</th>
-            <th>Cantidad</th>
-        </tr>
-    </thead>
-    <tbody>';
-
-$total_subtotal = 0;
-foreach ($items as $item) {
-    $subtotal = $item['cantidad'] * $item['subtotal'];
-    $total_subtotal += $subtotal;
-
-    $html .= '<tr>
-        <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
-        <td>' . $item['cantidad'] . '</td>
-    </tr>';
+h1 {
+    color: #004080;
+    border-bottom: 3px solid #004080;
+    padding-bottom: 8px;
+    font-weight: 700;
+    font-size: 24pt;
+    margin-bottom: 15px;
 }
 
-$html .= '<tr style="font-weight: bold; background-color: #f2f2f2;">
-    <td colspan="1" style="text-align: right;">Total Ítems:</td>
-    <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
-</tr>
-</tbody>
-</table>';
-
-if (!empty($descripcion)) {
-    $html .= '<h3>Descripción adicional</h3>
-    <p>' . nl2br(htmlspecialchars($descripcion)) . '</p>';
+h2 {
+    color: #004080;
+    font-weight: 600;
+    font-size: 16pt;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
 }
 
-$html .= '<div class="pdf-footer">
+p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+strong {
+    color: #004080;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 11pt;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #e0e7f1;
+    color: #004080;
+    font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9fafc;
+}
+
+tfoot tr {
+    font-weight: 700;
+    background-color: #d0d8e8;
+}
+
+.footer {
+    margin-top: 40px;
+    font-size: 9pt;
+    color: #555;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+.pdf-footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-family: Segoe UI, sans-serif;
+    font-size: 10pt;
+    color: #444;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.pdf-footer h4 {
+    font-size: 11pt;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.pdf-footer p {
+    margin: 3px 0;
+}
+
+.pdf-footer .contacto {
+    margin-top: 10px;
+    font-size: 9pt;
+    color: #666;
+}
+
+.pdf-footer .nota {
+    margin-top: 15px;
+    font-style: italic;
+    color: #777;
+    border-left: 3px solid #ccc;
+    padding-left: 10px;
+    font-size: 9.5pt;
+}
+
+.encabezado {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #004080;
+}
+
+.encabezado h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    color: #004080;
+    margin-bottom: 10px;
+}
+
+.encabezado p {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #222;
+    margin: 3px 0;
+}
+
+        </style>
+    <div class="encabezado">
+        <h1>Presupuesto</h1>
+        <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
+        <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
+        <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+    </div>
+        <h2>Ítems</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Materiales</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    $total_subtotal = 0;
+    foreach ($items as $item) {
+        $subtotal = $item['cantidad'] * $item['subtotal'];
+        $total_subtotal += $subtotal;
+
+        $html .= '
+            <tr>
+                <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
+                <td>' . $item['cantidad'] . '</td>
+            </tr>';
+    }
+
+    // Agregamos fila de total final
+    $html .= '
+            <tr style="font-weight: bold; background-color: #f2f2f2;">
+                <td colspan="3" style="text-align: right;">Total Ítems:</td>
+                <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pdf-footer">
     <h4>¡Gracias por consultarnos!</h4>
     <p>Esperamos con ansias trabajar con vos.</p>
+    
     <div class="contacto">
         <p><strong>IG:</strong> @fd.sonandobajito</p>
         <p><strong>Teléfono:</strong> +54 9 11 1234-5678</p>
     </div>
+    
     <div class="nota">
         <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
     </div>
 </div>';
 
-$dompdf = new Dompdf();
-$dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'portrait');
-$dompdf->render();
-$dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
-exit;
-
+    // Generar PDF
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("presupuesto_{$id}.pdf", ["Attachment" => true]);
+    exit;
+}
 
 
 // Cargar presupuestos con el nombre del clientee
@@ -770,11 +905,7 @@ input:focus, select:focus {
     <?php endif; ?>
   </tbody>
 </table>
-<div id="modal-descripcion" style="display: none; padding: 10px; border: 1px solid #ccc; margin-top: 10px;">
-  <textarea id="descripcion_input" rows="4" style="width: 100%;" placeholder="Agregá una descripción para el PDF..."></textarea>
-  <br>
-  <button id="confirmar_descarga">Confirmar y Descargar PDF</button>
-</div>
+
 <script>
 window.productosPresupuesto = [
   <?php foreach ($stock_items as $item): ?>
@@ -820,39 +951,6 @@ if (tdTotalConRecargo) {
   const observer = new MutationObserver(actualizarFlete);
   observer.observe(tdTotalConRecargo, { childList: true });
 }
-let idPresupuestoSeleccionado = null;
-
-document.querySelectorAll('.btn-descargar').forEach(btn => {
-  btn.addEventListener('click', function () {
-    idPresupuestoSeleccionado = this.getAttribute('data-id');
-    document.getElementById('modal-descripcion').style.display = 'block';
-    document.getElementById('descripcion_input').value = ''; // limpiar si quedó algo
-  });
-});
-
-document.getElementById('confirmar_descarga').addEventListener('click', function () {
-  const descripcion = document.getElementById('descripcion_input').value;
-
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'generar_pdf.php', true);
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  xhr.responseType = 'blob';
-
-  xhr.onload = function () {
-    if (this.status === 200) {
-      const blob = new Blob([this.response], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `presupuesto_${idPresupuestoSeleccionado}.pdf`;
-      link.click();
-    } else {
-      alert('Error al generar el PDF');
-    }
-  };
-
-  xhr.send(`id=${idPresupuestoSeleccionado}&descripcion=${encodeURIComponent(descripcion)}`);
-});
-
 </script>
 <?php include 'footer.php'; ?>
 </body>
