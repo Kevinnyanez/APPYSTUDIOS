@@ -30,6 +30,7 @@ if (isset($_GET['descargar_pdf'])) {
         die("No se encontró el presupuesto con ID $id");
     }
 
+    $sql = "SELECT descripcion from presupuestos";
     // Obtener ítems del presupuesto
    $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
               FROM presupuesto_items pi
@@ -214,13 +215,19 @@ tfoot tr {
         <table>
             <thead>
                 <tr>
-                    <th>Materiales</th>
-                    <th>Cantidad</th>
+                    <th>Tuki</th>
+                    <th>Amoblamientos</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>';
+            $html .= '
+    <tr style="background-color: #f0f4fa; font-style: italic;">
+        <td colspan="3"><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</td>
+        <td></td>
+    </tr>
+';
 
     $total_subtotal = 0;
     foreach ($items as $item) {
@@ -233,6 +240,7 @@ tfoot tr {
                 <td>' . $item['cantidad'] . '</td>
             </tr>';
     }
+    
 
     // Agregamos fila de total final
     $html .= '
