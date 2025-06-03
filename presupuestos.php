@@ -914,13 +914,6 @@ input:focus, select:focus {
     <?php endif; ?>
   </tbody>
 </table>
-<div id="modalDescripcionPDF" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#fff; border:1px solid #ccc; padding:20px; z-index:9999;">
-  <h3>Descripción para el PDF</h3>
-  <textarea id="descripcionParaPDF" rows="4" style="width:100%;"></textarea>
-  <br>
-  <button id="confirmarDescargaPDF">Descargar PDF</button>
-  <button onclick="document.getElementById('modalDescripcionPDF').style.display='none'">Cancelar</button>
-</div>
 
 <script>
 window.productosPresupuesto = [
@@ -931,23 +924,6 @@ window.productosPresupuesto = [
 </script>
 <script src="presupuestos.js"></script>
 <script>
-  document.querySelectorAll('.descargar-pdf-con-descripcion').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const idPresupuesto = btn.getAttribute('data-id');
-    const modal = document.getElementById('modalDescripcionPDF');
-    modal.style.display = 'block';
-
-    const confirmar = document.getElementById('confirmarDescargaPDF');
-    confirmar.onclick = () => {
-      const descripcion = document.getElementById('descripcionParaPDF').value;
-      const url = `presupuestos.php?descargar_pdf=1&id=${idPresupuesto}&descripcion=${encodeURIComponent(descripcion)}`;
-      window.open(url, '_blank');
-      modal.style.display = 'none';
-      document.getElementById('descripcionParaPDF').value = ''; // limpiar textarea
-    };
-  });
-});
-
 // --- Lógica para flete ---
 const chkFlete = document.getElementById('agregarFlete');
 const inputFlete = document.getElementById('montoFlete');
