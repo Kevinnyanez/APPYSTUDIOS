@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
  // Este archivo debe definir $conn (MySQLi)
-$descripcion = isset($_GET['descripcion']) ? $_GET['descripcion'] : '';
+
 
 if (isset($_GET['descargar_pdf'])) {
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
@@ -30,7 +30,12 @@ if (isset($_GET['descargar_pdf'])) {
         die("No se encontró el presupuesto con ID $id");
     }
 
-    $sql = "SELECT descripcion from presupuestos";
+   $sql = "SELECT descripcion FROM presupuestos WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->execute([$id]);
+$presupuesto = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
     // Obtener ítems del presupuesto
    $sql_items = "SELECT pi.*, s.nombre AS nombre_producto
               FROM presupuesto_items pi
@@ -214,7 +219,7 @@ tfoot tr {
         <h2>Ítems</h2>
         <table>
             <thead>
-                <tr>
+                <tr>s
                     <th>Tuki</th>
                     <th>Amoblamientos</th>
                     <th></th>
@@ -222,24 +227,15 @@ tfoot tr {
                 </tr>
             </thead>
             <tbody>';
-            $html .= '
+            if ($presupuesto && !empty($presupuesto['descripcion'])) {
+    $html .= '
     <tr style="background-color: #f0f4fa; font-style: italic;">
-        <td colspan="3"><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</td>
-        <td></td>
-    </tr>
-';
+        <td colspan="4"><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</td>
+    </tr>';
+}
 
-    $total_subtotal = 0;
-    foreach ($items as $item) {
-        $subtotal = $item['cantidad'] * $item['subtotal'];
-        $total_subtotal += $subtotal;
 
-        $html .= '
-            <tr>
-                <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
-                <td>' . $item['cantidad'] . '</td>
-            </tr>';
-    }
+    
     
 
     // Agregamos fila de total final
