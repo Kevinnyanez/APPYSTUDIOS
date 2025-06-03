@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="login-container">
-        <img src="logo.jpg" alt="Logo" class="logo">
+        <img src="logo.jpg"  style="width:150px; height:200px; margin-bottom: 10px;" alt="Logo"  class="logo">
 
         <form method="POST" action="">
             <h2 style="text-align:center;">Iniciar Sesión</h2>
