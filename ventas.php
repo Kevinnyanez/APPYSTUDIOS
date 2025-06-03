@@ -248,7 +248,8 @@ if ($row = $resTotal->fetch_assoc()) {
       fetch('guardar_nota.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_presupuesto: idPresupuesto, notas: notas })
+        body: JSON.stringify({ id_presupuesto: idPresupuesto, notas: notas }),
+        credentials: 'include'
       })
       .then(response => response.json())
       .then(data => {
