@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM Content Loaded - Inicializando eventos del modal');
   
+  // Variable para almacenar la descripción del presupuesto
+  let presupuestoDescripcion = '';
+
   // --- PASOS DEL MODAL ---
   function mostrarPaso(n) {
     console.log('Intentando mostrar paso:', n);
@@ -80,6 +83,16 @@ if (btnAbrir) {
       alert('Agregue al menos un producto');
       return;
     }
+
+    // --- Capturar la descripción del Paso 2 antes de cerrar el modal ---
+    const descripcionInputPaso2 = document.getElementById('descripcionPresupuesto');
+    if (descripcionInputPaso2) {
+      presupuestoDescripcion = descripcionInputPaso2.value; // Guardar el valor
+    } else {
+      presupuestoDescripcion = ''; // Asegurarse de que está vacío si el input no existe (no debería pasar)
+      console.warn('Input de descripcionPresupuesto no encontrado en Paso 2.');
+    }
+
     // Resumen
     const cliente = document.getElementById('selectCliente').selectedOptions[0];
     let clienteInfo = '';
@@ -565,13 +578,8 @@ if (btnAbrir) {
       }
 
       // 2. Descripción del presupuesto
-      const descripcionInput = document.getElementById('descripcionPresupuesto');
-      if (descripcionInput) {
-        console.log('Valor de descripcionPresupuesto al enviar:', descripcionInput.value);
-        formData.append('descripcion', descripcionInput.value);
-      } else {
-        console.log('Input de descripcionPresupuesto NO encontrado al enviar.');
-      }
+      // Obtener el valor desde la variable que guardamos al pasar del Paso 2 al 3
+      formData.append('descripcion', presupuestoDescripcion);
 
       // Enviar datos al backend
       fetch('presupuesto_action.php', {
