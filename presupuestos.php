@@ -230,6 +230,7 @@ tfoot tr {
     <div class="nota">
         <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
     </div>
+   
 </div>';
 
     // Generar PDF
