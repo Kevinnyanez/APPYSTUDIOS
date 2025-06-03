@@ -186,12 +186,6 @@ tfoot tr {
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
     </div>
-    if (!empty($descripcion)) {
-    $html .= '
-    <h2>Descripción del presupuesto</h2>
-    <p style="white-space: pre-wrap;">' . nl2br(htmlspecialchars($descripcion)) . '</p>';
-}
-
         <h2>Ítems</h2>
         <table>
             <thead>

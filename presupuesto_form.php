@@ -292,14 +292,7 @@ form#presupuestoForm a:hover {
   <br>
   <button type="submit"><?= $presupuesto ? "Actualizar" : "Crear" ?></button>
   <a href="presupuestos.php">Cancelar</a>
-  <hr>
-<button type="button" id="btnMostrarDescripcion">Generar PDF con descripción</button>
-
-<div id="contenedorDescripcion" style="display:none; margin-top:15px;">
-  <label for="descripcionPdf">Descripción del presupuesto:</label>
-  <textarea id="descripcionPdf" rows="4" style="width:100%;"></textarea>
-  <button type="button" id="btnGenerarPDF">Descargar PDF</button>
-</div>
+  
 </form>
 
 <script>
@@ -377,26 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     calcularTotal();
   });
 });
-
-document.getElementById('btnMostrarDescripcion').addEventListener('click', () => {
-  const contenedor = document.getElementById('contenedorDescripcion');
-  contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
-});
-
-document.getElementById('btnGenerarPDF').addEventListener('click', () => {
-  const descripcion = document.getElementById('descripcionPdf').value;
-  const idPresupuesto = document.querySelector('input[name="id_presupuesto"]')?.value || '';
-
-  if (!idPresupuesto) {
-    alert('Primero debes guardar el presupuesto antes de generar el PDF.');
-    return;
-  }
-
-  // Abrir una nueva ventana o redirigir con GET
-  const url = `generar_pdf.php?id=${idPresupuesto}&descripcion=${encodeURIComponent(descripcion)}`;
-  window.open(url, '_blank');
-});
-
 </script>
 
 </body>
