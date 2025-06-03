@@ -216,7 +216,7 @@ tfoot tr {
         <h2>Ítems</h2>
         <table>
             <thead>
-                <tr>s
+                <tr>
                     <th>Tuki</th>
                     <th>Amoblamientos</th>
                     <th></th>
