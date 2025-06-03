@@ -246,7 +246,7 @@ if ($row = $resTotal->fetch_assoc()) {
       fetch('guardar_nota.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_presupuesto: idPresupuesto, notas: nota })
+        body: JSON.stringify({ id_presupuesto: idPresupuesto, nota: notas })
       })
       .then(response => response.json())
       .then(data => {
