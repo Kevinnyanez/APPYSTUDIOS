@@ -191,7 +191,7 @@ tfoot tr {
 
         </style>
     <div class="encabezado">
-    ' . ($base64 ? '<img src="' . $base64 . '" style="width:150px; height:150px; margin-bottom: 10px;" alt="Logo">' : '') . '
+    ' . ($base64 ? '<img src="' . $base64 . '" style="width:150px; height:250px; margin-bottom: 10px;" alt="Logo">' : '') . '
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
@@ -242,7 +242,7 @@ tfoot tr {
     <div class="nota">
         <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
     </div>
-  
+   ' . ($base64 ? '<img src="' . $base64 . '" style="width:120px; height:400px; margin-top: 15px;" alt="Logo">' : '') . '
 </div>';
 
     // Generar PDF
