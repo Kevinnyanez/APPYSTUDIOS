@@ -19,7 +19,7 @@ if (isset($_GET['descargar_pdf'])) {
     }
 
     // Obtener presupuesto y cliente
-    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente , c.descripcion AS descripcion
+    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente , p.descripcion AS descripcion
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = $id";
