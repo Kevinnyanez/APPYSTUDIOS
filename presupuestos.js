@@ -567,7 +567,10 @@ if (btnAbrir) {
       // 2. Descripción del presupuesto
       const descripcionInput = document.getElementById('descripcionPresupuesto');
       if (descripcionInput) {
+        console.log('Valor de descripcionPresupuesto al enviar:', descripcionInput.value);
         formData.append('descripcion', descripcionInput.value);
+      } else {
+        console.log('Input de descripcionPresupuesto NO encontrado al enviar.');
       }
 
       // Enviar datos al backend
