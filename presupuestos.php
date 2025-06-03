@@ -209,7 +209,6 @@ tfoot tr {
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
-        ' . ($presupuesto['descripcion'] ? '<p><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</p>' : '') . '
     </div>
         <h2>Ítems</h2>
         <table>
@@ -222,48 +221,56 @@ tfoot tr {
                 </tr>
             </thead>
             <tbody>';
+            // Agregar descripción con estilo mejorado
+            if (!empty($presupuesto['descripcion'])) {
+                $html .= '
+                <tr style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                    <td colspan="4" style="padding: 15px;">
+                        <div style="border-left: 4px solid #00bcd4; padding-left: 10px;">
+                            <p style="margin: 0; color: #495057; font-size: 12pt;">
+                                <strong style="color: #00bcd4;">Descripción del Presupuesto:</strong><br>
+                                <span style="font-style: italic; color: #6c757d;">' . htmlspecialchars($presupuesto['descripcion']) . '</span>
+                            </p>
+                        </div>
+                    </td>
+                </tr>';
+            }
+
+            $total_subtotal = 0;
+            foreach ($items as $item) {
+                $subtotal = $item['cantidad'] * $item['subtotal'];
+                $total_subtotal += $subtotal;
+
+                $html .= '
+                    <tr>
+                        <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
+                        <td>' . $item['cantidad'] . '</td>
+                    </tr>';
+            }
+            
+
+            // Agregamos fila de total final
             $html .= '
-    <tr style="background-color: #f0f4fa; font-style: italic;">
-        <td colspan="3"><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</td>
-        <td></td>
-    </tr>
-';
-
-    $total_subtotal = 0;
-    foreach ($items as $item) {
-        $subtotal = $item['cantidad'] * $item['subtotal'];
-        $total_subtotal += $subtotal;
-
-        $html .= '
-            <tr>
-                <td>' . htmlspecialchars($item['nombre_producto']) . '</td>
-                <td>' . $item['cantidad'] . '</td>
-            </tr>';
-    }
-    
-
-    // Agregamos fila de total final
-    $html .= '
-            <tr style="font-weight: bold; background-color: #f2f2f2;">
-                <td colspan="3" style="text-align: right;">Total Ítems:</td>
-                <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="pdf-footer">
-    <h4>¡Gracias por consultarnos!</h4>
-    <p>Esperamos con ansias trabajar con vos.</p>
-    
-    <div class="contacto">
-        <p><strong>IG:</strong> @fd.sonandobajito</p>
-        <p><strong>Teléfono:</strong> +54 9 11 1234-5678</p>
-    </div>
-    
-    <div class="nota">
-        <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
-    </div>
-  
-</div>';
+                <tr style="font-weight: bold; background-color: #f2f2f2;">
+                    <td colspan="3" style="text-align: right;">Total Ítems:</td>
+                    <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pdf-footer">
+        <h4>¡Gracias por consultarnos!</h4>
+        <p>Esperamos con ansias trabajar con vos.</p>
+        
+        <div class="contacto">
+            <p><strong>IG:</strong> @fd.sonandobajito</p>
+            <p><strong>Teléfono:</strong> +54 9 11 1234-5678</p>
+        </div>
+        
+        <div class="nota">
+            <strong>Nota:</strong> Estamos a tu disposición para cualquier modificación o sugerencia. Gracias por tu tiempo.
+        </div>
+      
+    </div>';
 
     // Generar PDF
     $dompdf = new Dompdf();
