@@ -241,12 +241,12 @@ if ($row = $resTotal->fetch_assoc()) {
   document.querySelectorAll('.nota-textarea').forEach(textarea => {
     textarea.addEventListener('blur', function() {
       const idPresupuesto = this.dataset.id;
-      const nota = this.value;
+      const notas = this.value;
 
       fetch('guardar_nota.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_presupuesto: idPresupuesto, nota: nota })
+        body: JSON.stringify({ id_presupuesto: idPresupuesto, notas: nota })
       })
       .then(response => response.json())
       .then(data => {

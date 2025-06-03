@@ -9,7 +9,7 @@ if (!isset($_SESSION['id'])) {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $id_presupuesto = $data['id_presupuesto'] ?? null;
-$notas = $data['nota'] ?? '';
+$nota = $data['nota'] ?? '';
 
 if (!$id_presupuesto) {
     echo json_encode(['success' => false, 'message' => 'ID inválido']);
