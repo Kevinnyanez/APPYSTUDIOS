@@ -99,6 +99,15 @@ if (btnAbrir) {
       `;
     }
     document.getElementById('resumenCliente').innerHTML = clienteInfo;
+
+    // Agregar descripción al resumen si existe
+    const descripcion = document.getElementById('descripcionPresupuesto').value;
+    if (descripcion) {
+      document.getElementById('resumenCliente').innerHTML += `
+        <p><strong>Descripción:</strong> ${descripcion}</p>
+      `;
+    }
+
     let productosInfo = '<ul>';
     document.querySelectorAll('#tablaItems tbody tr').forEach(row => {
       productosInfo += `
@@ -407,6 +416,12 @@ if (btnAbrir) {
              console.warn('formProductos o campo fecha_creacion no encontrados.');
         }
 
+        // Cargar descripción si existe
+        const descripcionInput = document.getElementById('descripcionPresupuesto');
+        if (descripcionInput && data.presupuesto.descripcion) {
+            descripcionInput.value = data.presupuesto.descripcion;
+        }
+
         const tbody = document.querySelector('#tablaItems tbody');
         if (tbody) {
             tbody.innerHTML = ''; // Limpiar ítems existentes (si los hay)
@@ -549,6 +564,11 @@ if (btnAbrir) {
            formData.append('id_presupuesto', idPresupuestoHidden.value); // Añadir ID para UPDATE
       }
 
+      // 2. Descripción del presupuesto
+      const descripcionInput = document.getElementById('descripcionPresupuesto');
+      if (descripcionInput) {
+        formData.append('descripcion', descripcionInput.value);
+      }
 
       // Enviar datos al backend
       fetch('presupuesto_action.php', {

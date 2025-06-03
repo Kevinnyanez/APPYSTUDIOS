@@ -208,6 +208,7 @@ tfoot tr {
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+        ' . ($presupuesto['descripcion'] ? '<p><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</p>' : '') . '
     </div>
         <h2>Ítems</h2>
         <table>
@@ -785,6 +786,10 @@ input:focus, select:focus {
       <div class="form-group">
         <label>Fecha:</label>
         <input type="date" name="fecha_creacion" id="fecha_creacion" required value="<?= date('Y-m-d') ?>">
+      </div>
+      <div class="form-group">
+        <label for="descripcionPresupuesto">Descripción del presupuesto:</label>
+        <input type="text" id="descripcionPresupuesto" name="descripcion" maxlength="255" placeholder="Agregue una descripción breve (opcional)">
       </div>
       <div class="form-group">
         <label>Producto:</label>

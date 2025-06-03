@@ -115,8 +115,8 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
         // 2. Insertar o Actualizar el Presupuesto
         if ($id_presupuesto) {
             // Actualizar presupuesto existente
-            $stmt_presupuesto = $conn->prepare("UPDATE presupuestos SET id_cliente=?, fecha_creacion=?, total=?, recargo_final=?, total_con_recargo=? WHERE id_presupuesto=?");
-            $stmt_presupuesto->bind_param("isdddi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $id_presupuesto);
+            $stmt_presupuesto = $conn->prepare("UPDATE presupuestos SET id_cliente=?, fecha_creacion=?, total=?, recargo_final=?, total_con_recargo=?, descripcion=? WHERE id_presupuesto=?");
+            $stmt_presupuesto->bind_param("isddddsi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $_POST['descripcion'], $id_presupuesto);
             $stmt_presupuesto->execute();
             $stmt_presupuesto->close();
 
@@ -126,8 +126,8 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
         } else {
             // Insertar nuevo presupuesto
             $estado = 'abierto'; // Estado por defecto para nuevo presupuesto
-            $stmt_presupuesto = $conn->prepare("INSERT INTO presupuestos (id_cliente, fecha_creacion, estado, total, recargo_final, total_con_recargo) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt_presupuesto->bind_param("issddd", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo);
+            $stmt_presupuesto = $conn->prepare("INSERT INTO presupuestos (id_cliente, fecha_creacion, estado, total, recargo_final, total_con_recargo, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt_presupuesto->bind_param("issddds", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo, $_POST['descripcion']);
             $stmt_presupuesto->execute();
             $id_presupuesto = $stmt_presupuesto->insert_id; // Obtener el ID del presupuesto recién creado
             $stmt_presupuesto->close();
