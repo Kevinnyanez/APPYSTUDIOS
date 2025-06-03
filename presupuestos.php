@@ -30,10 +30,7 @@ if (isset($_GET['descargar_pdf'])) {
         die("No se encontró el presupuesto con ID $id");
     }
 
-   $sql = "SELECT * FROM presupuestos WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->execute([$id]);
-$presupuesto = $stmt->fetch(PDO::FETCH_ASSOC);
+ 
 
 
     // Obtener ítems del presupuesto
