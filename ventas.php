@@ -44,6 +44,9 @@ $resTotal = $stmtTotal->get_result();
 if ($row = $resTotal->fetch_assoc()) {
     $totalAcumulado = $row['total'];
 }
+$stmt = $conn->prepare("UPDATE presupuestos SET notas = ? WHERE id_presupuesto = ?");
+$stmt->bind_param("si", $notas, $id_presupuesto);
+
 
 ?>
 
@@ -246,7 +249,7 @@ if ($row = $resTotal->fetch_assoc()) {
       fetch('guardar_nota.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_presupuesto: idPresupuesto, nota: notas })
+        body: JSON.stringify({ id_presupuesto: idPresupuesto, notas: notas })
       })
       .then(response => response.json())
       .then(data => {
