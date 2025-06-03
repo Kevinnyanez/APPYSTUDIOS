@@ -19,7 +19,7 @@ if (isset($_GET['descargar_pdf'])) {
     }
 
     // Obtener presupuesto y cliente
-    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente
+    $sql = "SELECT p.*, c.nombre AS nombre_cliente, c.email AS email_cliente , p.descripcion AS descripcion
             FROM presupuestos p
             JOIN clientes c ON p.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = $id";
@@ -211,7 +211,7 @@ tfoot tr {
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
-       
+        ' . ($presupuesto['descripcion'] ? '<p><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</p>' : '') . '
     </div>
         <h2>Ítems</h2>
         <table>
