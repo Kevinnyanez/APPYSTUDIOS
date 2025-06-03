@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             width: 320px;
             animation: fadeIn 0.8s ease-in-out;
+            text-align: center;
         }
 
         input {
@@ -116,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
 
         <form method="POST" action="">
-            <img src="logo.jpg"  style="width:150px; height:200px; margin-bottom: 10px;" alt="Logo"  class="logo">
+            <img src="logo.jpg"  style="width:150px; height:200px; margin-bottom: 10px; display: inline-block;" alt="Logo"  class="logo">
             <h2 style="text-align:center;">Iniciar Sesión</h2>
             <?php if ($error): ?>
                 <div class="error"><?= htmlspecialchars($error) ?></div>
