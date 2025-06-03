@@ -30,7 +30,7 @@ if (isset($_GET['descargar_pdf'])) {
         die("No se encontró el presupuesto con ID $id");
     }
 
-   $sql = "SELECT descripcion FROM presupuestos WHERE id = ?";
+   $sql = "SELECT * FROM presupuestos WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->execute([$id]);
 $presupuesto = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -214,7 +214,7 @@ tfoot tr {
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
-        ' . ($presupuesto['descripcion'] ? '<p><strong>Descripción:</strong> ' . htmlspecialchars($presupuesto['descripcion']) . '</p>' : '') . '
+       
     </div>
         <h2>Ítems</h2>
         <table>
