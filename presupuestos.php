@@ -45,6 +45,17 @@ if (isset($_GET['descargar_pdf'])) {
     // Formatear fecha
     $fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
 
+
+    $path_logo = '/logo.jpg'; // ruta donde tengas el logo
+if (file_exists($path_logo)) {
+    $type = pathinfo($path_logo, PATHINFO_EXTENSION);
+    $data = file_get_contents($path_logo);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+} else {
+    $base64 = ''; // O podés poner un logo por defecto o dejar vacío
+}
+
+
     // Crear HTML
     $html = '
         <style>
@@ -180,6 +191,7 @@ tfoot tr {
 
         </style>
     <div class="encabezado">
+    ' . ($base64 ? '<img src="' . $base64 . '" style="width:150px; height:auto; margin-bottom: 10px;" alt="Logo">' : '') . '
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
