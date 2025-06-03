@@ -54,9 +54,6 @@ if (isset($_GET['get_presupuesto'])) {
 // Validar que los datos mínimos necesarios para un presupuesto estén presentes en el POST
 if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
 
-    var_dump($_POST['descripcion']);
-    exit;
-
     $id_presupuesto = $_POST['id_presupuesto'] ?? null; // Será null para nueva creación
     $id_cliente = $_POST['id_cliente'];
     $fecha_creacion = $_POST['fecha_creacion'] ?? date('Y-m-d');
