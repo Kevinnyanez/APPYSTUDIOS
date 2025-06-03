@@ -11,7 +11,7 @@ $mes = isset($_GET['mes']) ? $_GET['mes'] : date('m');
 $anio = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
 
 // Consulta para ventas por mes
-$sql = "SELECT p.id_presupuesto, p.fecha_creacion, p.total_con_recargo, c.nombre
+$sql = "SELECT p.id_presupuesto, p.fecha_creacion, p.total_con_recargo, c.nombre, p.notas
         FROM presupuestos p
         JOIN clientes c ON p.id_cliente = c.id_cliente
         WHERE p.estado = 'cerrado' AND MONTH(p.fecha_creacion) = ? AND YEAR(p.fecha_creacion) = ?
@@ -215,6 +215,14 @@ if ($row = $resTotal->fetch_assoc()) {
           <td><?= htmlspecialchars($row['nombre']) ?></td>
           <td><?= date('d/m/Y', strtotime($row['fecha_creacion'])) ?></td>
           <td class="total">$<?= number_format($row['total_con_recargo'], 2, ',', '.') ?></td>
+          <td>
+        <textarea
+          data-id="<?= $row['id_presupuesto'] ?>"
+          class="nota-textarea"
+          rows="3"
+          style="width: 100%; resize: vertical;"
+        ><?= htmlspecialchars($row['notas']) ?></textarea>
+      </td>
         </tr>
       <?php endwhile; ?>
     <?php else: ?>
@@ -229,4 +237,28 @@ if ($row = $resTotal->fetch_assoc()) {
 
 <?php include 'footer.php'; ?>
 </body>
+<script>
+  document.querySelectorAll('.nota-textarea').forEach(textarea => {
+    textarea.addEventListener('blur', function() {
+      const idPresupuesto = this.dataset.id;
+      const nota = this.value;
+
+      fetch('guardar_nota.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_presupuesto: idPresupuesto, nota: nota })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          console.log('Nota guardada');
+        } else {
+          alert('Error al guardar la nota.');
+        }
+      })
+      .catch(() => alert('Error de conexión.'));
+    });
+  });
+</script>
+
 </html>
