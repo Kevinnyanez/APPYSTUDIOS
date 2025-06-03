@@ -44,8 +44,7 @@ $resTotal = $stmtTotal->get_result();
 if ($row = $resTotal->fetch_assoc()) {
     $totalAcumulado = $row['total'];
 }
-$stmt = $conn->prepare("UPDATE presupuestos SET notas = ? WHERE id_presupuesto = ?");
-$stmt->bind_param("si", $notas, $id_presupuesto);
+
 
 
 ?>

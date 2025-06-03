@@ -25,3 +25,7 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Error al guardar']);
 }
+
+$stmt = $conn->prepare("UPDATE presupuestos SET notas = ? WHERE id_presupuesto = ?");
+$stmt->bind_param("si", $notas, $id_presupuesto);
+?>
