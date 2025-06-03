@@ -10,6 +10,7 @@ if (!isset($_SESSION['id'])) {
 require_once 'dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
  // Este archivo debe definir $conn (MySQLi)
+$descripcion = isset($_GET['descripcion']) ? $_GET['descripcion'] : '';
 
 if (isset($_GET['descargar_pdf'])) {
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
@@ -185,6 +186,12 @@ tfoot tr {
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
         <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
     </div>
+    if (!empty($descripcion)) {
+    $html .= '
+    <h2>Descripción del presupuesto</h2>
+    <p style="white-space: pre-wrap;">' . nl2br(htmlspecialchars($descripcion)) . '</p>';
+}
+
         <h2>Ítems</h2>
         <table>
             <thead>
@@ -769,6 +776,7 @@ input:focus, select:focus {
           <input type="hidden" id="precioProductoSeleccionado">
           <ul id="sugerenciasProductos" class="sugerencias-lista"></ul>
         </div>
+
         <button type="button" id="btnAgregarItem" class="btn-agregar">Agregar</button>
       </div>
       <div class="form-group">
@@ -897,7 +905,8 @@ input:focus, select:focus {
               | <a href="presupuesto_action.php?cerrar=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Cerrar presupuesto?')" class="btn-link cerrar">Cerrar</a>
             <?php endif; ?>
             | <a href="presupuesto_action.php?delete=<?= $p['id_presupuesto'] ?>" onclick="return confirm('¿Eliminar presupuesto?')" class="btn-link eliminar">Eliminar</a>
-              | <a href="presupuestos.php?descargar_pdf=1&id=<?= $p['id_presupuesto'] ?>" target="_blank" class="btn-link descargar-pdf">Descargar PDF</a>
+      | <button class="btn-link descargar-pdf-con-descripcion" data-id="<?= $p['id_presupuesto'] ?>">Descargar PDF con descripción</button>
+
 
           </td>
         </tr>
@@ -905,6 +914,13 @@ input:focus, select:focus {
     <?php endif; ?>
   </tbody>
 </table>
+<div id="modalDescripcionPDF" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#fff; border:1px solid #ccc; padding:20px; z-index:9999;">
+  <h3>Descripción para el PDF</h3>
+  <textarea id="descripcionParaPDF" rows="4" style="width:100%;"></textarea>
+  <br>
+  <button id="confirmarDescargaPDF">Descargar PDF</button>
+  <button onclick="document.getElementById('modalDescripcionPDF').style.display='none'">Cancelar</button>
+</div>
 
 <script>
 window.productosPresupuesto = [
@@ -915,6 +931,23 @@ window.productosPresupuesto = [
 </script>
 <script src="presupuestos.js"></script>
 <script>
+  document.querySelectorAll('.descargar-pdf-con-descripcion').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const idPresupuesto = btn.getAttribute('data-id');
+    const modal = document.getElementById('modalDescripcionPDF');
+    modal.style.display = 'block';
+
+    const confirmar = document.getElementById('confirmarDescargaPDF');
+    confirmar.onclick = () => {
+      const descripcion = document.getElementById('descripcionParaPDF').value;
+      const url = `presupuestos.php?descargar_pdf=1&id=${idPresupuesto}&descripcion=${encodeURIComponent(descripcion)}`;
+      window.open(url, '_blank');
+      modal.style.display = 'none';
+      document.getElementById('descripcionParaPDF').value = ''; // limpiar textarea
+    };
+  });
+});
+
 // --- Lógica para flete ---
 const chkFlete = document.getElementById('agregarFlete');
 const inputFlete = document.getElementById('montoFlete');
