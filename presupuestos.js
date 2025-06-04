@@ -1,3 +1,6 @@
+// Log muy temprano para verificar ejecución
+console.log('presupuestos.js script started');
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM Content Loaded - Inicializando eventos del modal');
   
@@ -673,11 +676,12 @@ if (btnAbrir) {
   }
 
   // --- Guardar descripción de presupuesto al editar en la tabla ---
-  console.log('Intentando adjuntar listeners a .presupuesto-descripcion'); // Log de verificación 1
+  console.log('Attempting to attach description listeners AFTER DOMContentLoaded'); // Log adicional
   const descripcionTextareas = document.querySelectorAll('.presupuesto-descripcion');
-  console.log('Elementos .presupuesto-descripcion encontrados:', descripcionTextareas.length); // Log de verificación 2
+  console.log('Elements .presupuesto-descripcion found AFTER DOMContentLoaded:', descripcionTextareas.length); // Log adicional
 
   descripcionTextareas.forEach(textarea => {
+    console.log('Attaching blur listener to textarea with ID:', textarea.dataset.id); // Log para cada elemento
     textarea.addEventListener('blur', function() {
       const idPresupuesto = this.dataset.id;
       const descripcion = this.value.trim();
