@@ -48,6 +48,32 @@ if (isset($_GET['get_presupuesto'])) {
     exit;
 }
 
+// *** Lógica para guardar solo la descripción desde la tabla de presupuestos ---
+if (isset($_POST['action']) && $_POST['action'] === 'guardar_descripcion') {
+    $id_presupuesto = isset($_POST['id_presupuesto']) ? (int)$_POST['id_presupuesto'] : 0;
+    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+    // Validar ID y descripción
+    if ($id_presupuesto > 0) {
+        // Preparar y ejecutar la sentencia UPDATE
+        $stmt = $conn->prepare("UPDATE presupuestos SET descripcion = ? WHERE id_presupuesto = ?");
+        $stmt->bind_param("si", $descripcion, $id_presupuesto);
+
+        if ($stmt->execute()) {
+            echo 'ok'; // Indicar éxito
+        } else {
+            // Logear error si la ejecución falla
+            error_log("Error al actualizar descripción (ID: " . $id_presupuesto . "): " . $stmt->error);
+            echo 'error: Error al actualizar la descripción en la base de datos.';
+        }
+        $stmt->close();
+    } else {
+        echo 'error: ID de presupuesto inválido.';
+    }
+    $conn->close();
+    exit; // Terminar script después de manejar la petición
+}
+
 // *** Lógica Unificada para Crear o Actualizar Presupuesto ***
 // Esta sección manejará tanto la creación de un cliente nuevo (si aplica) como la creación/actualización del presupuesto y sus ítems.
 

@@ -671,4 +671,36 @@ if (btnAbrir) {
         // alert(mensaje); // Evitar múltiples alerts molestos, usar console o UI feedback
     }
   }
+
+  // --- Guardar descripción de presupuesto al editar en la tabla ---
+  document.querySelectorAll('.presupuesto-descripcion').forEach(textarea => {
+    textarea.addEventListener('blur', function() {
+      const idPresupuesto = this.dataset.id;
+      const descripcion = this.value.trim();
+
+      console.log(`Guardando descripción para presupuesto ${idPresupuesto}: ${descripcion}`);
+
+      // Usar Fetch API para enviar los datos al backend
+      fetch('presupuesto_action.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, // O 'application/json' si el backend lo espera así
+        body: `action=guardar_descripcion&id_presupuesto=${encodeURIComponent(idPresupuesto)}&descripcion=${encodeURIComponent(descripcion)}`
+      })
+      .then(response => response.text()) // O .json() si el backend responde con JSON
+      .then(text => {
+        console.log('Respuesta del servidor al guardar descripción:', text);
+        if (text.trim() === 'ok') {
+          console.log('Descripción guardada con éxito.');
+          // Opcional: Mostrar un feedback visual al usuario (ej. un pequeño checkmark)
+        } else {
+          console.error('Error al guardar descripción:', text);
+          alert('Error al guardar la descripción.');
+        }
+      })
+      .catch(error => {
+        console.error('Error en la petición Fetch al guardar descripción:', error);
+        alert('Error de conexión al guardar la descripción.');
+      });
+    });
+  });
 }); 
