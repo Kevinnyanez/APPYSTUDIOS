@@ -51,6 +51,9 @@ if (isset($_GET['get_presupuesto'])) {
 // *** Lógica Unificada para Crear o Actualizar Presupuesto ***
 // Esta sección manejará tanto la creación de un cliente nuevo (si aplica) como la creación/actualización del presupuesto y sus ítems.
 
+// Asegurar que la conexión use UTF-8
+$conn->set_charset("utf8mb4");
+
 // Validar que los datos mínimos necesarios para un presupuesto estén presentes en el POST
 if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
 
@@ -61,6 +64,9 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
     $recargo_final = isset($_POST['recargo_final']) && is_numeric($_POST['recargo_final']) ? (float)$_POST['recargo_final'] : 0.0;
     // Asegurarnos de que la descripción se procese correctamente
     $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+    // Log para debug: Verificar el valor de la descripción que llega al backend
+    error_log("Descripción recibida en presupuesto_action.php: " . $descripcion);
 
     $id_stock_array = $_POST['id_stock'];
     $cantidad_array = $_POST['cantidad'];

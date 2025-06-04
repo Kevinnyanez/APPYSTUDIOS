@@ -106,10 +106,18 @@ if (btnAbrir) {
 
     // Agregar descripción al resumen si existe
     const descripcionInput = document.getElementById('descripcionPresupuesto');
-    if (descripcionInput && descripcionInput.value.trim()) {
-      document.getElementById('resumenCliente').innerHTML += `
-        <p><strong>Descripción:</strong> ${descripcionInput.value.trim()}</p>
-      `;
+    // Añadir la descripción en una sección clara dentro del resumen
+    const resumenDiv = document.querySelector('.resumen-presupuesto');
+    if (descripcionInput && descripcionInput.value.trim() && resumenDiv) {
+        // Crear un nuevo elemento para la descripción
+        const descripcionResumenHTML = `
+            <div id="resumenDescripcion">
+                <h4>Descripción del Presupuesto</h4>
+                <p>${descripcionInput.value.trim()}</p>
+            </div>
+        `;
+        // Insertar la descripción después de los datos del cliente
+        document.getElementById('resumenCliente').insertAdjacentHTML('afterend', descripcionResumenHTML);
     }
 
     let productosInfo = '<ul>';
