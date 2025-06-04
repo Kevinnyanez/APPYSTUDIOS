@@ -84,15 +84,6 @@ if (btnAbrir) {
       return;
     }
 
-    // --- Capturar la descripción del Paso 2 antes de cerrar el modal ---
-    const descripcionInputPaso2 = document.getElementById('descripcionPresupuesto');
-    if (descripcionInputPaso2) {
-      presupuestoDescripcion = descripcionInputPaso2.value; // Guardar el valor
-    } else {
-      presupuestoDescripcion = ''; // Asegurarse de que está vacío si el input no existe (no debería pasar)
-      console.warn('Input de descripcionPresupuesto no encontrado en Paso 2.');
-    }
-
     // Resumen
     const cliente = document.getElementById('selectCliente').selectedOptions[0];
     let clienteInfo = '';
@@ -114,10 +105,10 @@ if (btnAbrir) {
     document.getElementById('resumenCliente').innerHTML = clienteInfo;
 
     // Agregar descripción al resumen si existe
-    const descripcion = document.getElementById('descripcionPresupuesto').value;
-    if (descripcion) {
+    const descripcionInput = document.getElementById('descripcionPresupuesto');
+    if (descripcionInput && descripcionInput.value.trim()) {
       document.getElementById('resumenCliente').innerHTML += `
-        <p><strong>Descripción:</strong> ${descripcion}</p>
+        <p><strong>Descripción:</strong> ${descripcionInput.value.trim()}</p>
       `;
     }
 
@@ -520,37 +511,31 @@ if (btnAbrir) {
   // --- Manejar Submit del formulario de Resumen ---
   const formResumen = document.getElementById('formResumen');
   if (formResumen) {
-    formResumen.addEventListener('submit', function(e) {
+    formResumen.onsubmit = function(e) {
       e.preventDefault();
-      console.log('Submit del formulario de resumen interceptado');
-
       const formData = new FormData();
 
-      // 1. Datos del Cliente (obtener del formCliente)
+      // 1. Datos del cliente
       const selectCliente = document.getElementById('selectCliente');
       if (!selectCliente) { console.error('selectCliente no encontrado'); return; }
-      formData.append('id_cliente', selectCliente.value);
-      if (selectCliente.value === 'nuevo') {
-        const nuevoNombre = document.getElementById('nuevoNombre');
-        const nuevoEmail = document.getElementById('nuevoEmail');
-        const nuevoTelefono = document.getElementById('nuevoTelefono');
-        const nuevoDireccion = document.getElementById('nuevoDireccion');
-        if (!nuevoNombre || !nuevoEmail || !nuevoTelefono || !nuevoDireccion) { console.error('Campos de nuevo cliente no encontrados'); return; }
+      const idCliente = selectCliente.value;
+      formData.append('id_cliente', idCliente);
 
-        formData.append('crear_cliente', 'true'); // Indica al backend que cree un cliente
-        formData.append('nuevo_nombre', nuevoNombre.value);
-        formData.append('nuevo_email', nuevoEmail.value);
-        formData.append('nuevo_telefono', nuevoTelefono.value);
-        formData.append('nuevo_direccion', nuevoDireccion.value);
+      // Si es cliente nuevo, agregar sus datos
+      if (idCliente === 'nuevo') {
+        formData.append('nuevo_nombre', document.getElementById('nuevoNombre').value);
+        formData.append('nuevo_email', document.getElementById('nuevoEmail').value);
+        formData.append('nuevo_telefono', document.getElementById('nuevoTelefono').value);
+        formData.append('nuevo_direccion', document.getElementById('nuevoDireccion').value);
       }
 
-      // 2. Datos generales (obtener del formProductos)
+      // 2. Fecha y recargo total
       const fechaCreacionInput = document.getElementById('fecha_creacion');
       const recargoTotalInput = document.getElementById('recargoTotal');
       if (!fechaCreacionInput || !recargoTotalInput) { console.error('Campos de fecha o recargo total no encontrados'); return; }
 
       formData.append('fecha_creacion', fechaCreacionInput.value);
-      formData.append('recargo_final', recargoTotalInput.value); // Usar 'recargo_final' según la base de datos
+      formData.append('recargo_final', recargoTotalInput.value);
 
       // 3. Datos de los ítems (de la tabla)
       const itemsRows = document.querySelectorAll('#tablaItems tbody tr');
@@ -571,15 +556,25 @@ if (btnAbrir) {
         formData.append('subtotal[]', subtotalInput.value);
       });
 
-       // 4. ID de presupuesto para edición (si existe, se añadió en cargarPresupuestoParaEdicion)
+       // 4. ID de presupuesto para edición (si existe)
       const idPresupuestoHidden = document.querySelector('#formResumen input[name="id_presupuesto"]');
       if (idPresupuestoHidden && idPresupuestoHidden.value) {
-           formData.append('id_presupuesto', idPresupuestoHidden.value); // Añadir ID para UPDATE
+           formData.append('id_presupuesto', idPresupuestoHidden.value);
       }
 
-      // 2. Descripción del presupuesto
-      // Obtener el valor desde la variable que guardamos al pasar del Paso 2 al 3
-      formData.append('descripcion', presupuestoDescripcion);
+      // 5. Descripción del presupuesto - Asegurarnos de que se envíe
+      const descripcionInput = document.getElementById('descripcionPresupuesto');
+      if (descripcionInput) {
+        formData.append('descripcion', descripcionInput.value.trim());
+        console.log('Enviando descripción:', descripcionInput.value.trim()); // Debug
+      } else {
+        console.warn('Input de descripción no encontrado');
+      }
+
+      // Debug: Mostrar todos los datos que se envían
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
       // Enviar datos al backend
       fetch('presupuesto_action.php', {
@@ -618,7 +613,7 @@ if (btnAbrir) {
         console.error('Error en la petición Fetch:', error);
         alert('Hubo un problema de conexión o del servidor al intentar guardar el presupuesto. Detalles en la consola.');
       });
-    });
+    };
   }
 
   // --- RESUMEN DE ÍTEMS EN LA TABLA DE PRESUPUESTOS ---

@@ -59,6 +59,8 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
     $fecha_creacion = $_POST['fecha_creacion'] ?? date('Y-m-d');
     // Recargo final opcional, usar 0 si no viene o está vacío
     $recargo_final = isset($_POST['recargo_final']) && is_numeric($_POST['recargo_final']) ? (float)$_POST['recargo_final'] : 0.0;
+    // Asegurarnos de que la descripción se procese correctamente
+    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
 
     $id_stock_array = $_POST['id_stock'];
     $cantidad_array = $_POST['cantidad'];
@@ -79,7 +81,6 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
 
     // Calcular el total con recargo final
     $total_con_recargo = $total * (1 + $recargo_final / 100);
-
 
     $conn->begin_transaction();
     try {
@@ -109,14 +110,13 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
                 echo 'error:Error al crear el nuevo cliente';
                 exit;
             }
-
-        } // Si $id_cliente no es 'nuevo', ya es el ID de un cliente existente
+        }
 
         // 2. Insertar o Actualizar el Presupuesto
         if ($id_presupuesto) {
             // Actualizar presupuesto existente
             $stmt_presupuesto = $conn->prepare("UPDATE presupuestos SET id_cliente=?, fecha_creacion=?, total=?, recargo_final=?, total_con_recargo=?, descripcion=? WHERE id_presupuesto=?");
-            $stmt_presupuesto->bind_param("isddddsi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $_POST['descripcion'], $id_presupuesto);
+            $stmt_presupuesto->bind_param("isddddsi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $descripcion, $id_presupuesto);
             $stmt_presupuesto->execute();
             $stmt_presupuesto->close();
 
@@ -127,7 +127,7 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
             // Insertar nuevo presupuesto
             $estado = 'abierto'; // Estado por defecto para nuevo presupuesto
             $stmt_presupuesto = $conn->prepare("INSERT INTO presupuestos (id_cliente, fecha_creacion, estado, total, recargo_final, total_con_recargo, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt_presupuesto->bind_param("issddds", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo, $_POST['descripcion']);
+            $stmt_presupuesto->bind_param("issddds", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo, $descripcion);
             $stmt_presupuesto->execute();
             $id_presupuesto = $stmt_presupuesto->insert_id; // Obtener el ID del presupuesto recién creado
             $stmt_presupuesto->close();
