@@ -673,7 +673,11 @@ if (btnAbrir) {
   }
 
   // --- Guardar descripción de presupuesto al editar en la tabla ---
-  document.querySelectorAll('.presupuesto-descripcion').forEach(textarea => {
+  console.log('Intentando adjuntar listeners a .presupuesto-descripcion'); // Log de verificación 1
+  const descripcionTextareas = document.querySelectorAll('.presupuesto-descripcion');
+  console.log('Elementos .presupuesto-descripcion encontrados:', descripcionTextareas.length); // Log de verificación 2
+
+  descripcionTextareas.forEach(textarea => {
     textarea.addEventListener('blur', function() {
       const idPresupuesto = this.dataset.id;
       const descripcion = this.value.trim();
