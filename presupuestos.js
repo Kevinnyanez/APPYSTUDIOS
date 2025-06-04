@@ -573,8 +573,9 @@ if (btnAbrir) {
       // 5. Descripción del presupuesto - Asegurarnos de que se envíe
       const descripcionInput = document.getElementById('descripcionPresupuesto');
       if (descripcionInput) {
-        formData.append('descripcion', descripcionInput.value.trim());
-        console.log('Enviando descripción:', descripcionInput.value.trim()); // Debug
+        const descripcionValue = descripcionInput.value.trim();
+        formData.append('descripcion', descripcionValue);
+        console.log('Valor de descripcionInput antes de enviar:', descripcionValue); // Log adicional
       } else {
         console.warn('Input de descripción no encontrado');
       }
