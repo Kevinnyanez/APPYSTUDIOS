@@ -53,21 +53,35 @@ if (isset($_POST['action']) && $_POST['action'] === 'guardar_descripcion') {
     $id_presupuesto = isset($_POST['id_presupuesto']) ? (int)$_POST['id_presupuesto'] : 0;
     $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
 
+    // Logs detallados para debug
+    error_log("Guardar Descripción - Recibido ID: " . $id_presupuesto . ", Descripción: " . $descripcion);
+
     // Validar ID y descripción
     if ($id_presupuesto > 0) {
         // Preparar y ejecutar la sentencia UPDATE
         $stmt = $conn->prepare("UPDATE presupuestos SET descripcion = ? WHERE id_presupuesto = ?");
+
+        if ($stmt === false) {
+             error_log("Guardar Descripción - Error al preparar sentencia: " . $conn->error);
+             echo 'error: Error interno al preparar la actualización.';
+             $conn->close();
+             exit;
+        }
+
         $stmt->bind_param("si", $descripcion, $id_presupuesto);
 
         if ($stmt->execute()) {
+            // Log de éxito
+            error_log("Guardar Descripción - Éxito al actualizar ID: " . $id_presupuesto);
             echo 'ok'; // Indicar éxito
         } else {
             // Logear error si la ejecución falla
-            error_log("Error al actualizar descripción (ID: " . $id_presupuesto . "): " . $stmt->error);
+            error_log("Guardar Descripción - Error al ejecutar UPDATE (ID: " . $id_presupuesto . "): " . $stmt->error);
             echo 'error: Error al actualizar la descripción en la base de datos.';
         }
         $stmt->close();
     } else {
+        error_log("Guardar Descripción - ID de presupuesto inválido: " . $id_presupuesto);
         echo 'error: ID de presupuesto inválido.';
     }
     $conn->close();
