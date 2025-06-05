@@ -923,7 +923,13 @@ input:focus, select:focus {
           <td>$<?= number_format($p['total'], 2) ?></td>
           <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
-         
+          <textarea
+               data-id="<?= $row['id_presupuesto'] ?>"
+              class="descripcion-textarea"
+             rows="3"
+              style="width: 100%; resize: vertical;"
+              ><?= htmlspecialchars($row['descripcion']) ?></textarea>
+          </td>
           <td>
             <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
             <a href="#" class="btn-link btn-ver-items" data-id="<?= $p['id_presupuesto'] ?>">Ver ítems</a>
@@ -935,13 +941,7 @@ input:focus, select:focus {
 
           </td>
           <td>
-  <textarea
-    data-id="<?= $row['id_presupuesto'] ?>"
-    class="descripcion-textarea"
-    rows="3"
-    style="width: 100%; resize: vertical;"
-  ><?= htmlspecialchars($row['descripcion']) ?></textarea>
-</td>
+  
 
         </tr>
       <?php endforeach; ?>
