@@ -932,6 +932,15 @@ input:focus, select:focus {
               | <a href="presupuestos.php?descargar_pdf=1&id=<?= $p['id_presupuesto'] ?>" target="_blank" class="btn-link descargar-pdf">Descargar PDF</a>
 
           </td>
+          <td>
+  <textarea
+    data-id="<?= $row['id_presupuesto'] ?>"
+    class="descripcion-textarea"
+    rows="3"
+    style="width: 100%; resize: vertical;"
+  ><?= htmlspecialchars($row['descripcion']) ?></textarea>
+</td>
+
         </tr>
       <?php endforeach; ?>
     <?php endif; ?>
@@ -947,6 +956,32 @@ window.productosPresupuesto = [
 </script>
 <script src="presupuestos.js"></script>
 <script>
+
+  
+document.querySelectorAll('.descripcion-textarea').forEach(textarea => {
+  textarea.addEventListener('blur', function () {
+    const idPresupuesto = this.dataset.id;
+    const descripcion = this.value;
+
+    fetch('guardar_descripcion.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_presupuesto: idPresupuesto, descripcion: descripcion }),
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('Descripción guardada');
+      } else {
+        alert('Error al guardar la descripción.');
+      }
+    })
+    .catch(() => alert('Error de conexión.'));
+  });
+});
+
+
 // --- Lógica para flete ---
 const chkFlete = document.getElementById('agregarFlete');
 const inputFlete = document.getElementById('montoFlete');
