@@ -978,6 +978,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Respuesta del servidor:', data);
         if (!data.ok) {
           alert('Error al guardar la descripción');
         }
