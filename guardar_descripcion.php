@@ -24,8 +24,7 @@ if (!$stmt) {
     exit;
 }
 
-$id_presupuesto = intval($data['id_presupuesto']); // Asegura tipo entero
-
+$stmt->bind_param("si", $descripcion, $id_presupuesto);
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
