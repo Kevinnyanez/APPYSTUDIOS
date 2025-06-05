@@ -48,8 +48,51 @@ if (isset($_GET['get_presupuesto'])) {
     exit;
 }
 
+// *** Lógica para guardar solo la descripción desde la tabla de presupuestos ---
+if (isset($_POST['action']) && $_POST['action'] === 'guardar_descripcion') {
+    $id_presupuesto = isset($_POST['id_presupuesto']) ? (int)$_POST['id_presupuesto'] : 0;
+    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+    // Logs detallados para debug
+    error_log("Guardar Descripción - Recibido ID: " . $id_presupuesto . ", Descripción: " . $descripcion);
+
+    // Validar ID y descripción
+    if ($id_presupuesto > 0) {
+        // Preparar y ejecutar la sentencia UPDATE
+        $stmt = $conn->prepare("UPDATE presupuestos SET descripcion = ? WHERE id_presupuesto = ?");
+
+        if ($stmt === false) {
+             error_log("Guardar Descripción - Error al preparar sentencia: " . $conn->error);
+             echo 'error: Error interno al preparar la actualización.';
+             $conn->close();
+             exit;
+        }
+
+        $stmt->bind_param("si", $descripcion, $id_presupuesto);
+
+        if ($stmt->execute()) {
+            // Log de éxito
+            error_log("Guardar Descripción - Éxito al actualizar ID: " . $id_presupuesto);
+            echo 'ok'; // Indicar éxito
+        } else {
+            // Logear error si la ejecución falla
+            error_log("Guardar Descripción - Error al ejecutar UPDATE (ID: " . $id_presupuesto . "): " . $stmt->error);
+            echo 'error: Error al actualizar la descripción en la base de datos.';
+        }
+        $stmt->close();
+    } else {
+        error_log("Guardar Descripción - ID de presupuesto inválido: " . $id_presupuesto);
+        echo 'error: ID de presupuesto inválido.';
+    }
+    $conn->close();
+    exit; // Terminar script después de manejar la petición
+}
+
 // *** Lógica Unificada para Crear o Actualizar Presupuesto ***
 // Esta sección manejará tanto la creación de un cliente nuevo (si aplica) como la creación/actualización del presupuesto y sus ítems.
+
+// Asegurar que la conexión use UTF-8
+$conn->set_charset("utf8mb4");
 
 // Validar que los datos mínimos necesarios para un presupuesto estén presentes en el POST
 if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
@@ -59,6 +102,11 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
     $fecha_creacion = $_POST['fecha_creacion'] ?? date('Y-m-d');
     // Recargo final opcional, usar 0 si no viene o está vacío
     $recargo_final = isset($_POST['recargo_final']) && is_numeric($_POST['recargo_final']) ? (float)$_POST['recargo_final'] : 0.0;
+    // Asegurarnos de que la descripción se procese correctamente
+    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+
+    // Log para debug: Verificar el valor de la descripción que llega al backend
+    error_log("Descripción recibida en presupuesto_action.php: " . $descripcion);
 
     $id_stock_array = $_POST['id_stock'];
     $cantidad_array = $_POST['cantidad'];
@@ -79,7 +127,6 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
 
     // Calcular el total con recargo final
     $total_con_recargo = $total * (1 + $recargo_final / 100);
-
 
     $conn->begin_transaction();
     try {
@@ -109,14 +156,13 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
                 echo 'error:Error al crear el nuevo cliente';
                 exit;
             }
-
-        } // Si $id_cliente no es 'nuevo', ya es el ID de un cliente existente
+        }
 
         // 2. Insertar o Actualizar el Presupuesto
         if ($id_presupuesto) {
             // Actualizar presupuesto existente
             $stmt_presupuesto = $conn->prepare("UPDATE presupuestos SET id_cliente=?, fecha_creacion=?, total=?, recargo_final=?, total_con_recargo=?, descripcion=? WHERE id_presupuesto=?");
-            $stmt_presupuesto->bind_param("isddddsi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $_POST['descripcion'], $id_presupuesto);
+            $stmt_presupuesto->bind_param("isddddsi", $id_cliente, $fecha_creacion, $total, $recargo_final, $total_con_recargo, $descripcion, $id_presupuesto);
             $stmt_presupuesto->execute();
             $stmt_presupuesto->close();
 
@@ -127,7 +173,7 @@ if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['
             // Insertar nuevo presupuesto
             $estado = 'abierto'; // Estado por defecto para nuevo presupuesto
             $stmt_presupuesto = $conn->prepare("INSERT INTO presupuestos (id_cliente, fecha_creacion, estado, total, recargo_final, total_con_recargo, descripcion) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt_presupuesto->bind_param("issddds", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo, $_POST['descripcion']);
+            $stmt_presupuesto->bind_param("issddds", $id_cliente, $fecha_creacion, $estado, $total, $recargo_final, $total_con_recargo, $descripcion);
             $stmt_presupuesto->execute();
             $id_presupuesto = $stmt_presupuesto->insert_id; // Obtener el ID del presupuesto recién creado
             $stmt_presupuesto->close();
