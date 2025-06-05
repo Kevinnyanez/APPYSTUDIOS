@@ -30,3 +30,4 @@ try {
     echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 }
 
+?>
