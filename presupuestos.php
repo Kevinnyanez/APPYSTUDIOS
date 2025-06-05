@@ -960,28 +960,36 @@ window.productosPresupuesto = [
 <script>
 
   
-document.querySelectorAll('.descripcion-textarea').forEach(textarea => {
-  textarea.addEventListener('blur', function () {
-    const idPresupuesto = this.dataset.id;
-    const descripcion = this.value;
 
-    fetch('guardar_descripcion.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id_presupuesto: idPresupuesto, descripcion: descripcion }),
-      credentials: 'include'
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        console.log('Descripción guardada');
-      } else {
-        alert('Error al guardar la descripción.');
-      }
-    })
-    .catch(() => alert('Error de conexión.'));
+document.addEventListener('DOMContentLoaded', function () {
+  const textareas = document.querySelectorAll('.descripcion-textarea');
+
+  textareas.forEach(textarea => {
+    textarea.addEventListener('blur', function () {
+      const id = this.dataset.id;
+      const descripcion = this.value;
+
+      fetch('guardar_descripcion.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id_presupuesto=${encodeURIComponent(id)}&descripcion=${encodeURIComponent(descripcion)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.ok) {
+          alert('Error al guardar la descripción');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la descripción');
+      });
+    });
   });
 });
+
 
 
 // --- Lógica para flete ---

@@ -8,26 +8,25 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+header('Content-Type: application/json');
 
-if (!isset($data['id_presupuesto']) || !isset($data['descripcion'])) {
-    echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
+if (!isset($_POST['id_presupuesto']) || !isset($_POST['descripcion'])) {
+    echo json_encode(['ok' => false, 'error' => 'Datos incompletos']);
     exit;
 }
 
-$id_presupuesto = $data['id_presupuesto'];
-$descripcion = $data['descripcion'];
+$id = (int) $_POST['id_presupuesto'];
+$descripcion = trim($_POST['descripcion']);
 
-$stmt = $conn->prepare("UPDATE presupuestos SET descripcion = ? WHERE id_presupuesto = ?");
-if (!$stmt) {
-    echo json_encode(['success' => false, 'error' => 'Error en la preparación']);
-    exit;
+try {
+    $stmt = $pdo->prepare("UPDATE presupuestos SET descripcion = :descripcion WHERE id_presupuesto = :id");
+    $stmt->execute([
+        ':descripcion' => $descripcion,
+        ':id' => $id
+    ]);
+
+    echo json_encode(['ok' => true]);
+} catch (PDOException $e) {
+    echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 }
 
-$stmt->bind_param("si", $descripcion, $id_presupuesto);
-if ($stmt->execute()) {
-    echo json_encode(['success' => true]);
-} else {
-    echo json_encode(['success' => false, 'error' => 'Error al ejecutar']);
-}
-?>
