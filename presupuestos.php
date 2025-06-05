@@ -924,7 +924,7 @@ input:focus, select:focus {
           <td>$<?= number_format($p['total_con_recargo'], 2) ?></td>
           <td><?= ucfirst($p['estado']) ?></td>
         <td>  <textarea
-               data-id="<?= $row['id_presupuesto'] ?>"
+               data-id="<?= $p['id_presupuesto'] ?>"
               class="descripcion-textarea"
              rows="3"
               style="width: 100%; resize: vertical;"
