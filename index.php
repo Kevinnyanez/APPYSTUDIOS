@@ -193,6 +193,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .noticia small {
       color: #666;
     }
+
+    /* EXISTENTE */
+.contenedor-principal {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  margin-top: 60px;
+  flex-wrap: wrap; /* ✅ Agregado para que se acomode en pantallas chicas */
+}
+
+/* MODIFICAR .noticias: sacamos el position absolute */
+.noticias {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin-top: 30px; /* ✅ Le damos espacio debajo del form cuando se apilen */
+}
+
+/* MEDIA QUERY para celulares */
+@media (max-width: 768px) {
+  .contenedor-principal {
+    flex-direction: column; /* ✅ Vertical en móviles */
+    align-items: center;
+  }
+
+  .noticias {
+    position: static;  /* ✅ Evitamos superposición */
+    width: 90%;         /* ✅ Adaptado al ancho de pantalla */
+    margin-top: 20px;
+  }
+
+  form {
+    width: 90%; /* Más adaptable */
+  }
+}
+
     </style>
 </head>
 <body>
@@ -201,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="marquesina-texto">Appy Studios Desarrollos Webs | Soluciones creativas | ¡Tu idea, nuestro código!</div>
 </div>
 
-   
+   <div class="contenedor-principal">
 
     <div class="login-container">
         
@@ -222,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Aquí se cargarán las noticias desde JS -->
   </section>
             
-    
+    </div>
 
   <script src="noticias.js"></script>
 </body>
