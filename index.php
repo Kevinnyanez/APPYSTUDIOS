@@ -111,25 +111,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .marquesina {
+      .marquesina {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  height: 30px;
+  height: 40px;
+  background: linear-gradient(90deg, #007bff, #00c3ff, #007bff);
+  background-size: 300% 100%;
+  animation: bgMove 6s linear infinite;
   overflow: hidden;
-  background: #007bff;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .marquesina-texto {
-  display: inline-block;
-  padding-left: 100%;
   white-space: nowrap;
-  animation: scrollMarquesina 15s linear infinite;
+  display: inline-block;
+  animation: scrollText 20s linear infinite;
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+  text-shadow: 0 0 10px #00000060;
+  filter: drop-shadow(0 0 2px #00f2ff);
+  background: linear-gradient(to right, #ffffff, #c0eaff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
+@keyframes scrollText {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 300% 0%; }
+}
+
 
 @keyframes scrollMarquesina {
   from {
@@ -153,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
 
         <form method="POST" action="">
-            <img src="logo.jpg"  style="width:150px; height:200px; margin-bottom: 10px; display: inline-block;" alt="Logo"  class="logo">
+            
             <h2 style="text-align:center;">Iniciar Sesión</h2>
             <?php if ($error): ?>
                 <div class="error"><?= htmlspecialchars($error) ?></div>
