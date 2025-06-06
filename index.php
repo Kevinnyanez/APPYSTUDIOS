@@ -46,21 +46,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            position: relative;
-        }
-        .contenedor-principal {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* Esto deja la marquesina arriba */
+}
+
+.contenedor-principal {
+  flex: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 40px;
-  margin-top: 60px;
+  flex-wrap: wrap;
+  padding-top: 60px; /* para dejar espacio a la marquesina */
+  padding-bottom: 40px;
 }
 
         .login-container {
