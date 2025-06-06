@@ -1,0 +1,12 @@
+[
+  {
+    "titulo": "Actualización programada",
+    "fecha": "2025-06-06",
+    "mensaje": "Hoy realizaremos tareas de mantenimiento. Puede notar lentitud temporal."
+  },
+  {
+    "titulo": "Nuevo módulo agregado",
+    "fecha": "2025-06-03",
+    "mensaje": "Se ha agregado el nuevo panel de estadísticas. ¡Probalo desde el menú!"
+  }
+]

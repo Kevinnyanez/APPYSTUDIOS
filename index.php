@@ -161,6 +161,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
+ .noticias {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .noticia {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+    }
+    .noticia h4 {
+      margin: 0;
+      color: #007BFF;
+    }
+    .noticia small {
+      color: #666;
+    }
     </style>
 </head>
 <body>
@@ -184,6 +204,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Entrar</button>
         </form>
     </div>
-    
+    <section class="noticias" id="noticias">
+    <h3>📢 Comunicados Importantes</h3>
+    <!-- Aquí se cargarán las noticias desde JS -->
+  </section>
+
+  <script src="noticias.js"></script>
 </body>
 </html>
