@@ -928,7 +928,7 @@ input:focus, select:focus {
               class="descripcion-textarea"
              rows="3"
               style="width: 100%; resize: vertical;"
-              ><?= htmlspecialchars($row['descripcion']) ?></textarea>
+              ><?= htmlspecialchars($p['descripcion']) ?></textarea>
           </td>
           <td>
             <a href="presupuesto_form.php?id_presupuesto=<?= $p['id_presupuesto'] ?>" class="btn-link editar">Ver / Editar</a>
