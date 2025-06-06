@@ -2,12 +2,12 @@
   {
     "titulo": "Actualizaciones",
     "fecha": "2025-06-06",
-    "mensaje": "Seccion de Presupuestos con fallas en la edicion del presupuestos"
+    "mensaje": "Seccion de Presupuestos con fallas en la edicion del presupuesto"
   },
   {
     
     "titulo": "Recomendaciones",
     "fecha": "a tener en cuenta",
-    "mensaje": "Evita errar datos a la hora de crear los presupuestos, si te equivocas elimina el presupuesto y crealo de vuelta."
+    "mensaje": "Evita errar datos a la hora de crear los presupuestos, si te equivocas elimina el presupuesto y crealo nuevamente."
   }
 ]
