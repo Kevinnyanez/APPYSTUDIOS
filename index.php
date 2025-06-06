@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             height: 100vh;
             margin: 0;
+            position: relative;
         }
         .contenedor-principal {
   display: flex;
@@ -170,14 +171,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
  .noticias {
-      background: #f9f9f9;
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px auto;
-      max-width: 800px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      flex: 0 0 400px;
-    }
+  position: absolute;
+  top: 50%;
+  right: 40px; /* Más a la derecha */
+  transform: translateY(-50%);
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
     .noticia {
       border-bottom: 1px solid #ddd;
       margin-bottom: 15px;
@@ -198,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="marquesina-texto">Appy Studios Desarrollos Webs | Soluciones creativas | ¡Tu idea, nuestro código!</div>
 </div>
 
-    <div class="contenedor-principal">
+   
 
     <div class="login-container">
         
@@ -218,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3>📢 Comunicados Importantes</h3>
     <!-- Aquí se cargarán las noticias desde JS -->
   </section>
-            </div>
+            
     
 
   <script src="noticias.js"></script>
