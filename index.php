@@ -180,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   border-radius: 10px;
   width: 320px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin-left:50px;
 }
     .noticia {
       border-bottom: 1px solid #ddd;
