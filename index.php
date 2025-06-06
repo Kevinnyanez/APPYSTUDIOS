@@ -46,23 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column; /* Esto deja la marquesina arriba */
-}
-
-.contenedor-principal {
-  flex: 1;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        .contenedor-principal {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 40px;
-  flex-wrap: wrap;
-  padding-top: 60px; /* para dejar espacio a la marquesina */
-  padding-bottom: 40px;
+  margin-top: 60px;
 }
 
         .login-container {
@@ -172,7 +170,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
- 
+ .noticias {
+  position: absolute;
+  top: 50%;
+  right: 40px; /* Más a la derecha */
+  transform: translateY(-50%);
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
     .noticia {
       border-bottom: 1px solid #ddd;
       margin-bottom: 15px;
@@ -185,45 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .noticia small {
       color: #666;
     }
-
-    /* EXISTENTE */
-.contenedor-principal {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 40px;
-  margin-top: 60px;
-  flex-wrap: wrap; /* ✅ Agregado para que se acomode en pantallas chicas */
-}
-
-/* MODIFICAR .noticias: sacamos el position absolute */
-.noticias {
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  width: 320px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  margin-top: 30px;
-}
-
-/* MEDIA QUERY para celulares */
-@media (max-width: 768px) {
-  .contenedor-principal {
-    flex-direction: column; /* ✅ Vertical en móviles */
-    align-items: center;
-  }
-
-  .noticias {
-    position: static;  /* ✅ Evitamos superposición */
-    width: 90%;         /* ✅ Adaptado al ancho de pantalla */
-    margin-top: 20px;
-  }
-
-  form {
-    width: 90%; /* Más adaptable */
-  }
-}
-
     </style>
 </head>
 <body>
@@ -232,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="marquesina-texto">Appy Studios Desarrollos Webs | Soluciones creativas | ¡Tu idea, nuestro código!</div>
 </div>
 
-   <div class="contenedor-principal">
+  
 
     <div class="login-container">
         
@@ -253,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Aquí se cargarán las noticias desde JS -->
   </section>
             
-    </div>
+    
 
   <script src="noticias.js"></script>
 </body>
