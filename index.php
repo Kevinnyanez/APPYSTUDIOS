@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   color: white;
   text-shadow: 0 0 10px #00000060;
   filter: drop-shadow(0 0 2pxrgb(37, 37, 37));
-  background: linear-gradient(to right, #ffffff,rgb(94, 100, 104),rgb(70, 70, 70));
+  background: linear-gradient(to right,rgb(95, 95, 95),rgb(94, 100, 104),rgb(70, 70, 70));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
