@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  .noticias {
   position: absolute;
   top: 50%;
-  right: 25px; /* Más a la derecha */
+  right: 10px; /* Más a la derecha */
   transform: translateY(-50%);
   background: #f9f9f9;
   padding: 20px;
