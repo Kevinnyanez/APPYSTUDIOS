@@ -184,8 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Entrar</button>
         </form>
     </div>
-     <div class="marquesina">
-  <div class="marquesina-texto">Gracias por elegirnos | Appy Studios Desarrollos Webs | ¡Tu idea, nuestro código!</div>
-</div>
+    
 </body>
 </html>
