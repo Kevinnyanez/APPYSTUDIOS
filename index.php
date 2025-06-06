@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: #f0f0f0;
+            background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-top: 40px;
         }
 
         .logo {
@@ -110,9 +111,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .marquesina {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.marquesina-texto {
+  display: inline-block;
+  padding-left: 100%;
+  white-space: nowrap;
+  animation: scrollMarquesina 15s linear infinite;
+}
+
+@keyframes scrollMarquesina {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
     </style>
 </head>
 <body>
+
+        <div class="marquesina">
+  <div class="marquesina-texto">Appy Studios Desarrollos Webs | Soluciones creativas | ¡Tu idea, nuestro código!</div>
+</div>
+
+
     <div class="login-container">
         
 
