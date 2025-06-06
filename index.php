@@ -133,22 +133,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   animation: scrollText 20s linear infinite;
   font-weight: bold;
   font-size: 16px;
-  background: linear-gradient(90deg, #00d2ff, #74ebd5, #ffffff, #74ebd5, #00d2ff);
-  background-size: 200% 100%;
-  animation: gradientShift 6s ease infinite;
-
+  color: white;
+  text-shadow: 0 0 10px #00000060;
+  filter: drop-shadow(0 0 2px #00f2ff);
+  background: linear-gradient(to right, #ffffff, #c0eaff, #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  /* Sutil sombra para dar profundidad */
-  text-shadow: 0 0 5px rgba(0, 210, 255, 0.7);
-}
-
-/* Animación suave del degradado en el texto */
-@keyframes gradientShift {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 0%; }
-  100% { background-position: 0% 0%; }
 }
 
 @keyframes scrollText {
