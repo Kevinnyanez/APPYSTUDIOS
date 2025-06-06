@@ -214,11 +214,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Entrar</button>
         </form>
     </div>
-            </div>
     <section class="noticias" id="noticias">
     <h3>📢 Comunicados Importantes</h3>
     <!-- Aquí se cargarán las noticias desde JS -->
   </section>
+            </div>
+    
 
   <script src="noticias.js"></script>
 </body>
