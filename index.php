@@ -170,17 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
- .noticias {
-  position: absolute;
-  top: 50%;
-  right: 40px; /* Más a la derecha */
-  transform: translateY(-50%);
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  width: 320px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+ 
     .noticia {
       border-bottom: 1px solid #ddd;
       margin-bottom: 15px;
@@ -211,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   border-radius: 10px;
   width: 320px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  margin-top: 30px; /* ✅ Le damos espacio debajo del form cuando se apilen */
+  margin-top: 30px;
 }
 
 /* MEDIA QUERY para celulares */
