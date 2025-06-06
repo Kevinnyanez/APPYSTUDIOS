@@ -95,7 +95,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'guardar_descripcion') {
 $conn->set_charset("utf8mb4");
 
 // Validar que los datos mínimos necesarios para un presupuesto estén presentes en el POST
-if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'], $_POST['descripcion'])) {
+if (isset($_POST['id_cliente'], $_POST['id_stock'], $_POST['cantidad'], $_POST['precio_unitario'], $_POST['subtotal'])) {
 
     $id_presupuesto = $_POST['id_presupuesto'] ?? null; // Será null para nueva creación
     $id_cliente = $_POST['id_cliente'];
