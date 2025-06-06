@@ -114,9 +114,9 @@ nav .logout:hover {
         <ul class="recomendaciones">
             <li>Guardá tus cambios frecuentemente para evitar pérdida de información.</li>
             <li>Usá navegadores modernos y actualizados para evitar incompatibilidades.</li>
-            <li>No compartas tu contraseña ni datos personales con nadie.</li>
+            <li>Usa la aplicacion en computadora, para una mejor experiencia.</li>
             <li>Cerrá sesión si usás la app en dispositivos públicos.</li>
-            <li>Ante errores inesperados, recargá la página o volvé a iniciar sesión.</li>
+            <li>Ante errores inesperados, recargá la página o contactate con el desarrollador.</li>
             <li>Limpiá la caché si notás datos desactualizados.</li>
             <li>Consultá con tu administrados siempre que lo necesites.</li>
             <li>Si encontrás un bug, avisanos. Nos ayuda a mejorar 🚀.</li>
