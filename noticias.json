@@ -1,12 +1,13 @@
 [
   {
-    "titulo": "Actualización programada",
+    "titulo": "Actualizaciones",
     "fecha": "2025-06-06",
-    "mensaje": "Hoy realizaremos tareas de mantenimiento. Puede notar lentitud temporal."
+    "mensaje": "Seccion de Presupuestos con fallas en la edicion del presupuestos"
   },
   {
-    "titulo": "Nuevo módulo agregado",
-    "fecha": "2025-06-03",
-    "mensaje": "Se ha agregado el nuevo panel de estadísticas. ¡Probalo desde el menú!"
+    
+    "titulo": "Recomendaciones",
+    "fecha": "a tener en cuenta",
+    "mensaje": "Evita errar datos a la hora de crear los presupuestos, si te equivocas elimina el presupuesto y crealo de vuelta."
   }
 ]
