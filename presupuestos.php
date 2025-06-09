@@ -204,7 +204,7 @@ tfoot tr {
         </style>
     <div class="encabezado">
     <div class ="logo-centro">
-    ' . ($base64 ? '<img src="' . $base64 . '" style="width:200px; height:180px; margin-bottom: 10px;" alt="Logo">' : '') . '
+    ' . ($base64 ? '<img src="' . $base64 . '" style="width:200px; height:250px; margin-bottom: 10px;" alt="Logo">' : '') . '
     </div>
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
