@@ -382,7 +382,7 @@ a:hover {
   <!-- Acciones rápidas -->
   <div class="card">
     <h2>Acciones rápidas</h2>
-    <a href="presupuesto_form.php" class="btn-volver">+ Nuevo presupuesto</a>
+    <a href="presupuestos.php" class="btn-volver">+ Nuevo presupuesto</a>
     <strong style="margin-top:1.2rem; display:block;">Presupuestos pendientes de revisión</strong>
     <ul id="presupAbiertos">
       <?php $i=0; while($p = $presupAbiertos->fetch_assoc()): if($i++>=3) break; ?>
