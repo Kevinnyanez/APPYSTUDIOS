@@ -49,7 +49,7 @@ if (isset($_GET['descargar_pdf'])) {
     $fecha_formateada = date("d/m/Y", strtotime($presupuesto['fecha_creacion']));
 
 
-    $path_logo = 'logo.jpg'; // ruta donde tengas el logo
+    $path_logo = 'logobien.jpg'; // ruta donde tengas el logo
 if (file_exists($path_logo)) {
     $type = pathinfo($path_logo, PATHINFO_EXTENSION);
     $data = file_get_contents($path_logo);
@@ -249,7 +249,7 @@ tfoot tr {
     
     <div class="contacto">
         <p><strong>IG:</strong> @fd.sonandobajito</p>
-        <p><strong>Teléfono:</strong> +54 9 11 1234-5678</p>
+        <p><strong>Teléfono:</strong> 2922-45-4559</p>
     </div>
     
     <div class="nota">
