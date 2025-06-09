@@ -248,7 +248,7 @@ tfoot tr {
     <p>Esperamos con ansias trabajar con vos.</p>
     
     <div class="contacto">
-        <p><strong>IG:</strong> @fd.sonandobajito</p>
+        <p><strong>IG:</strong> @Fadek.muebles</p>
         <p><strong>Teléfono:</strong> 2922-45-4559</p>
     </div>
     
