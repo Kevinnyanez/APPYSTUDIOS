@@ -210,7 +210,7 @@ tfoot tr {
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
-        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['totalFinalConFlete'], 2, ',', '.') . '</p>
         
     </div>
         <h2>Ítems</h2>
