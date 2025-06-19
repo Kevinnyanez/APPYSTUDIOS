@@ -58,7 +58,10 @@ if (file_exists($path_logo)) {
     $base64 = ''; // O podés poner un logo por defecto o dejar vacío
 }
 
+$flete = 18000; // O donde lo estés definiendo
 
+$gran_total = $presupuesto['total_con_recargo'] + $flete;
+    
     // Crear HTML
     $html = '
         <style>
@@ -206,9 +209,7 @@ tfoot tr {
     <div class ="logo-centro">
     ' . ($base64 ? '<img src="' . $base64 . '" style="width:200px; height:250px; margin-bottom: 10px;" alt="Logo">' : '') . '
     </div>
-    $flete = 18000; // O donde lo estés definiendo
-
-    $gran_total = $presupuesto[total_con_recargo] + $flete;
+    
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
