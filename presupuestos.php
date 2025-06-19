@@ -58,10 +58,7 @@ if (file_exists($path_logo)) {
     $base64 = ''; // O podés poner un logo por defecto o dejar vacío
 }
 
-$flete = 18000; // O donde lo estés definiendo
 
-$gran_total = $presupuesto['total_con_recargo'] + $flete;
-    
     // Crear HTML
     $html = '
         <style>
@@ -214,7 +211,7 @@ tfoot tr {
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
-        <p><strong>Total:</strong> $' . number_format($gran_total, 2, ',', '.') . '</p>
+        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
         
     </div>
         <h2>Ítems</h2>
@@ -235,17 +232,14 @@ tfoot tr {
     </tr>';
 }
 
-$flete = 18000; // O donde lo estés definiendo
 
-$gran_total = $presupuesto['total_con_recargo'] + $flete;
-    
     
 
     // Agregamos fila de total final
     $html .= '
             <tr style="font-weight: bold; background-color: #f2f2f2;">
                 <td colspan="3" style="text-align: right;">Total Ítems:</td>
-                <td>$' . number_format($gran_total, 2, ',', '.') . '</td>
+                <td>$' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</td>
             </tr>
         </tbody>
     </table>
