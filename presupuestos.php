@@ -208,7 +208,7 @@ tfoot tr {
     </div>
     $flete = 18000; // O donde lo estés definiendo
 
-    $gran_total = $presupuesto['total_con_recargo'] + $flete;
+    $gran_total = $presupuesto[total_con_recargo] + $flete;
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
