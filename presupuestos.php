@@ -206,11 +206,14 @@ tfoot tr {
     <div class ="logo-centro">
     ' . ($base64 ? '<img src="' . $base64 . '" style="width:200px; height:250px; margin-bottom: 10px;" alt="Logo">' : '') . '
     </div>
+    $flete = 18000; // O donde lo estés definiendo
+
+    $gran_total = $presupuesto['total_con_recargo'] + $flete;
         <h1>Presupuesto</h1>
         <p><strong>Cliente:</strong> ' . htmlspecialchars($presupuesto['nombre_cliente']) . '</p>
         <p><strong>Email:</strong> ' . htmlspecialchars($presupuesto['email_cliente']) . '</p>
         <p><strong>Fecha:</strong> ' . $fecha_formateada . '</p>
-        <p><strong>Total:</strong> $' . number_format($presupuesto['total_con_recargo'], 2, ',', '.') . '</p>
+        <p><strong>Total:</strong> $' . number_format($gran_total, 2, ',', '.') . '</p>
         
     </div>
         <h2>Ítems</h2>
@@ -241,7 +244,7 @@ $gran_total = $presupuesto['total_con_recargo'] + $flete;
     $html .= '
             <tr style="font-weight: bold; background-color: #f2f2f2;">
                 <td colspan="3" style="text-align: right;">Total Ítems:</td>
-                <td>$' . number_format($presupuesto['gran_total'], 2, ',', '.') . '</td>
+                <td>$' . number_format($gran_total, 2, ',', '.') . '</td>
             </tr>
         </tbody>
     </table>
