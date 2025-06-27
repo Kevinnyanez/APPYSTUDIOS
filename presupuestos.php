@@ -218,7 +218,7 @@ tfoot tr {
         <table>
             <thead>
                 <tr>
-                    <th>Tuki</th>
+                    <th>Fadek</th>
                     <th>Amoblamientos</th>
                     <th></th>
                     <th></th>
